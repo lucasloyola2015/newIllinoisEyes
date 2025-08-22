@@ -1290,6 +1290,7 @@
       console.log('[profiles] ==========================================');
       console.log('[profiles] Common.fetchWithTimeout disponible:', typeof Common.fetchWithTimeout);
       console.log('[profiles] Common disponible:', typeof Common);
+      console.log('[profiles] Función loadProfiles ejecutándose...');
       
       try {
         // Cargar desde el archivo principal de configuración
@@ -1326,8 +1327,9 @@
             console.log('[profiles] Perfil activo configurado:', activeProfileId);
             updateProfileSelector(activeProfileId);
             
-            console.log(`[profiles] ✅ CARGA EXITOSA: ${profiles.length} perfiles cargados, activo: ${activeProfileId}`);
-            console.log('[profiles] ==========================================');
+                      console.log(`[profiles] ✅ CARGA EXITOSA: ${profiles.length} perfiles cargados, activo: ${activeProfileId}`);
+          console.log('[profiles] ==========================================');
+          console.log('[profiles] Función loadProfiles completada exitosamente');
           }, 100);
         } else {
           console.warn('[profiles] ⚠️ No se encontraron perfiles en la respuesta');
@@ -1343,6 +1345,7 @@
           console.log('[profiles] Usando perfiles por defecto:', profiles.length, 'perfiles');
           updateProfileDropdown();
           console.log('[profiles] ==========================================');
+          console.log('[profiles] Función loadProfiles completada con perfiles por defecto');
         }
       } catch (error) {
         console.error('[profiles] ❌ ERROR CARGANDO PERFILES:', error);
@@ -1352,6 +1355,7 @@
         console.log('[profiles] Usando perfiles por defecto debido al error:', profiles.length, 'perfiles');
         updateProfileDropdown();
         console.log('[profiles] ==========================================');
+        console.log('[profiles] Función loadProfiles completada con error');
       }
     }
     
@@ -2257,16 +2261,20 @@
         });
       }
       
-      // Cargar configuración inicial
-      loadInitialConfig();
-      
-      // Cargar método de detección actual
-      loadCurrentDetectionMethod();
-      
-      // Cargar sistema de perfiles
+      // Cargar sistema de perfiles PRIMERO
       console.log('[profiles] DOM cargado, iniciando carga de perfiles...');
       loadProfiles();
       console.log('[profiles] Llamada a loadProfiles() completada');
+      
+      // Cargar configuración inicial DESPUÉS
+      setTimeout(() => {
+        loadInitialConfig();
+      }, 500);
+      
+      // Cargar método de detección actual DESPUÉS
+      setTimeout(() => {
+        loadCurrentDetectionMethod();
+      }, 1000);
     });
   </script>
 

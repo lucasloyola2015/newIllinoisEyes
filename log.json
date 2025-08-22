@@ -1,6 +1,78 @@
 {
   "logs": [
     {
+      "timestamp": "2025-08-22 16:47:25",
+      "type": "SYSTEM",
+      "message": "Servidor cerrado correctamente",
+      "id": 209
+    },
+    {
+      "timestamp": "2025-08-22 16:47:22",
+      "type": "PROCESOS",
+      "message": "Proceso principal detenido",
+      "id": 208
+    },
+    {
+      "timestamp": "2025-08-22 16:47:22",
+      "type": "SYSTEM",
+      "message": "Hilos de fondo detenidos",
+      "id": 207
+    },
+    {
+      "timestamp": "2025-08-22 16:47:22",
+      "type": "SYSTEM",
+      "message": "Ventana de Chrome cerrada",
+      "id": 206
+    },
+    {
+      "timestamp": "2025-08-22 16:47:22",
+      "type": "SYSTEM",
+      "message": "Ventana de Chrome cerrada, apagando sistema completo...",
+      "id": 205
+    },
+    {
+      "timestamp": "2025-08-22 16:45:08",
+      "type": "ERROR",
+      "message": "Error en GET /template/filter_config.html: [WinError 10053] Se ha anulado una conexión establecida por el software en su equipo host",
+      "id": 204
+    },
+    {
+      "timestamp": "2025-08-22 16:45:07",
+      "type": "SYSTEM",
+      "message": "Polígono cargado desde configuración",
+      "id": 203
+    },
+    {
+      "timestamp": "2025-08-22 16:45:07",
+      "type": "SYSTEM",
+      "message": "Polígono cargado desde configuración",
+      "id": 202
+    },
+    {
+      "timestamp": "2025-08-22 16:45:04",
+      "type": "SYSTEM",
+      "message": "Chrome lanzado correctamente",
+      "id": 201
+    },
+    {
+      "timestamp": "2025-08-22 16:45:04",
+      "type": "SYSTEM",
+      "message": "Servidor web iniciado en puerto 8000",
+      "id": 200
+    },
+    {
+      "timestamp": "2025-08-22 16:45:03",
+      "type": "SYSTEM",
+      "message": "Hilos de fondo iniciados",
+      "id": 199
+    },
+    {
+      "timestamp": "2025-08-22 16:45:02",
+      "type": "SYSTEM",
+      "message": "Sistema de terminal iniciado",
+      "id": 198
+    },
+    {
       "timestamp": "2025-08-22 13:48:08",
       "type": "SYSTEM",
       "message": "Polígono cargado desde configuración",
