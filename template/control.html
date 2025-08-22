@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Control</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <script src="/static/common.js"></script>
+</head>
+<body>
+  <div class="wrap">
+    <h1 class="page-header">Control</h1>
+    
+    <div class="grid-auto">
+      <a class="cfg-btn" href="/template/database.html">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+          <path d="M2.5 2A1.5 1.5 0 0 0 1 3.5v9A1.5 1.5 0 0 0 2.5 14h11a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 13.5 2zm0 1h11a.5.5 0 0 1 .5.5V5h-12V3.5a.5.5 0 0 1 .5-.5M2 6h12v6.5a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5z"/>
+        </svg>
+        <div class="cfg-title">Base de <span class="text-brand">juntas</span></div>
+        <div class="cfg-sub">Ver / editar modelos</div>
+      </a>
+
+      <a class="cfg-btn" href="/template/ordenTrabajo.html">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="bi bi-hammer" aria-hidden="true">
+          <path d="M9.972 2.508a.5.5 0 0 0-.16-.556l-.178-.129a5 5 0 0 0-2.076-.783C6.215.862 4.504 1.229 2.84 3.133H1.786a.5.5 0 0 0-.354.147L.146 4.567a.5.5 0 0 0 0 .706l2.571 2.579a.5.5 0 0 0 .708 0l1.286-1.29a.5.5 0 0 0 .146-.353V5.57l8.387 8.873A.5.5 0 0 0 14 14.5l1.5-1.5a.5.5 0 0 0 .017-.689l-9.129-8.63c.747-.456 1.772-.839 3.112-.839a.5.5 0 0 0 .472-.334"/>
+        </svg>
+        <div class="cfg-title">Orden de <span class="text-brand">trabajo</span></div>
+        <div class="cfg-sub">Ejecutar con modelo</div>
+      </a>
+
+      <a class="cfg-btn" href="/template/configuracion.html">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-gear" viewBox="0 0 16 16">
+          <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492M5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0"/>
+          <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115z"/>
+        </svg>
+        <div class="cfg-title"><span class="text-brand">Configuración</span></div>
+        <div class="cfg-sub">Sistema y dispositivos</div>
+      </a>
+
+
+      </div>
+
+    <!-- Cards de procesos -->
+    <div class="grid-3" style="margin-top: 24px;">
+      <!-- Card Alimentador -->
+      <div class="card">
+        <div class="flex items-center justify-center" style="margin-bottom: 12px;">
+          <strong>Alimentador</strong>
+        </div>
+        
+        <div class="space-y-2">
+          
+            <span id="alimentador-deshabilitado" class="status-label text-bordeau">ALIMENTADOR DESHABILITADO</span>
+            <br>
+            <br>
+            <span id="alimentador-sin-stock" class="status-label text-bordeau">SIN STOCK DISPONIBLE</span>
+            <br>
+            <br>
+            <span id="alimentador-estado-texto" class="status-label text-rojo">ESTADO ACTUAL: IDLE</span>
+        
+        </div>
+      </div>
+
+      <!-- Card Visión -->
+      <div class="card">
+        <div class="flex items-center justify-center" style="margin-bottom: 12px;">
+          <strong>Visión</strong>
+        </div>
+        
+        <div class="space-y-2">
+          
+            <span class="status-label text-bordeau">Estado: Inactivo</span>
+        
+        </div>
+      </div>
+
+      <!-- Card Robot -->
+      <div class="card">
+        <div class="flex items-center justify-center" style="margin-bottom: 12px;">
+          <strong>Robot</strong>
+        </div>
+        
+        <div class="space-y-2">
+          
+            <span class="status-label text-bordeau">Estado: Inactivo</span>
+         
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top: 24px;">
+      <div class="flex items-center justify-center" style="margin-bottom: 12px;">
+        <strong>Control</strong>
+      </div>
+      
+      <div class="flex justify-center gap-4">
+        <button id="btnInicioPausa" class="btn btn-success" title="Iniciar/Pausar proceso">
+          <svg class="ico" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+            <path d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445z"/>
+          </svg>
+          <span id="btnInicioPausaText">INICIO</span>
+        </button>
+        
+        <button id="btnDetener" class="btn btn-danger" title="Detener proceso">
+          <svg class="ico" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+            <path d="M5 3.5h6A.5.5 0 0 1 11.5 4v8a.5.5 0 0 1-.5.5H5a.5.5 0 0 1-.5-.5V4a.5.5 0 0 1 .5-.5z"/>
+          </svg>
+          <span>DETENER</span>
+        </button>
+        
+        <button id="btnPedirJunta" class="btn btn-warning" title="Pedir Junta (Temporal)">
+          <svg class="ico" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+          </svg>
+          <span>PEDIR JUNTA</span>
+        </button>
+      </div>
+    </div>
+
+
+  </div>
+
+  <script>
+    let eventSource = null;
+    
+    // Elementos del proceso
+    const btnInicioPausa = document.getElementById('btnInicioPausa');
+    const btnInicioPausaText = document.getElementById('btnInicioPausaText');
+    const btnDetener = document.getElementById('btnDetener');
+    const btnPedirJunta = document.getElementById('btnPedirJunta'); // Nuevo botón
+    
+    // Elementos del alimentador
+    const alimentadorDeshabilitado = document.getElementById('alimentador-deshabilitado');
+    const alimentadorSinStock = document.getElementById('alimentador-sin-stock');
+    const alimentadorEstadoTexto = document.getElementById('alimentador-estado-texto');
+    
+    console.log('[control] Elementos del proceso encontrados:', {
+      btnInicioPausa: !!btnInicioPausa,
+      btnInicioPausaText: !!btnInicioPausaText,
+      btnDetener: !!btnDetener,
+      btnPedirJunta: !!btnPedirJunta, // Añadir nuevo botón a la consola
+      alimentadorDeshabilitado: !!alimentadorDeshabilitado,
+      alimentadorSinStock: !!alimentadorSinStock,
+      alimentadorEstadoTexto: !!alimentadorEstadoTexto
+    });
+
+    // Funciones para el proceso con Server-Sent Events
+    async function toggleInicioPausa() {
+      console.log('[control] Botón INICIO/PAUSA presionado');
+      try {
+        console.log('[control] Enviando petición POST a /api/process/inicio_pausa');
+        const response = await Common.fetchWithTimeout('/api/process/inicio_pausa', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        
+        console.log('[control] Respuesta recibida:', response);
+        console.log('[control] Status de respuesta:', response.status);
+        
+        const data = await response.json();
+        console.log('[control] Datos de respuesta:', data);
+        
+        if (data.ok) {
+          console.log('[control] Estado actualizado correctamente:', data.estado_sistema);
+          updateProcessButtons(data.estado_sistema, data.boton_texto);
+          // Mantener SSE siempre conectado
+          if (!eventSource) {
+            startProcessStream();
+          }
+        } else {
+          console.error('[control] Error en respuesta:', data.message);
+          alert('Error: ' + data.message);
+        }
+      } catch (error) {
+        console.error('[control] Error completo:', error);
+        console.error('[control] Stack trace:', error.stack);
+        alert('Error de conexión con el servidor: ' + error.message);
+      }
+    }
+
+    async function toggleDetener() {
+      console.log('[control] Botón DETENER presionado');
+      try {
+        console.log('[control] Enviando petición POST a /api/process/detener');
+        const response = await Common.fetchWithTimeout('/api/process/detener', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        
+        console.log('[control] Respuesta recibida:', response);
+        console.log('[control] Status de respuesta:', response.status);
+        
+        const data = await response.json();
+        console.log('[control] Datos de respuesta:', data);
+        
+        if (data.ok) {
+          console.log('[control] Proceso detenido correctamente');
+          updateProcessButtons(data.estado_sistema, data.boton_texto);
+          // Mantener SSE conectado para ver cambios en tiempo real
+          if (!eventSource) {
+            startProcessStream();
+          }
+        } else {
+          console.error('[control] Error en respuesta:', data.message);
+          alert('Error: ' + data.message);
+        }
+      } catch (error) {
+        console.error('[control] Error completo:', error);
+        console.error('[control] Stack trace:', error.stack);
+        alert('Error de conexión con el servidor: ' + error.message);
+      }
+    }
+
+    async function togglePedirJunta() {
+      console.log('[control] Botón PEDIR JUNTA presionado');
+      try {
+        console.log('[control] Enviando petición POST a /api/feeder/pedir_junta');
+        const response = await Common.fetchWithTimeout('/api/feeder/pedir_junta', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        
+        console.log('[control] Respuesta recibida:', response);
+        console.log('[control] Status de respuesta:', response.status);
+        
+        const data = await response.json();
+        console.log('[control] Datos de respuesta:', data);
+        
+        if (data.ok) {
+          console.log('[control] Solicitud de junta enviada correctamente');
+          //alert('Solicitud de junta enviada al feeder');
+        } else {
+          console.error('[control] Error en respuesta:', data.message);
+          alert('Error: ' + data.message);
+        }
+      } catch (error) {
+        console.error('[control] Error completo:', error);
+        console.error('[control] Stack trace:', error.stack);
+        alert('Error de conexión con el servidor: ' + error.message);
+      }
+    }
+
+    async function loadProcessStatus() {
+      try {
+        const response = await Common.fetchWithTimeout('/api/process/status');
+        const data = await response.json();
+        
+        if (data.ok) {
+          const estado_sistema = data.status.estado_sistema;
+          updateProcessButtons(estado_sistema, getBotonTexto(estado_sistema));
+          updateAlimentadorStatus(data.status); // Actualizar estado del alimentador
+          
+          // Mantener SSE siempre conectado para ver cambios en tiempo real
+          if (!eventSource) {
+            startProcessStream();
+          }
+        }
+      } catch (error) {
+        console.error('Error cargando estado del proceso:', error);
+      }
+    }
+
+    function getBotonTexto(estado_sistema) {
+      switch (estado_sistema) {
+        case "INICIO":
+          return "PAUSA";
+        case "PAUSA":
+          return "INICIO";
+        case "DETENER":
+          return "INICIO";
+        default:
+          return "INICIO";
+      }
+    }
+
+    function updateAlimentadorStatus(status) {
+      // Actualizar estado actual (siempre rojo, solo cambia el texto)
+      alimentadorEstadoTexto.classList.remove('text-bordeau');
+      alimentadorEstadoTexto.classList.add('text-rojo');
+      alimentadorEstadoTexto.textContent = `ESTADO ACTUAL: ${status.estadoFeederStr}`;
+      
+      // Actualizar labels basado en marcas del PLC
+      if (status.plc_marks) {
+        // Actualizar SIN STOCK DISPONIBLE basado en M3_SIN_STOCK_DISPONIBLE
+        if (status.plc_marks.M3_SIN_STOCK_DISPONIBLE) {
+          alimentadorSinStock.classList.remove('text-bordeau');
+          alimentadorSinStock.classList.add('text-rojo');
+        } else {
+          alimentadorSinStock.classList.remove('text-rojo');
+          alimentadorSinStock.classList.add('text-bordeau');
+        }
+        
+        // Actualizar ALIMENTADOR DESHABILITADO basado en M4
+        if (status.plc_marks.M4_FEEDER_HABILITADO) {
+          alimentadorDeshabilitado.classList.remove('text-rojo');
+          alimentadorDeshabilitado.classList.add('text-bordeau');
+        } else {
+          alimentadorDeshabilitado.classList.remove('text-bordeau');
+          alimentadorDeshabilitado.classList.add('text-rojo');
+        }
+      }
+    }
+
+    function updateProcessButtons(estado_sistema, boton_texto) {
+      // Actualizar botón INICIO/PAUSA
+      if (estado_sistema === "INICIO") {
+        btnInicioPausa.className = 'btn btn-warning';
+        btnInicioPausaText.textContent = boton_texto;
+      } else if (estado_sistema === "PAUSA") {
+        btnInicioPausa.className = 'btn btn-success';
+        btnInicioPausaText.textContent = boton_texto;
+      } else {
+        btnInicioPausa.className = 'btn btn-success';
+        btnInicioPausaText.textContent = boton_texto;
+      }
+      
+      // El botón DETENER siempre está disponible
+      btnDetener.className = 'btn btn-red';
+    }
+
+    function startProcessStream() {
+      if (eventSource) {
+        eventSource.close();
+      }
+      
+      eventSource = new EventSource('/api/process/stream');
+      
+      eventSource.onmessage = function(event) {
+        console.log('[control] SSE mensaje recibido:', event.data);
+        try {
+          const status = JSON.parse(event.data);
+          console.log('[control] SSE status parseado:', status);
+          updateProcessButtons(status.estado_sistema, getBotonTexto(status.estado_sistema));
+          updateAlimentadorStatus(status); // Actualizar estado del alimentador en tiempo real
+        } catch (error) {
+          console.error('Error procesando evento SSE:', error);
+        }
+      };
+      
+      eventSource.onerror = function(error) {
+        console.error('Error en SSE:', error);
+        stopProcessStream();
+        // Reintentar después de un delay
+        setTimeout(() => {
+          if (btnInicioPausa.className.includes('btn-warning')) {
+            startProcessStream();
+          }
+        }, 2000);
+      };
+    }
+
+    function stopProcessStream() {
+      if (eventSource) {
+        console.log('[control] Cerrando conexión SSE');
+        eventSource.close();
+        eventSource = null;
+      }
+    }
+
+
+
+    // Event listeners
+    console.log('[control] Registrando event listener para btnProcess');
+    btnInicioPausa.addEventListener('click', toggleInicioPausa);
+    btnDetener.addEventListener('click', toggleDetener); // Reutilizar la función toggleProcess para el botón de detener
+    btnPedirJunta.addEventListener('click', togglePedirJunta); // Nuevo botón
+    console.log('[control] Event listener registrado');
+
+    // Inicializar cuando se carga la página
+    document.addEventListener('DOMContentLoaded', async function() {
+      await loadProcessStatus(); // Cargar estado inicial del proceso
+    });
+    
+
+
+    // Cerrar SSE solo cuando se cierre la página
+    window.addEventListener('beforeunload', function() {
+      stopProcessStream();
+    });
+  </script>
+</body>
+</html>

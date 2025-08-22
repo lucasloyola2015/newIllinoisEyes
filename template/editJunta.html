@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Editar Junta</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <script src="/static/common.js"></script>
+</head>
+<body class="overflow-hidden">
+  <div class="wrap-grid">
+    <h1 class="page-header">
+      Editar junta
+      <div class="flex gap-2">
+        <!-- Volver -->
+        <a id="btnBack" class="btn" type="button" title="Volver" href="/template/database.html">
+          <svg class="ico" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+            <path fill-rule="evenodd"
+                  d="M15 8a.5.5 0 0 1-.5.5H2.707l3.147 3.146a.5.5 0 1 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 7.5H14.5A.5.5 0 0 1 15 8z"/>
+          </svg>
+          <span>Volver</span>
+        </a>
+
+        <!-- Guardar -->
+        <button id="btnSave" class="btn" type="button" title="Guardar">
+          <svg class="ico" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+            <!-- bi-check-lg -->
+            <path d="M13.485 1.929a.75.75 0 0 1 .086 1.057l-7.25 8a.75.75 0 0 1-1.094.03L2.43 8.28a.75.75 0 1 1 1.06-1.06l2.3 2.298 6.72-7.42a.75.75 0 0 1 .975-.168z"/>
+          </svg>
+          <span>Guardar</span>
+        </button>
+        
+        <!-- Eliminar -->
+        <button id="btnDelete" class="btn btn-danger" type="button" title="Eliminar">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+              <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
+            </svg>
+          <span>Eliminar</span>
+        </button>
+      </div>
+    </h1>
+
+    <div class="grid-edit">
+      <!-- Columna izquierda: imagen sticky -->
+      <div class="card sticky">
+        <div class="page-title" id="titleModelo">—</div>
+        <div class="img-wrap">
+          <img id="preview" src="" alt="imagen del modelo" onerror="Common.setPlaceholder(this)">
+          <canvas id="overlay"></canvas>
+        </div>
+        <div class="text-sm text-muted" style="margin-top:8px;">El texto rojo indica posiciones relativas al centro de cilindros.</div>
+      </div>
+
+      <!-- Columna derecha: formulario con scroll -->
+      <div class="card scrollable">
+        <div class="cfg-grid">
+          <div class="cfg-row">
+            <label style="min-width:260px;">Modelo
+              <input id="modelo" type="text" placeholder="p.ej. JTA-001" />
+            </label>
+          </div>
+
+          <table class="cfg-table">
+            <thead>
+              <tr>
+                <th>Campo</th>
+                <th>X</th>
+                <th>Y</th>
+                <th>Rot.</th>
+                <th>Extra</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Centro Cilindros</td>
+                <td><input id="cc_x" type="number" step="0.1" readonly></td>
+                <td><input id="cc_y" type="number" step="0.1" readonly></td>
+                <td class="text-muted">—</td>
+                <td><button class="btn" id="btnCalcCentro">Calcular centro</button> <span id="cc_msg" class="text-muted"></span></td>
+              </tr>
+              <tr>
+                <td>Lote</td>
+                <td><input id="lote_x" type="number" step="0.1"></td>
+                <td><input id="lote_y" type="number" step="0.1"></td>
+                <td><input id="lote_r" type="number" step="0.1"></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>Texto_Illinois</td>
+                <td><input id="ill_x" type="number" step="0.1"></td>
+                <td><input id="ill_y" type="number" step="0.1"></td>
+                <td><input id="ill_r" type="number" step="0.1"></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>Código</td>
+                <td><input id="cod_x" type="number" step="0.1"></td>
+                <td><input id="cod_y" type="number" step="0.1"></td>
+                <td><input id="cod_r" type="number" step="0.1"></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>Muescas</td>
+                <td><input id="mue_x" type="number" step="0.1"></td>
+                <td><input id="mue_y" type="number" step="0.1"></td>
+                <td><input id="mue_r" type="number" step="0.1"></td>
+                <td>
+                  <label style="display:flex; align-items:center; gap:8px;">Cantidad
+                    <input id="mue_c" type="number" step="1" style="width:90px;">
+                  </label>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div id="msg" class=""></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const qs = new URLSearchParams(location.search);
+    const modeloParam = qs.get("modelo");
+
+    const $ = id => document.getElementById(id);
+    const titleModelo = $("titleModelo");
+    const modelo = $("modelo");
+    const preview = $("preview");
+    const overlay = $("overlay");
+    const msg = $("msg");
+    const cc_msg = $("cc_msg");
+
+    const liveIds = [
+      "lote_x","lote_y","lote_r",
+      "ill_x","ill_y","ill_r",
+      "cod_x","cod_y","cod_r",
+      "mue_x","mue_y","mue_r","mue_c",
+      "cc_x","cc_y"
+    ];
+
+    function getForm(){
+      return {
+        modelo: modelo.value.trim(),
+        Lote: { x: Common.getNumericValue("lote_x"), y: Common.getNumericValue("lote_y"), rotacion: Common.getNumericValue("lote_r") },
+        Texto_Illinois: { x: Common.getNumericValue("ill_x"), y: Common.getNumericValue("ill_y"), rotacion: Common.getNumericValue("ill_r") },
+        Codigo: { x: Common.getNumericValue("cod_x"), y: Common.getNumericValue("cod_y"), rotacion: Common.getNumericValue("cod_r") },
+        Muescas: { x: Common.getNumericValue("mue_x"), y: Common.getNumericValue("mue_y"), rotacion: Common.getNumericValue("mue_r"), Cantidad: Common.getNumericValue("mue_c") },
+        centroCilindros: { x: Common.getNumericValue("cc_x"), y: Common.getNumericValue("cc_y") }
+      };
+    }
+
+    function putForm(j){
+      modelo.value = j?.modelo ?? "";
+      titleModelo.textContent = modelo.value || "—";
+      Common.setNumericValue("lote_x", j?.Lote?.x);
+      Common.setNumericValue("lote_y", j?.Lote?.y);
+      Common.setNumericValue("lote_r", j?.Lote?.rotacion);
+      Common.setNumericValue("ill_x", j?.Texto_Illinois?.x);
+      Common.setNumericValue("ill_y", j?.Texto_Illinois?.y);
+      Common.setNumericValue("ill_r", j?.Texto_Illinois?.rotacion);
+      Common.setNumericValue("cod_x", j?.Codigo?.x);
+      Common.setNumericValue("cod_y", j?.Codigo?.y);
+      Common.setNumericValue("cod_r", j?.Codigo?.rotacion);
+      Common.setNumericValue("mue_x", j?.Muescas?.x);
+      Common.setNumericValue("mue_y", j?.Muescas?.y);
+      Common.setNumericValue("mue_r", j?.Muescas?.rotacion);
+      Common.setNumericValue("mue_c", j?.Muescas?.Cantidad);
+      Common.setNumericValue("cc_x", j?.centroCilindros?.x);
+      Common.setNumericValue("cc_y", j?.centroCilindros?.y);
+      Common.loadImageForModel(modelo.value);
+      preview.onload = ()=> Common.drawOverlay(preview, overlay, getForm());
+    }
+
+    async function loadData(){
+      if(!modeloParam){
+        putForm(null);
+        $("btnDelete").disabled = true;
+        Common.setMessage("msg", "Creación de nueva junta.", "text-success");
+        return;
+      }
+      try{
+        const r = await Common.fetchWithTimeout(`/api/db/get?modelo=${encodeURIComponent(modeloParam)}`);
+        const j = await r.json();
+        if(!j.ok){ Common.setMessage("msg", j.error||"No encontrada", "text-error"); return; }
+        putForm(j.item);
+        Common.setMessage("msg", "Edición de junta.", "text-success");
+      }catch(e){
+        Common.setMessage("msg", "Error cargando la junta.", "text-error");
+      }
+    }
+
+    $("btnBack").onclick = ()=> location.href = "/template/database.html";
+
+    $("btnSave").onclick = async ()=>{
+      const data = getForm();
+      if(!data.modelo){ Common.setMessage("msg", "El modelo es obligatorio.", "text-error"); return; }
+      try{
+        const r = await Common.fetchWithTimeout("/api/db/save", {
+          method:"POST", headers:{ "Content-Type":"application/json" },
+          body: JSON.stringify({ item: data, original: modeloParam || null })
+        });
+        const j = await r.json();
+        if(j.ok){ Common.setMessage("msg", "Guardado correctamente.", "text-success"); setTimeout(()=>location.href="/template/database.html", 600); }
+        else Common.setMessage("msg", j.error||"No se pudo guardar.", "text-error");
+      }catch(e){ Common.setMessage("msg", "Error al guardar.", "text-error"); }
+    };
+
+    $("btnDelete").onclick = async ()=>{
+      if(!modelo.value.trim()) return;
+      if(!confirm(`Eliminar la junta "${modelo.value}"?`)) return;
+      try{
+        const r = await Common.fetchWithTimeout("/api/db/delete", {
+          method:"POST", headers:{ "Content-Type":"application/json" },
+          body: JSON.stringify({ modelo: modelo.value.trim() })
+        });
+        const j = await r.json();
+        if(j.ok){ Common.setMessage("msg", "Eliminada.", "text-success"); setTimeout(()=>location.href="/template/database.html", 400); }
+        else Common.setMessage("msg", j.error||"No se pudo eliminar.", "text-error");
+      }catch(e){ Common.setMessage("msg", "Error al eliminar.", "text-error"); }
+    };
+
+    $("btnCalcCentro").onclick = async ()=>{
+      const name = modelo.value.trim();
+      if(!name){ Common.setMessage("msg", "Primero ingresá el modelo.", "text-error"); return; }
+      cc_msg.textContent = "Calculando…";
+      try{
+        const r = await fetch("/api/db/calcular_centro", {
+          method:"POST",
+          headers:{ "Content-Type":"application/json" },
+          body: JSON.stringify({ modelo: name })
+        });
+        const j = await r.json();
+        if(!j.ok){ Common.setMessage("msg", j.message || "No se pudo calcular el centro.", "text-error"); cc_msg.textContent=""; return; }
+        Common.setNumericValue("cc_x", j.centro?.x);
+        Common.setNumericValue("cc_y", j.centro?.y);
+        Common.setMessage("msg", "Centro calculado y guardado en la base.", "text-success");
+        cc_msg.textContent = "";
+        preview.src = (j.image_url || `/imgDatabase/${encodeURIComponent(name)}_annot.png`) + `?ts=${Date.now()}`;
+      }catch(e){
+        Common.setMessage("msg", "Error calculando el centro.", "text-error");
+        cc_msg.textContent = "";
+      }
+    };
+
+    // Setup live overlay updates using Common helper
+    Common.setupLiveOverlay(liveIds, "preview", "overlay", getForm);
+
+    // Handle modelo input change
+    document.addEventListener('input', (e)=>{
+      if (e.target && e.target.id === "modelo"){
+        titleModelo.textContent = e.target.value || "—";
+        Common.loadImageForModel(e.target.value);
+      }
+    });
+
+    loadData();
+  </script>
+</body>
+</html>

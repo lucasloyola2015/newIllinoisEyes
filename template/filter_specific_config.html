@@ -1,0 +1,1487 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Configuración de Filtro</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <script src="/static/common.js"></script>
+</head>
+<body>
+  <div class="wrap">
+    <div class="page-header">
+      <h1 id="pageTitle">Configuración de Filtro</h1>
+      <button class="btn btn-primary" onclick="goBackToFilterConfig()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+        </svg>
+        Volver a Configuración de Filtros
+      </button>
+    </div>
+
+    <div class="filter-config-container">
+      <div id="filterConfigContent">
+        <!-- El contenido se generará dinámicamente según el tipo de filtro -->
+      </div>
+
+      <div class="config-actions">
+        <button class="btn btn-secondary" onclick="resetFilterConfig()">Restablecer</button>
+        <button class="btn btn-primary" onclick="applyFilterConfig()">Aplicar</button>
+        <button class="btn btn-success" onclick="saveFilterConfig()">Guardar</button>
+        <button class="btn btn-warning" onclick="startAutoTune()" id="autoTuneBtn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M8 3a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5H6a.5.5 0 0 1 0-1h1.5V3.5A.5.5 0 0 1 8 3zm3.5 1a.5.5 0 0 1 .5.5v3.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1H11V2.5a.5.5 0 0 1 .5-.5z"/>
+            <path d="M8 12a.5.5 0 0 1 .5-.5h1.5v-2H8a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5v2.5a.5.5 0 0 1-.5.5H8.5V12a.5.5 0 0 1-.5.5z"/>
+          </svg>
+          Autotune
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentFilterId = null;
+    let currentFilterType = null;
+    let noiseLevel = 0;
+    let edgeSharpness = 0;
+    let saltPepperNoise = 0;
+    let morphologicalQuality = 0;
+
+    // Función para volver a la página de configuración de filtros
+    function goBackToFilterConfig() {
+      if (window.parent && window.parent.setLeftPane) {
+        window.parent.setLeftPane('filter_config');
+      } else {
+        window.location.href = '/template/filter_config.html';
+      }
+    }
+
+    // Función para cargar la configuración del filtro desde los parámetros de URL
+    function loadFilterConfig() {
+      const urlParams = new URLSearchParams(window.location.search);
+      currentFilterId = urlParams.get('filterId');
+      currentFilterType = urlParams.get('filterType');
+      
+      if (!currentFilterId || !currentFilterType) {
+        showStatus('Error: Parámetros de filtro no válidos', 'error');
+        return;
+      }
+
+      // Actualizar título de la página
+      document.getElementById('pageTitle').textContent = 
+        `Configurar Filtro ${currentFilterId}: ${getFilterDisplayName(currentFilterType)}`;
+
+      // Generar controles según el tipo de filtro
+      const configContent = document.getElementById('filterConfigContent');
+      configContent.innerHTML = generateFilterControls(currentFilterType);
+
+      // Configurar listeners después de generar el HTML
+      setTimeout(() => {
+        setupSliderListeners();
+        loadCurrentFilterParams(currentFilterType);
+        startMetricsUpdate();
+      }, 10);
+    }
+
+    // Función para obtener nombre de visualización del filtro
+    function getFilterDisplayName(filterType) {
+      const names = {
+        'bilateral': 'Filtro Bilateral',
+        'gaussian': 'Filtro Gaussiano',
+        'median': 'Filtro de Mediana',
+        'morphological': 'Operaciones Morfológicas',
+        'aggressive': 'Filtro Agresivo',
+        'contour_clean': 'Limpieza de Contorno',
+        'default': 'Filtro por Defecto'
+      };
+      return names[filterType] || filterType;
+    }
+
+    // Función para generar controles según el tipo de filtro
+    function generateFilterControls(filterType) {
+      switch(filterType) {
+        case 'bilateral':
+          return `
+            <div class="config-section">
+              <h3>Parámetros del Filtro Bilateral</h3>
+              <p class="filter-description">
+                El filtro bilateral es una técnica avanzada de suavizado que preserva los bordes y detalles importantes mientras reduce el ruido. 
+                A diferencia de otros filtros que suavizan uniformemente, el bilateral analiza tanto la distancia espacial como la diferencia de color 
+                entre píxeles, permitiendo un suavizado inteligente que mantiene la nitidez de los contornos. Es especialmente útil para imágenes 
+                con mucho ruido pero donde necesitas preservar detalles finos como bordes de objetos o texturas importantes.
+              </p>
+              
+              <div class="metrics-panel">
+                <h4>Indicadores de Calidad</h4>
+                <div class="metrics-grid">
+                  <div class="metric-card">
+                    <div class="metric-header">
+                      <span class="metric-label">Nivel de Ruido</span>
+                      <span class="metric-value" id="noiseLevelValue">0%</span>
+                    </div>
+                    <div class="metric-bar">
+                      <div class="metric-fill" id="noiseLevelBar" style="width: 0%"></div>
+                    </div>
+                    <small class="metric-description">Menor = Mejor</small>
+                  </div>
+                  <div class="metric-card">
+                    <div class="metric-header">
+                      <span class="metric-label">Nitidez de Bordes</span>
+                      <span class="metric-value" id="edgeSharpnessValue">0%</span>
+                    </div>
+                    <div class="metric-bar">
+                      <div class="metric-fill" id="edgeSharpnessBar" style="width: 0%"></div>
+                    </div>
+                    <small class="metric-description">Mayor = Mejor</small>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="optimization-info">
+                <h4>🚀 Optimización Automática</h4>
+                <p>
+                  El botón <strong>Autotune</strong> analiza automáticamente todas las combinaciones posibles de parámetros 
+                  para encontrar la configuración óptima. El proceso evalúa el balance entre reducción de ruido y preservación 
+                  de bordes, y puede tomar varios minutos dependiendo de la complejidad del filtro.
+                </p>
+              </div>
+              
+              <div class="form-group">
+                <label for="bilateralD">Diámetro del kernel (d):</label>
+                <div class="range-container">
+                  <input type="range" id="bilateralD" min="5" max="25" value="15" class="range-slider">
+                  <label class="slider-value" id="bilateralDValue">15</label>
+                </div>
+                <small class="param-description">
+                  Define el tamaño del área de influencia alrededor de cada píxel. Un valor más alto significa que se consideran más píxeles vecinos 
+                  para el cálculo, resultando en un suavizado más intenso. Sin embargo, valores muy altos pueden hacer el proceso más lento. 
+                  Recomendado: 15 para la mayoría de casos.
+                </small>
+              </div>
+              
+              <div class="form-group">
+                <label for="bilateralSigmaColor">Sigma Color:</label>
+                <div class="range-container">
+                  <input type="range" id="bilateralSigmaColor" min="25" max="150" value="75" class="range-slider">
+                  <label class="slider-value" id="bilateralSigmaColorValue">75</label>
+                </div>
+                <small class="param-description">
+                  Controla qué tan diferentes pueden ser los colores para ser considerados similares. Un valor bajo preserva mejor los bordes 
+                  porque solo píxeles con colores muy similares se promedian entre sí. Un valor alto permite que píxeles con colores más diferentes 
+                  se mezclen, resultando en más suavizado pero posiblemente perdiendo algunos detalles.
+                </small>
+              </div>
+              
+              <div class="form-group">
+                <label for="bilateralSigmaSpace">Sigma Space:</label>
+                <div class="range-container">
+                  <input type="range" id="bilateralSigmaSpace" min="25" max="150" value="75" class="range-slider">
+                  <label class="slider-value" id="bilateralSigmaSpaceValue">75</label>
+                </div>
+                <small class="param-description">
+                  Determina qué tan lejos pueden estar los píxeles para ser considerados en el cálculo. Un valor bajo significa que solo píxeles 
+                  muy cercanos influyen en el resultado, preservando mejor los detalles locales. Un valor alto permite que píxeles más distantes 
+                  contribuyan, creando un suavizado más uniforme pero menos detallado.
+                </small>
+              </div>
+            </div>
+          `;
+        
+        case 'gaussian':
+          return `
+            <div class="config-section">
+              <h3>Parámetros del Filtro Gaussiano</h3>
+              <p class="filter-description">
+                El filtro gaussiano es un método clásico y muy efectivo para suavizar imágenes y reducir ruido. Utiliza una función matemática 
+                llamada distribución gaussiana (campana de Gauss) para calcular el promedio ponderado de los píxeles vecinos. Este filtro es 
+                especialmente útil para eliminar ruido gaussiano y suavizar texturas finas sin crear artefactos visibles. Es rápido, eficiente 
+                y produce resultados consistentes, aunque puede suavizar ligeramente los bordes.
+              </p>
+              
+              <div class="metrics-panel">
+                <h4>Indicadores de Calidad</h4>
+                <div class="metrics-grid">
+                  <div class="metric-card">
+                    <div class="metric-header">
+                      <span class="metric-label">Nivel de Ruido</span>
+                      <span class="metric-value" id="noiseLevelValue">0%</span>
+                    </div>
+                    <div class="metric-bar">
+                      <div class="metric-fill" id="noiseLevelBar" style="width: 0%"></div>
+                    </div>
+                    <small class="metric-description">Menor = Mejor</small>
+                  </div>
+                  <div class="metric-card">
+                    <div class="metric-header">
+                      <span class="metric-label">Suavizado</span>
+                      <span class="metric-value" id="smoothingLevelValue">0%</span>
+                    </div>
+                    <div class="metric-bar">
+                      <div class="metric-fill" id="smoothingLevelBar" style="width: 0%"></div>
+                    </div>
+                    <small class="metric-description">Balance óptimo</small>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="optimization-info">
+                <h4>🚀 Optimización Automática</h4>
+                <p>
+                  El botón <strong>Autotune</strong> analiza automáticamente todas las combinaciones posibles de parámetros 
+                  para encontrar la configuración óptima. El proceso evalúa el balance entre suavizado y preservación de detalles, 
+                  y puede tomar varios minutos dependiendo de la complejidad del filtro.
+                </p>
+              </div>
+              
+              <div class="form-group">
+                <label for="gaussianKernelSize">Tamaño del kernel:</label>
+                <div class="range-container">
+                  <input type="range" id="gaussianKernelSize" min="3" max="15" step="2" value="5" class="range-slider">
+                  <label class="slider-value" id="gaussianKernelSizeValue">5</label>
+                </div>
+                <small class="param-description">
+                  Define el tamaño de la ventana de píxeles que se usa para calcular el promedio. Debe ser un número impar (3, 5, 7, etc.). 
+                  Un kernel más grande (ej: 7x7, 9x9) produce un suavizado más intenso pero puede hacer que los bordes se vean borrosos. 
+                  Un kernel pequeño (ej: 3x3, 5x5) preserva mejor los detalles pero reduce menos el ruido. Para la mayoría de aplicaciones, 
+                  un kernel de 5x5 es un buen balance.
+                </small>
+              </div>
+              
+              <div class="form-group">
+                <label for="gaussianSigma">Sigma:</label>
+                <div class="range-container">
+                  <input type="range" id="gaussianSigma" min="0.1" max="3.0" step="0.1" value="1.0" class="range-slider">
+                  <label class="slider-value" id="gaussianSigmaValue">1.0</label>
+                </div>
+                <small class="param-description">
+                  Controla la intensidad del suavizado aplicando diferentes pesos a los píxeles según su distancia al centro. Un sigma bajo 
+                  (0.1-0.5) produce un suavizado sutil que preserva la mayoría de los detalles. Un sigma alto (1.5-3.0) crea un suavizado 
+                  más agresivo que elimina más ruido pero puede perder algunos detalles finos. Un sigma de 1.0 es el valor estándar que 
+                  funciona bien para la mayoría de imágenes.
+                </small>
+              </div>
+            </div>
+          `;
+        
+        case 'median':
+          return `
+            <div class="config-section">
+              <h3>Parámetros del Filtro de Mediana</h3>
+              <p class="filter-description">
+                El filtro de mediana es especialmente poderoso para eliminar ruido de "sal y pimienta" - píxeles individuales que son mucho 
+                más claros o más oscuros que sus vecinos. A diferencia de otros filtros que promedian valores, la mediana selecciona el valor 
+                del medio de todos los píxeles en la ventana, lo que hace que sea muy resistente a valores atípicos extremos. Este filtro 
+                preserva excelentemente los bordes y detalles importantes, pero es menos efectivo contra ruido gaussiano uniforme.
+              </p>
+              
+              <div class="metrics-panel">
+                <h4>Indicadores de Calidad</h4>
+                <div class="metrics-grid">
+                  <div class="metric-card">
+                    <div class="metric-header">
+                      <span class="metric-label">Ruido Sal y Pimienta</span>
+                      <span class="metric-value" id="saltPepperNoiseValue">0%</span>
+                    </div>
+                    <div class="metric-bar">
+                      <div class="metric-fill" id="saltPepperNoiseBar" style="width: 0%"></div>
+                    </div>
+                    <small class="metric-description">Menor = Mejor</small>
+                  </div>
+                  <div class="metric-card">
+                    <div class="metric-header">
+                      <span class="metric-label">Preservación de Bordes</span>
+                      <span class="metric-value" id="edgePreservationValue">0%</span>
+                    </div>
+                    <div class="metric-bar">
+                      <div class="metric-fill" id="edgePreservationBar" style="width: 0%"></div>
+                    </div>
+                    <small class="metric-description">Mayor = Mejor</small>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="optimization-info">
+                <h4>🚀 Optimización Automática</h4>
+                <p>
+                  El botón <strong>Autotune</strong> analiza automáticamente todas las combinaciones posibles de parámetros 
+                  para encontrar la configuración óptima. El proceso evalúa el balance entre eliminación de ruido sal y pimienta y preservación de bordes, 
+                  y puede tomar varios minutos dependiendo de la complejidad del filtro.
+                </p>
+              </div>
+              
+              <div class="form-group">
+                <label for="medianKernelSize">Tamaño del kernel:</label>
+                <div class="range-container">
+                  <input type="range" id="medianKernelSize" min="3" max="15" step="2" value="5" class="range-slider">
+                  <label class="slider-value" id="medianKernelSizeValue">5</label>
+                </div>
+                <small class="param-description">
+                  Define el tamaño de la ventana de píxeles donde se calcula la mediana. Debe ser un número impar. Un kernel pequeño (3x3) 
+                  elimina ruido de sal y pimienta muy fino pero puede dejar pasar ruido más grueso. Un kernel grande (7x7, 9x9) elimina 
+                  manchas más grandes pero puede suavizar ligeramente los bordes. Para la mayoría de casos, un kernel de 5x5 es óptimo: 
+                  elimina ruido efectivamente sin afectar significativamente los detalles importantes.
+                </small>
+              </div>
+            </div>
+          `;
+        
+        case 'morphological':
+          return `
+            <div class="config-section">
+              <h3>Parámetros de Operaciones Morfológicas</h3>
+              <p class="filter-description">
+                Las operaciones morfológicas son técnicas matemáticas que modifican la forma y estructura de los objetos en una imagen 
+                basándose en un elemento estructurante (kernel). Estas operaciones son fundamentales en el procesamiento de imágenes 
+                para tareas como limpieza de ruido, relleno de huecos, detección de bordes y mejora de la conectividad entre objetos. 
+                Cada tipo de operación tiene un propósito específico y puede combinarse para lograr efectos más complejos.
+              </p>
+              
+              <div class="metrics-panel">
+                <h4>Indicadores de Calidad</h4>
+                <div class="metrics-grid">
+                  <div class="metric-card">
+                    <div class="metric-header">
+                      <span class="metric-label">Calidad Morfológica</span>
+                      <span class="metric-value" id="morphologicalQualityValue">0%</span>
+                    </div>
+                    <div class="metric-bar">
+                      <div class="metric-fill" id="morphologicalQualityBar" style="width: 0%"></div>
+                    </div>
+                    <small class="metric-description">Mayor = Mejor</small>
+                  </div>
+                  <div class="metric-card">
+                    <div class="metric-header">
+                      <span class="metric-label">Conectividad</span>
+                      <span class="metric-value" id="connectivityValue">0%</span>
+                    </div>
+                    <div class="metric-bar">
+                      <div class="metric-fill" id="connectivityBar" style="width: 0%"></div>
+                    </div>
+                    <small class="metric-description">Mayor = Mejor</small>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="optimization-info">
+                <h4>🚀 Optimización Automática</h4>
+                <p>
+                  El botón <strong>Autotune</strong> analiza automáticamente todas las combinaciones posibles de parámetros 
+                  para encontrar la configuración óptima. El proceso evalúa el balance entre calidad morfológica y conectividad, 
+                  y puede tomar varios minutos dependiendo de la complejidad del filtro.
+                </p>
+              </div>
+              
+              <div class="form-group">
+                <label for="morphOperation">Tipo de operación:</label>
+                <select id="morphOperation" class="form-control">
+                  <option value="opening">Apertura (Opening)</option>
+                  <option value="closing">Cierre (Closing)</option>
+                  <option value="gradient">Gradiente</option>
+                  <option value="tophat">Top Hat</option>
+                  <option value="blackhat">Black Hat</option>
+                </select>
+                <small class="param-description">
+                  <strong>Apertura:</strong> Elimina ruido y objetos pequeños, suaviza contornos. Ideal para limpiar imágenes con ruido fino.<br>
+                  <strong>Cierre:</strong> Rellena huecos pequeños y conecta objetos cercanos. Útil para completar objetos fragmentados.<br>
+                  <strong>Gradiente:</strong> Encuentra y resalta los bordes de los objetos. Excelente para detección de contornos.<br>
+                  <strong>Top Hat:</strong> Extrae objetos brillantes sobre fondo oscuro. Perfecto para detectar detalles claros.<br>
+                  <strong>Black Hat:</strong> Extrae objetos oscuros sobre fondo claro. Ideal para detectar detalles oscuros.
+                </small>
+              </div>
+              
+              <div class="form-group">
+                <label for="morphKernelSize">Tamaño del kernel:</label>
+                <div class="range-container">
+                  <input type="range" id="morphKernelSize" min="3" max="15" step="2" value="5" class="range-slider">
+                  <label class="slider-value" id="morphKernelSizeValue">5</label>
+                </div>
+                <small class="param-description">
+                  Controla la intensidad y escala de la operación morfológica. Un kernel pequeño (3x3) produce efectos sutiles, 
+                  ideales para eliminar ruido fino o detectar bordes finos. Un kernel grande (7x7, 9x9) crea efectos más dramáticos, 
+                  eliminando objetos más grandes o creando bordes más gruesos. El tamaño óptimo depende del tamaño de los objetos 
+                  que quieres procesar en tu imagen.
+                </small>
+              </div>
+            </div>
+          `;
+        
+        case 'noise_reduction':
+          return `
+            <div class="config-section">
+              <h3>Parámetros de Reducción de Ruido</h3>
+              <p class="filter-description">
+                La reducción de ruido utiliza el algoritmo Non-Local Means (NLM) que es muy efectivo para eliminar ruido gaussiano y de sal y pimienta 
+                mientras preserva los detalles importantes de la imagen. Este filtro analiza patrones similares en toda la imagen para determinar 
+                el valor correcto de cada píxel, resultando en una reducción de ruido muy efectiva sin pérdida significativa de detalles.
+              </p>
+              
+              <div class="metrics-panel">
+                <h4>Indicadores de Calidad</h4>
+                <div class="metrics-grid">
+                  <div class="metric-card">
+                    <div class="metric-header">
+                      <span class="metric-label">Reducción de Ruido</span>
+                      <span class="metric-value" id="noiseReductionValue">0%</span>
+                    </div>
+                    <div class="metric-bar">
+                      <div class="metric-fill" id="noiseReductionBar" style="width: 0%"></div>
+                    </div>
+                    <small class="metric-description">Mayor = Mejor</small>
+                  </div>
+                  <div class="metric-card">
+                    <div class="metric-header">
+                      <span class="metric-label">Preservación de Detalles</span>
+                      <span class="metric-value" id="detailPreservationValue">0%</span>
+                    </div>
+                    <div class="metric-bar">
+                      <div class="metric-fill" id="detailPreservationBar" style="width: 0%"></div>
+                    </div>
+                    <small class="metric-description">Mayor = Mejor</small>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="optimization-info">
+                <h4>🚀 Optimización Automática</h4>
+                <p>
+                  El botón <strong>Autotune</strong> encuentra automáticamente el balance óptimo entre reducción de ruido y preservación de detalles.
+                </p>
+              </div>
+              
+              <div class="form-group">
+                <label for="noiseReductionH">Parámetro de Filtrado (h):</label>
+                <div class="range-container">
+                  <input type="range" id="noiseReductionH" min="3" max="20" value="10" class="range-slider">
+                  <label class="slider-value" id="noiseReductionHValue">10</label>
+                </div>
+                <small class="param-description">
+                  Controla la intensidad de la reducción de ruido. Un valor bajo (3-7) produce una reducción sutil que preserva todos los detalles. 
+                  Un valor alto (15-20) elimina más ruido pero puede suavizar ligeramente algunos detalles finos. El valor óptimo depende del tipo 
+                  y cantidad de ruido en tu imagen.
+                </small>
+              </div>
+            </div>
+          `;
+
+        case 'contrast_enhance':
+          return `
+            <div class="config-section">
+              <h3>Parámetros de Mejora de Contraste</h3>
+              <p class="filter-description">
+                La mejora de contraste ajusta dinámicamente el rango de intensidades de la imagen para mejorar la separación entre objetos y fondo. 
+                Este filtro es especialmente útil cuando las imágenes tienen bajo contraste o cuando necesitas mejorar la visibilidad de detalles 
+                importantes para la detección de objetos.
+              </p>
+              
+              <div class="metrics-panel">
+                <h4>Indicadores de Calidad</h4>
+                <div class="metrics-grid">
+                  <div class="metric-card">
+                    <div class="metric-header">
+                      <span class="metric-label">Contraste</span>
+                      <span class="metric-value" id="contrastValue">0%</span>
+                    </div>
+                    <div class="metric-bar">
+                      <div class="metric-fill" id="contrastBar" style="width: 0%"></div>
+                    </div>
+                    <small class="metric-description">Mayor = Mejor</small>
+                  </div>
+                  <div class="metric-card">
+                    <div class="metric-header">
+                      <span class="metric-label">Separación de Objetos</span>
+                      <span class="metric-value" id="objectSeparationValue">0%</span>
+                    </div>
+                    <div class="metric-bar">
+                      <div class="metric-fill" id="objectSeparationBar" style="width: 0%"></div>
+                    </div>
+                    <small class="metric-description">Mayor = Mejor</small>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="optimization-info">
+                <h4>🚀 Optimización Automática</h4>
+                <p>
+                  El botón <strong>Autotune</strong> encuentra automáticamente los valores óptimos de contraste y brillo para tu imagen específica.
+                </p>
+              </div>
+              
+              <div class="form-group">
+                <label for="contrastAlpha">Factor de Contraste (α):</label>
+                <div class="range-container">
+                  <input type="range" id="contrastAlpha" min="0.5" max="3.0" step="0.1" value="1.3" class="range-slider">
+                  <label class="slider-value" id="contrastAlphaValue">1.3</label>
+                </div>
+                <small class="param-description">
+                  Controla el factor de multiplicación para el contraste. Un valor de 1.0 no cambia el contraste. Valores menores a 1.0 reducen 
+                  el contraste (hacen la imagen más plana). Valores mayores a 1.0 aumentan el contraste (hacen las diferencias más pronunciadas). 
+                  Para detección de objetos, valores entre 1.2 y 1.8 suelen ser óptimos.
+                </small>
+              </div>
+              
+              <div class="form-group">
+                <label for="contrastBeta">Factor de Brillo (β):</label>
+                <div class="range-container">
+                  <input type="range" id="contrastBeta" min="-50" max="50" value="20" class="range-slider">
+                  <label class="slider-value" id="contrastBetaValue">20</label>
+                </div>
+                <small class="param-description">
+                  Ajusta el brillo general de la imagen. Valores negativos oscurecen la imagen, valores positivos la aclaran. Este parámetro 
+                  es útil para compensar cambios en el contraste o para ajustar el nivel de brillo óptimo para la detección.
+                </small>
+              </div>
+            </div>
+          `;
+
+        case 'edge_enhance':
+          return `
+            <div class="config-section">
+              <h3>Parámetros de Mejora de Bordes</h3>
+              <p class="filter-description">
+                La mejora de bordes utiliza el operador Laplaciano para detectar y reforzar los bordes en la imagen. Este filtro es muy útil 
+                para mejorar la detección de objetos ya que hace que los contornos sean más pronunciados y fáciles de detectar. Es especialmente 
+                efectivo cuando se aplica después de otros filtros de suavizado.
+              </p>
+              
+              <div class="metrics-panel">
+                <h4>Indicadores de Calidad</h4>
+                <div class="metrics-grid">
+                  <div class="metric-card">
+                    <div class="metric-header">
+                      <span class="metric-label">Nitidez de Bordes</span>
+                      <span class="metric-value" id="edgeSharpnessValue">0%</span>
+                    </div>
+                    <div class="metric-bar">
+                      <div class="metric-fill" id="edgeSharpnessBar" style="width: 0%"></div>
+                    </div>
+                    <small class="metric-description">Mayor = Mejor</small>
+                  </div>
+                  <div class="metric-card">
+                    <div class="metric-header">
+                      <span class="metric-label">Detección de Contornos</span>
+                      <span class="metric-value" id="contourDetectionValue">0%</span>
+                    </div>
+                    <div class="metric-bar">
+                      <div class="metric-fill" id="contourDetectionBar" style="width: 0%"></div>
+                    </div>
+                    <small class="metric-description">Mayor = Mejor</small>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="optimization-info">
+                <h4>🚀 Optimización Automática</h4>
+                <p>
+                  El botón <strong>Autotune</strong> encuentra automáticamente la intensidad óptima de mejora de bordes para tu imagen.
+                </p>
+              </div>
+              
+              <div class="form-group">
+                <label for="edgeEnhanceStrength">Intensidad de Mejora:</label>
+                <div class="range-container">
+                  <input type="range" id="edgeEnhanceStrength" min="0.1" max="1.0" step="0.1" value="0.5" class="range-slider">
+                  <label class="slider-value" id="edgeEnhanceStrengthValue">0.5</label>
+                </div>
+                <small class="param-description">
+                  Controla qué tan intensa es la mejora de bordes. Un valor bajo (0.1-0.3) produce una mejora sutil que refuerza ligeramente 
+                  los bordes existentes. Un valor alto (0.7-1.0) crea un efecto más dramático que puede hacer que los bordes sean muy pronunciados. 
+                  Para detección de objetos, valores entre 0.3 y 0.7 suelen ser óptimos.
+                </small>
+              </div>
+            </div>
+          `;
+
+        default:
+          return `
+            <div class="config-section">
+              <h3>Configuración no disponible</h3>
+              <p class="filter-description">Este tipo de filtro no requiere configuración adicional o no está soportado actualmente en el sistema.</p>
+            </div>
+          `;
+      }
+    }
+
+    // Función para configurar listeners de sliders
+    function setupSliderListeners() {
+      const sliders = document.querySelectorAll('input[type="range"]');
+      sliders.forEach(slider => {
+        const valueSpan = document.getElementById(slider.id + 'Value');
+        if (valueSpan) {
+          // Actualizar valor inicial inmediatamente
+          valueSpan.textContent = slider.value;
+          
+          // Agregar listener para cambios
+          slider.addEventListener('input', function() {
+            valueSpan.textContent = this.value;
+            updateMetrics();
+          });
+        }
+      });
+
+      // Listener para select de operaciones morfológicas
+      const morphSelect = document.getElementById('morphOperation');
+      if (morphSelect) {
+        morphSelect.addEventListener('change', updateMetrics);
+      }
+    }
+
+    // Función para actualizar métricas en tiempo real
+    function updateMetrics() {
+      const params = collectFilterParams();
+      
+      switch(currentFilterType) {
+        case 'bilateral':
+          updateBilateralMetrics(params.parameters);
+          break;
+        case 'gaussian':
+          updateGaussianMetrics(params.parameters);
+          break;
+        case 'median':
+          updateMedianMetrics(params.parameters);
+          break;
+        case 'morphological':
+          updateMorphologicalMetrics(params.parameters);
+          break;
+        case 'noise_reduction':
+          updateNoiseReductionMetrics(params.parameters);
+          break;
+        case 'contrast_enhance':
+          updateContrastEnhanceMetrics(params.parameters);
+          break;
+        case 'edge_enhance':
+          updateEdgeEnhanceMetrics(params.parameters);
+          break;
+      }
+    }
+
+    // Función para actualizar métricas del filtro bilateral
+    function updateBilateralMetrics(params) {
+      const d = params.d || 15;
+      const sigmaColor = params.sigmaColor || 75;
+      const sigmaSpace = params.sigmaSpace || 75;
+      
+      // Calcular nivel de ruido (simulado)
+      const noiseLevel = Math.max(0, 100 - (d * 2 + sigmaColor * 0.3 + sigmaSpace * 0.3));
+      const edgeSharpness = Math.max(0, 100 - (sigmaColor * 0.4 + sigmaSpace * 0.2));
+      
+      updateMetricDisplay('noiseLevelValue', 'noiseLevelBar', noiseLevel);
+      updateMetricDisplay('edgeSharpnessValue', 'edgeSharpnessBar', edgeSharpness);
+    }
+
+    // Función para actualizar métricas del filtro gaussiano
+    function updateGaussianMetrics(params) {
+      const kernelSize = params.kernelSize || 5;
+      const sigma = params.sigma || 1.0;
+      
+      // Calcular nivel de ruido (simulado)
+      const noiseLevel = Math.max(0, 100 - (kernelSize * 8 + sigma * 25));
+      const smoothingLevel = Math.min(100, kernelSize * 10 + sigma * 30);
+      
+      updateMetricDisplay('noiseLevelValue', 'noiseLevelBar', noiseLevel);
+      updateMetricDisplay('smoothingLevelValue', 'smoothingLevelBar', smoothingLevel);
+    }
+
+    // Función para actualizar métricas del filtro de mediana
+    function updateMedianMetrics(params) {
+      const kernelSize = params.kernelSize || 5;
+      
+      // Calcular ruido sal y pimienta (simulado)
+      const saltPepperNoise = Math.max(0, 100 - (kernelSize * 12));
+      const edgePreservation = Math.max(0, 100 - (kernelSize * 3));
+      
+      updateMetricDisplay('saltPepperNoiseValue', 'saltPepperNoiseBar', saltPepperNoise);
+      updateMetricDisplay('edgePreservationValue', 'edgePreservationBar', edgePreservation);
+    }
+
+    // Función para actualizar métricas de operaciones morfológicas
+    function updateMorphologicalMetrics(params) {
+      const operation = params.operation || 'opening';
+      const kernelSize = params.kernelSize || 5;
+      
+      let morphologicalQuality = 0;
+      let connectivity = 0;
+      
+      switch(operation) {
+        case 'opening':
+          morphologicalQuality = Math.max(0, 100 - (kernelSize * 5));
+          connectivity = Math.max(0, 100 - (kernelSize * 8));
+          break;
+        case 'closing':
+          morphologicalQuality = Math.max(0, 100 - (kernelSize * 3));
+          connectivity = Math.min(100, 50 + (kernelSize * 8));
+          break;
+        case 'gradient':
+          morphologicalQuality = Math.min(100, 30 + (kernelSize * 10));
+          connectivity = Math.max(0, 100 - (kernelSize * 6));
+          break;
+        case 'tophat':
+          morphologicalQuality = Math.min(100, 40 + (kernelSize * 7));
+          connectivity = Math.max(0, 100 - (kernelSize * 4));
+          break;
+        case 'blackhat':
+          morphologicalQuality = Math.min(100, 35 + (kernelSize * 7));
+          connectivity = Math.max(0, 100 - (kernelSize * 4));
+          break;
+      }
+      
+      updateMetricDisplay('morphologicalQualityValue', 'morphologicalQualityBar', morphologicalQuality);
+      updateMetricDisplay('connectivityValue', 'connectivityBar', connectivity);
+    }
+
+    // Función para actualizar la visualización de métricas
+    function updateMetricDisplay(valueId, barId, value) {
+      const valueElement = document.getElementById(valueId);
+      const barElement = document.getElementById(barId);
+      
+      if (valueElement && barElement) {
+        const clampedValue = Math.max(0, Math.min(100, value));
+        valueElement.textContent = `${Math.round(clampedValue)}%`;
+        barElement.style.width = `${clampedValue}%`;
+        
+        // Cambiar color según el valor
+        if (clampedValue < 30) {
+          barElement.style.backgroundColor = '#ff7a7a'; // Rojo para valores bajos
+        } else if (clampedValue < 70) {
+          barElement.style.backgroundColor = '#ffa726'; // Naranja para valores medios
+        } else {
+          barElement.style.backgroundColor = '#8adf85'; // Verde para valores altos
+        }
+      }
+    }
+
+    // Función para iniciar actualización de métricas
+    function startMetricsUpdate() {
+      // Actualizar métricas iniciales
+      updateMetrics();
+      
+      // Actualizar cada 2 segundos para simular cambios en tiempo real
+      setInterval(() => {
+        updateMetrics();
+      }, 2000);
+    }
+
+    // Función para cargar parámetros actuales del filtro
+    function loadCurrentFilterParams(filterType) {
+      // Aquí se cargarían los parámetros actuales desde el servidor
+      // Por ahora usamos valores por defecto
+      console.log('Cargando parámetros para filtro:', filterType);
+    }
+
+    // Función para restablecer configuración
+    function resetFilterConfig() {
+      if (confirm('¿Estás seguro de que quieres restablecer la configuración del filtro?')) {
+        loadCurrentFilterParams(currentFilterType);
+        showStatus('Configuración restablecida', 'success');
+      }
+    }
+
+    // Función para aplicar configuración
+    function applyFilterConfig() {
+      const params = collectFilterParams();
+      console.log('Aplicando configuración:', params);
+      showStatus('Configuración aplicada temporalmente', 'success');
+    }
+
+    // Función para guardar configuración
+    function saveFilterConfig() {
+      const params = collectFilterParams();
+      console.log('Guardando configuración:', params);
+      showStatus('Configuración guardada permanentemente', 'success');
+    }
+
+    // Función para recopilar parámetros del filtro
+    function collectFilterParams() {
+      const params = {
+        filterId: currentFilterId,
+        filterType: currentFilterType,
+        parameters: {}
+      };
+
+      switch(currentFilterType) {
+        case 'bilateral':
+          params.parameters = {
+            d: parseInt(document.getElementById('bilateralD')?.value || 15),
+            sigmaColor: parseInt(document.getElementById('bilateralSigmaColor')?.value || 75),
+            sigmaSpace: parseInt(document.getElementById('bilateralSigmaSpace')?.value || 75)
+          };
+          break;
+        case 'gaussian':
+          params.parameters = {
+            kernelSize: parseInt(document.getElementById('gaussianKernelSize')?.value || 5),
+            sigma: parseFloat(document.getElementById('gaussianSigma')?.value || 1.0)
+          };
+          break;
+        case 'median':
+          params.parameters = {
+            kernelSize: parseInt(document.getElementById('medianKernelSize')?.value || 5)
+          };
+          break;
+        case 'morphological':
+          params.parameters = {
+            operation: document.getElementById('morphOperation')?.value || 'opening',
+            kernelSize: parseInt(document.getElementById('morphKernelSize')?.value || 5)
+          };
+          break;
+      }
+
+      return params;
+    }
+
+    // Función para mostrar mensajes de estado
+    function showStatus(message, type) {
+      // Implementar sistema de notificaciones
+      console.log(`${type.toUpperCase()}: ${message}`);
+    }
+
+    // Variables para autotune
+    let isAutoTuning = false;
+    let autoTuneProgress = 0;
+    let bestParams = null;
+    let bestScore = -Infinity;
+
+    // Función para iniciar autotune
+    function startAutoTune() {
+      if (isAutoTuning) {
+        return;
+      }
+
+      if (!confirm('¿Iniciar optimización automática de parámetros? Este proceso puede tomar varios minutos.')) {
+        return;
+      }
+
+      isAutoTuning = true;
+      autoTuneProgress = 0;
+      bestParams = null;
+      bestScore = -Infinity;
+
+      const autoTuneBtn = document.getElementById('autoTuneBtn');
+      autoTuneBtn.disabled = true;
+      autoTuneBtn.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M8 3a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5H6a.5.5 0 0 1 0-1h1.5V3.5A.5.5 0 0 1 8 3zm3.5 1a.5.5 0 0 1 .5.5v3.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1H11V2.5a.5.5 0 0 1 .5-.5z"/>
+          <path d="M8 12a.5.5 0 0 1 .5-.5h1.5v-2H8a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5v2.5a.5.5 0 0 1-.5.5H8.5V12a.5.5 0 0 1-.5.5z"/>
+        </svg>
+        Optimizando... ${autoTuneProgress}%
+      `;
+
+      showStatus('Iniciando optimización automática...', 'info');
+
+      // Iniciar optimización según el tipo de filtro
+      switch(currentFilterType) {
+        case 'bilateral':
+          optimizeBilateralFilter();
+          break;
+        case 'gaussian':
+          optimizeGaussianFilter();
+          break;
+        case 'median':
+          optimizeMedianFilter();
+          break;
+        case 'morphological':
+          optimizeMorphologicalFilter();
+          break;
+        default:
+          showStatus('Optimización no disponible para este tipo de filtro', 'error');
+          stopAutoTune();
+      }
+    }
+
+    // Función para detener autotune
+    function stopAutoTune() {
+      isAutoTuning = false;
+      const autoTuneBtn = document.getElementById('autoTuneBtn');
+      autoTuneBtn.disabled = false;
+      autoTuneBtn.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M8 3a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5H6a.5.5 0 0 1 0-1h1.5V3.5A.5.5 0 0 1 8 3zm3.5 1a.5.5 0 0 1 .5.5v3.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1H11V2.5a.5.5 0 0 1 .5-.5z"/>
+          <path d="M8 12a.5.5 0 0 1 .5-.5h1.5v-2H8a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5v2.5a.5.5 0 0 1-.5.5H8.5V12a.5.5 0 0 1-.5.5z"/>
+        </svg>
+        Autotune
+      `;
+    }
+
+    // Función para actualizar progreso del autotune
+    function updateAutoTuneProgress(progress) {
+      autoTuneProgress = Math.round(progress);
+      const autoTuneBtn = document.getElementById('autoTuneBtn');
+      autoTuneBtn.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M8 3a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5H6a.5.5 0 0 1 0-1h1.5V3.5A.5.5 0 0 1 8 3zm3.5 1a.5.5 0 0 1 .5.5v3.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1H11V2.5a.5.5 0 0 1 .5-.5z"/>
+          <path d="M8 12a.5.5 0 0 1 .5-.5h1.5v-2H8a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5v2.5a.5.5 0 0 1-.5.5H8.5V12a.5.5 0 0 1-.5.5z"/>
+        </svg>
+        Optimizando... ${autoTuneProgress}%
+      `;
+    }
+
+    // Función para evaluar la calidad de un conjunto de parámetros
+    function evaluateFilterQuality(params) {
+      // Simular evaluación de calidad basada en métricas
+      let score = 0;
+      
+      switch(currentFilterType) {
+        case 'bilateral':
+          // Evaluar balance entre reducción de ruido y preservación de bordes
+          const noiseReduction = Math.min(100, params.d * 2 + params.sigmaColor * 0.3 + params.sigmaSpace * 0.3);
+          const edgePreservation = Math.max(0, 100 - (params.sigmaColor * 0.4 + params.sigmaSpace * 0.2));
+          score = (noiseReduction * 0.6) + (edgePreservation * 0.4);
+          break;
+          
+        case 'gaussian':
+          // Evaluar balance entre suavizado y preservación de detalles
+          const smoothing = Math.min(100, params.kernelSize * 10 + params.sigma * 30);
+          const detailPreservation = Math.max(0, 100 - (params.kernelSize * 5 + params.sigma * 20));
+          score = (smoothing * 0.5) + (detailPreservation * 0.5);
+          break;
+          
+        case 'median':
+          // Evaluar eliminación de ruido sal y pimienta vs preservación de bordes
+          const saltPepperRemoval = Math.min(100, params.kernelSize * 12);
+          const edgePreservationMedian = Math.max(0, 100 - (params.kernelSize * 3));
+          score = (saltPepperRemoval * 0.7) + (edgePreservationMedian * 0.3);
+          break;
+          
+        case 'morphological':
+          // Evaluar según el tipo de operación
+          let morphScore = 0;
+          switch(params.operation) {
+            case 'opening':
+              morphScore = Math.max(0, 100 - (params.kernelSize * 5));
+              break;
+            case 'closing':
+              morphScore = Math.min(100, 50 + (params.kernelSize * 8));
+              break;
+            case 'gradient':
+              morphScore = Math.min(100, 30 + (params.kernelSize * 10));
+              break;
+            default:
+              morphScore = Math.min(100, 40 + (params.kernelSize * 7));
+          }
+          score = morphScore;
+          break;
+      }
+      
+      return score;
+    }
+
+    // Función para optimizar filtro bilateral
+    async function optimizeBilateralFilter() {
+      const dRange = [5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25];
+      const sigmaColorRange = [25, 35, 45, 55, 65, 75, 85, 95, 105, 115, 125, 135, 145, 150];
+      const sigmaSpaceRange = [25, 35, 45, 55, 65, 75, 85, 95, 105, 115, 125, 135, 145, 150];
+      
+      const totalCombinations = dRange.length * sigmaColorRange.length * sigmaSpaceRange.length;
+      let currentCombination = 0;
+      
+      showStatus('Optimizando filtro bilateral...', 'info');
+      
+      for (const d of dRange) {
+        for (const sigmaColor of sigmaColorRange) {
+          for (const sigmaSpace of sigmaSpaceRange) {
+            if (!isAutoTuning) break;
+            
+            const params = { d, sigmaColor, sigmaSpace };
+            const score = evaluateFilterQuality(params);
+            
+            if (score > bestScore) {
+              bestScore = score;
+              bestParams = params;
+              showStatus(`Nuevo mejor resultado: ${Math.round(score)}%`, 'success');
+            }
+            
+            currentCombination++;
+            const progress = (currentCombination / totalCombinations) * 100;
+            updateAutoTuneProgress(progress);
+            
+            // Pequeña pausa para no saturar la UI
+            await new Promise(resolve => setTimeout(resolve, 10));
+          }
+        }
+      }
+      
+      if (bestParams) {
+        applyOptimizedParams(bestParams);
+        showStatus(`Optimización completada. Mejor score: ${Math.round(bestScore)}%`, 'success');
+      }
+      
+      stopAutoTune();
+    }
+
+    // Función para optimizar filtro gaussiano
+    async function optimizeGaussianFilter() {
+      const kernelSizeRange = [3, 5, 7, 9, 11, 13, 15];
+      const sigmaRange = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 3.0];
+      
+      const totalCombinations = kernelSizeRange.length * sigmaRange.length;
+      let currentCombination = 0;
+      
+      showStatus('Optimizando filtro gaussiano...', 'info');
+      
+      for (const kernelSize of kernelSizeRange) {
+        for (const sigma of sigmaRange) {
+          if (!isAutoTuning) break;
+          
+          const params = { kernelSize, sigma };
+          const score = evaluateFilterQuality(params);
+          
+          if (score > bestScore) {
+            bestScore = score;
+            bestParams = params;
+            showStatus(`Nuevo mejor resultado: ${Math.round(score)}%`, 'success');
+          }
+          
+          currentCombination++;
+          const progress = (currentCombination / totalCombinations) * 100;
+          updateAutoTuneProgress(progress);
+          
+          await new Promise(resolve => setTimeout(resolve, 10));
+        }
+      }
+      
+      if (bestParams) {
+        applyOptimizedParams(bestParams);
+        showStatus(`Optimización completada. Mejor score: ${Math.round(bestScore)}%`, 'success');
+      }
+      
+      stopAutoTune();
+    }
+
+    // Función para optimizar filtro de mediana
+    async function optimizeMedianFilter() {
+      const kernelSizeRange = [3, 5, 7, 9, 11, 13, 15];
+      
+      showStatus('Optimizando filtro de mediana...', 'info');
+      
+      for (let i = 0; i < kernelSizeRange.length; i++) {
+        if (!isAutoTuning) break;
+        
+        const kernelSize = kernelSizeRange[i];
+        const params = { kernelSize };
+        const score = evaluateFilterQuality(params);
+        
+        if (score > bestScore) {
+          bestScore = score;
+          bestParams = params;
+          showStatus(`Nuevo mejor resultado: ${Math.round(score)}%`, 'success');
+        }
+        
+        const progress = ((i + 1) / kernelSizeRange.length) * 100;
+        updateAutoTuneProgress(progress);
+        
+        await new Promise(resolve => setTimeout(resolve, 50));
+      }
+      
+      if (bestParams) {
+        applyOptimizedParams(bestParams);
+        showStatus(`Optimización completada. Mejor score: ${Math.round(bestScore)}%`, 'success');
+      }
+      
+      stopAutoTune();
+    }
+
+    // Función para optimizar operaciones morfológicas
+    async function optimizeMorphologicalFilter() {
+      const operations = ['opening', 'closing', 'gradient', 'tophat', 'blackhat'];
+      const kernelSizeRange = [3, 5, 7, 9, 11, 13, 15];
+      
+      const totalCombinations = operations.length * kernelSizeRange.length;
+      let currentCombination = 0;
+      
+      showStatus('Optimizando operaciones morfológicas...', 'info');
+      
+      for (const operation of operations) {
+        for (const kernelSize of kernelSizeRange) {
+          if (!isAutoTuning) break;
+          
+          const params = { operation, kernelSize };
+          const score = evaluateFilterQuality(params);
+          
+          if (score > bestScore) {
+            bestScore = score;
+            bestParams = params;
+            showStatus(`Nuevo mejor resultado: ${Math.round(score)}%`, 'success');
+          }
+          
+          currentCombination++;
+          const progress = (currentCombination / totalCombinations) * 100;
+          updateAutoTuneProgress(progress);
+          
+          await new Promise(resolve => setTimeout(resolve, 20));
+        }
+      }
+      
+      if (bestParams) {
+        applyOptimizedParams(bestParams);
+        showStatus(`Optimización completada. Mejor score: ${Math.round(bestScore)}%`, 'success');
+      }
+      
+      stopAutoTune();
+    }
+
+    // Función para aplicar parámetros optimizados
+    function applyOptimizedParams(params) {
+      switch(currentFilterType) {
+        case 'bilateral':
+          document.getElementById('bilateralD').value = params.d;
+          document.getElementById('bilateralSigmaColor').value = params.sigmaColor;
+          document.getElementById('bilateralSigmaSpace').value = params.sigmaSpace;
+          document.getElementById('bilateralDValue').textContent = params.d;
+          document.getElementById('bilateralSigmaColorValue').textContent = params.sigmaColor;
+          document.getElementById('bilateralSigmaSpaceValue').textContent = params.sigmaSpace;
+          break;
+          
+        case 'gaussian':
+          document.getElementById('gaussianKernelSize').value = params.kernelSize;
+          document.getElementById('gaussianSigma').value = params.sigma;
+          document.getElementById('gaussianKernelSizeValue').textContent = params.kernelSize;
+          document.getElementById('gaussianSigmaValue').textContent = params.sigma;
+          break;
+          
+        case 'median':
+          document.getElementById('medianKernelSize').value = params.kernelSize;
+          document.getElementById('medianKernelSizeValue').textContent = params.kernelSize;
+          break;
+          
+        case 'morphological':
+          document.getElementById('morphOperation').value = params.operation;
+          document.getElementById('morphKernelSize').value = params.kernelSize;
+          document.getElementById('morphKernelSizeValue').textContent = params.kernelSize;
+          break;
+      }
+      
+      updateMetrics();
+    }
+
+    // Cargar configuración cuando se carga la página
+    document.addEventListener('DOMContentLoaded', loadFilterConfig);
+  </script>
+
+  <style>
+    /* Estilos específicos para la página de configuración de filtros */
+    body {
+      background: var(--bg);
+      color: var(--ink);
+    }
+
+    .wrap {
+      padding: var(--space-lg);
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-xl);
+      padding-bottom: var(--space-lg);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .page-header h1 {
+      color: var(--ink-bright);
+      font-size: var(--font-size-2xl);
+      margin: 0;
+    }
+
+    .config-section {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: var(--space-xl);
+      margin-bottom: var(--space-lg);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .config-section h3 {
+      color: var(--ink-bright);
+      margin-bottom: var(--space-md);
+      font-size: var(--font-size-xl);
+      border-bottom: 2px solid var(--brand-red);
+      padding-bottom: var(--space-sm);
+    }
+
+    .filter-description {
+      color: var(--muted);
+      margin-bottom: var(--space-xl);
+      font-size: var(--font-size-base);
+      line-height: 1.6;
+      background: var(--panel-hover);
+      padding: var(--space-md);
+      border-radius: var(--radius-sm);
+      border-left: 4px solid var(--brand-red);
+    }
+
+    /* Panel de métricas */
+    .metrics-panel {
+      background: var(--panel-hover);
+      border: 1px solid var(--line-light);
+      border-radius: var(--radius-md);
+      padding: var(--space-lg);
+      margin-bottom: var(--space-xl);
+    }
+
+    .metrics-panel h4 {
+      color: var(--ink-bright);
+      margin-bottom: var(--space-md);
+      font-size: var(--font-size-lg);
+      text-align: center;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-lg);
+    }
+
+    .metric-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: var(--space-md);
+    }
+
+    .metric-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-sm);
+    }
+
+    .metric-label {
+      color: var(--ink);
+      font-weight: 600;
+      font-size: var(--font-size-sm);
+    }
+
+    .metric-value {
+      color: var(--brand-red);
+      font-weight: 700;
+      font-size: var(--font-size-base);
+    }
+
+    .metric-bar {
+      width: 100%;
+      height: 8px;
+      background: var(--line);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: var(--space-xs);
+    }
+
+    .metric-fill {
+      height: 100%;
+      background: var(--brand-red);
+      border-radius: 4px;
+      transition: all 0.3s ease;
+    }
+
+    .metric-description {
+      color: var(--muted);
+      font-size: var(--font-size-xs);
+      text-align: center;
+      display: block;
+    }
+
+    .form-group {
+      margin-bottom: var(--space-xl);
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: var(--space-sm);
+      font-weight: 600;
+      color: var(--ink-bright);
+      font-size: var(--font-size-lg);
+    }
+
+    .range-container {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      margin-bottom: var(--space-sm);
+    }
+
+    .range-slider {
+      flex: 1;
+      height: 6px;
+      background: var(--line);
+      border-radius: 3px;
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+      cursor: pointer;
+      border: none;
+    }
+
+    .range-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      background: var(--brand-red);
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid var(--panel);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+      transition: all 0.2s ease;
+    }
+
+    .range-slider::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      background: var(--brand-red);
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid var(--panel);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+      transition: all 0.2s ease;
+    }
+
+    .range-slider:hover::-webkit-slider-thumb {
+      background: #b91c1c;
+      transform: scale(1.1);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    }
+
+    .range-slider:hover::-moz-range-thumb {
+      background: #b91c1c;
+      transform: scale(1.1);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    }
+
+    .slider-value {
+      color: var(--brand-red);
+      font-weight: 600;
+      font-size: var(--font-size-base);
+      min-width: 40px;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+
+    .param-description {
+      color: var(--muted);
+      font-size: var(--font-size-sm);
+      margin-top: var(--space-xs);
+      display: block;
+      line-height: 1.5;
+      background: var(--panel-hover);
+      padding: var(--space-md);
+      border-radius: var(--radius-sm);
+      border-left: 3px solid var(--line-light);
+    }
+
+    .form-control {
+      width: 100%;
+      padding: var(--space-md);
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: var(--radius-sm);
+      color: var(--ink);
+      font-size: var(--font-size-base);
+      transition: all 0.2s ease;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--brand-red);
+      box-shadow: 0 0 0 2px rgba(212, 20, 20, 0.25);
+      background: var(--input-hover);
+    }
+
+    .form-control:hover {
+      border-color: var(--line-hover);
+      background: var(--input-hover);
+    }
+
+    .config-actions {
+      display: flex;
+      gap: var(--space-md);
+      justify-content: center;
+      margin-top: var(--space-xl);
+      padding-top: var(--space-xl);
+      border-top: 1px solid var(--line);
+      flex-wrap: wrap;
+    }
+
+    /* Estilos para el botón de autotune */
+    .btn-warning {
+      background: var(--warning);
+      color: var(--bg);
+      border: 1px solid var(--warning);
+    }
+
+    .btn-warning:hover {
+      background: #ff9800;
+      border-color: #ff9800;
+    }
+
+    .btn-warning:disabled {
+      background: var(--line);
+      color: var(--muted);
+      border-color: var(--line-light);
+      cursor: not-allowed;
+    }
+
+    /* Panel de información de optimización */
+    .optimization-info {
+      background: var(--panel-hover);
+      border: 1px solid var(--line-light);
+      border-radius: var(--radius-md);
+      padding: var(--space-md);
+      margin-bottom: var(--space-lg);
+      text-align: center;
+    }
+
+    .optimization-info h4 {
+      color: var(--ink-bright);
+      margin-bottom: var(--space-sm);
+      font-size: var(--font-size-lg);
+    }
+
+    .optimization-info p {
+      color: var(--muted);
+      font-size: var(--font-size-sm);
+      line-height: 1.4;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .wrap {
+        padding: var(--space-md);
+      }
+      
+      .page-header {
+        flex-direction: column;
+        gap: var(--space-md);
+        text-align: center;
+      }
+      
+      .metrics-grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-md);
+      }
+      
+      .range-container {
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--space-sm);
+      }
+      
+      .range-value {
+        align-self: center;
+      }
+      
+      .config-actions {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .config-actions .btn {
+        width: 100%;
+        max-width: 200px;
+      }
+    }
+  </style>
+</body>
+</html>

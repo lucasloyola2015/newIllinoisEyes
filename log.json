@@ -1,0 +1,1186 @@
+{
+  "logs": [
+    {
+      "timestamp": "2025-08-22 13:48:08",
+      "type": "SYSTEM",
+      "message": "Polígono cargado desde configuración",
+      "id": 197
+    },
+    {
+      "timestamp": "2025-08-22 13:48:08",
+      "type": "SYSTEM",
+      "message": "Polígono cargado desde configuración",
+      "id": 196
+    },
+    {
+      "timestamp": "2025-08-22 13:48:07",
+      "type": "SYSTEM",
+      "message": "Chrome lanzado correctamente",
+      "id": 195
+    },
+    {
+      "timestamp": "2025-08-22 13:48:07",
+      "type": "SYSTEM",
+      "message": "Servidor web iniciado en puerto 8000",
+      "id": 194
+    },
+    {
+      "timestamp": "2025-08-22 13:48:07",
+      "type": "SYSTEM",
+      "message": "Hilos de fondo iniciados",
+      "id": 193
+    },
+    {
+      "timestamp": "2025-08-22 13:48:06",
+      "type": "SYSTEM",
+      "message": "Sistema de terminal iniciado",
+      "id": 192
+    },
+    {
+      "timestamp": "2025-08-22 13:47:34",
+      "type": "SYSTEM",
+      "message": "Servidor cerrado correctamente",
+      "id": 191
+    },
+    {
+      "timestamp": "2025-08-22 13:47:32",
+      "type": "PROCESOS",
+      "message": "Proceso principal detenido",
+      "id": 190
+    },
+    {
+      "timestamp": "2025-08-22 13:47:32",
+      "type": "SYSTEM",
+      "message": "Hilos de fondo detenidos",
+      "id": 189
+    },
+    {
+      "timestamp": "2025-08-22 13:47:31",
+      "type": "SYSTEM",
+      "message": "Ventana de Chrome cerrada",
+      "id": 188
+    },
+    {
+      "timestamp": "2025-08-22 13:47:30",
+      "type": "SYSTEM",
+      "message": "Ventana de Chrome cerrada, apagando sistema completo...",
+      "id": 187
+    },
+    {
+      "timestamp": "2025-08-22 13:47:17",
+      "type": "ERROR",
+      "message": "Error en GET /template/filter_config.html: [WinError 10053] Se ha anulado una conexión establecida por el software en su equipo host",
+      "id": 186
+    },
+    {
+      "timestamp": "2025-08-22 13:47:12",
+      "type": "SYSTEM",
+      "message": "Polígono cargado desde configuración",
+      "id": 185
+    },
+    {
+      "timestamp": "2025-08-22 13:47:12",
+      "type": "SYSTEM",
+      "message": "Polígono cargado desde configuración",
+      "id": 184
+    },
+    {
+      "timestamp": "2025-08-22 13:47:12",
+      "type": "SYSTEM",
+      "message": "Chrome lanzado correctamente",
+      "id": 183
+    },
+    {
+      "timestamp": "2025-08-22 13:47:12",
+      "type": "SYSTEM",
+      "message": "Servidor web iniciado en puerto 8000",
+      "id": 182
+    },
+    {
+      "timestamp": "2025-08-22 13:47:12",
+      "type": "SYSTEM",
+      "message": "Hilos de fondo iniciados",
+      "id": 181
+    },
+    {
+      "timestamp": "2025-08-22 13:47:11",
+      "type": "SYSTEM",
+      "message": "Sistema de terminal iniciado",
+      "id": 180
+    },
+    {
+      "timestamp": "2025-08-22 13:47:05",
+      "type": "SYSTEM",
+      "message": "Servidor cerrado correctamente",
+      "id": 179
+    },
+    {
+      "timestamp": "2025-08-22 13:47:04",
+      "type": "PROCESOS",
+      "message": "Proceso principal detenido",
+      "id": 178
+    },
+    {
+      "timestamp": "2025-08-22 13:47:04",
+      "type": "SYSTEM",
+      "message": "Hilos de fondo detenidos",
+      "id": 177
+    },
+    {
+      "timestamp": "2025-08-22 13:47:03",
+      "type": "SYSTEM",
+      "message": "Ventana de Chrome cerrada",
+      "id": 176
+    },
+    {
+      "timestamp": "2025-08-22 13:47:03",
+      "type": "SYSTEM",
+      "message": "Ventana de Chrome cerrada, apagando sistema completo...",
+      "id": 175
+    },
+    {
+      "timestamp": "2025-08-22 13:44:11",
+      "type": "SYSTEM",
+      "message": "Polígono cargado desde configuración",
+      "id": 174
+    },
+    {
+      "timestamp": "2025-08-22 13:44:11",
+      "type": "SYSTEM",
+      "message": "Polígono cargado desde configuración",
+      "id": 173
+    },
+    {
+      "timestamp": "2025-08-22 13:44:10",
+      "type": "SYSTEM",
+      "message": "Chrome lanzado correctamente",
+      "id": 172
+    },
+    {
+      "timestamp": "2025-08-22 13:44:10",
+      "type": "SYSTEM",
+      "message": "Servidor web iniciado en puerto 8000",
+      "id": 171
+    },
+    {
+      "timestamp": "2025-08-22 13:44:10",
+      "type": "SYSTEM",
+      "message": "Hilos de fondo iniciados",
+      "id": 170
+    },
+    {
+      "timestamp": "2025-08-22 13:44:09",
+      "type": "SYSTEM",
+      "message": "Sistema de terminal iniciado",
+      "id": 169
+    },
+    {
+      "timestamp": "2025-08-22 13:41:25",
+      "type": "SYSTEM",
+      "message": "Servidor cerrado correctamente",
+      "id": 168
+    },
+    {
+      "timestamp": "2025-08-22 13:41:23",
+      "type": "PROCESOS",
+      "message": "Proceso principal detenido",
+      "id": 167
+    },
+    {
+      "timestamp": "2025-08-22 13:41:23",
+      "type": "SYSTEM",
+      "message": "Hilos de fondo detenidos",
+      "id": 166
+    },
+    {
+      "timestamp": "2025-08-22 13:41:22",
+      "type": "SYSTEM",
+      "message": "Ventana de Chrome cerrada",
+      "id": 165
+    },
+    {
+      "timestamp": "2025-08-22 13:41:22",
+      "type": "SYSTEM",
+      "message": "Ventana de Chrome cerrada, apagando sistema completo...",
+      "id": 164
+    },
+    {
+      "timestamp": "2025-08-22 13:40:13",
+      "type": "SYSTEM",
+      "message": "Polígono cargado desde configuración",
+      "id": 163
+    },
+    {
+      "timestamp": "2025-08-22 13:40:13",
+      "type": "SYSTEM",
+      "message": "Polígono cargado desde configuración",
+      "id": 162
+    },
+    {
+      "timestamp": "2025-08-22 13:40:12",
+      "type": "SYSTEM",
+      "message": "Chrome lanzado correctamente",
+      "id": 161
+    },
+    {
+      "timestamp": "2025-08-22 13:40:12",
+      "type": "SYSTEM",
+      "message": "Servidor web iniciado en puerto 8001",
+      "id": 160
+    },
+    {
+      "timestamp": "2025-08-22 13:40:11",
+      "type": "SYSTEM",
+      "message": "Hilos de fondo iniciados",
+      "id": 159
+    },
+    {
+      "timestamp": "2025-08-22 13:40:10",
+      "type": "SYSTEM",
+      "message": "Sistema de terminal iniciado",
+      "id": 158
+    },
+    {
+      "timestamp": "2025-08-22 13:39:37",
+      "type": "SYSTEM",
+      "message": "Servidor cerrado correctamente",
+      "id": 157
+    },
+    {
+      "timestamp": "2025-08-22 13:39:35",
+      "type": "PROCESOS",
+      "message": "Proceso principal detenido",
+      "id": 156
+    },
+    {
+      "timestamp": "2025-08-22 13:39:35",
+      "type": "SYSTEM",
+      "message": "Hilos de fondo detenidos",
+      "id": 155
+    },
+    {
+      "timestamp": "2025-08-22 13:39:34",
+      "type": "SYSTEM",
+      "message": "Polígono cargado desde configuración",
+      "id": 154
+    },
+    {
+      "timestamp": "2025-08-22 13:39:34",
+      "type": "SYSTEM",
+      "message": "Polígono cargado desde configuración",
+      "id": 153
+    },
+    {
+      "timestamp": "2025-08-22 13:39:34",
+      "type": "SYSTEM",
+      "message": "Ventana de Chrome cerrada",
+      "id": 152
+    },
+    {
+      "timestamp": "2025-08-22 13:39:34",
+      "type": "SYSTEM",
+      "message": "Ventana de Chrome cerrada, apagando sistema completo...",
+      "id": 151
+    },
+    {
+      "timestamp": "2025-08-22 13:39:34",
+      "type": "SYSTEM",
+      "message": "Chrome lanzado correctamente",
+      "id": 150
+    },
+    {
+      "timestamp": "2025-08-22 13:39:34",
+      "type": "SYSTEM",
+      "message": "Servidor web iniciado en puerto 8000",
+      "id": 149
+    },
+    {
+      "timestamp": "2025-08-22 13:39:34",
+      "type": "SYSTEM",
+      "message": "Hilos de fondo iniciados",
+      "id": 148
+    },
+    {
+      "timestamp": "2025-08-22 13:39:33",
+      "type": "SYSTEM",
+      "message": "Sistema de terminal iniciado",
+      "id": 147
+    },
+    {
+      "timestamp": "2025-08-22 13:39:11",
+      "type": "SYSTEM",
+      "message": "Servidor cerrado correctamente",
+      "id": 146
+    },
+    {
+      "timestamp": "2025-08-22 13:39:08",
+      "type": "PROCESOS",
+      "message": "Proceso principal detenido",
+      "id": 145
+    },
+    {
+      "timestamp": "2025-08-22 13:39:08",
+      "type": "SYSTEM",
+      "message": "Hilos de fondo detenidos",
+      "id": 144
+    },
+    {
+      "timestamp": "2025-08-22 13:39:08",
+      "type": "SYSTEM",
+      "message": "Ventana de Chrome cerrada",
+      "id": 143
+    },
+    {
+      "timestamp": "2025-08-22 13:38:42",
+      "type": "SYSTEM",
+      "message": "Polígono cargado desde configuración",
+      "id": 142
+    },
+    {
+      "timestamp": "2025-08-22 13:38:42",
+      "type": "SYSTEM",
+      "message": "Polígono cargado desde configuración",
+      "id": 141
+    },
+    {
+      "timestamp": "2025-08-22 13:38:41",
+      "type": "SYSTEM",
+      "message": "Chrome lanzado correctamente",
+      "id": 140
+    },
+    {
+      "timestamp": "2025-08-22 13:38:41",
+      "type": "SYSTEM",
+      "message": "Servidor web iniciado en puerto 8000",
+      "id": 139
+    },
+    {
+      "timestamp": "2025-08-22 13:38:41",
+      "type": "SYSTEM",
+      "message": "Hilos de fondo iniciados",
+      "id": 138
+    },
+    {
+      "timestamp": "2025-08-22 13:38:40",
+      "type": "SYSTEM",
+      "message": "Sistema de terminal iniciado",
+      "id": 137
+    },
+    {
+      "timestamp": "2025-08-22 13:38:22",
+      "type": "SYSTEM",
+      "message": "Servidor cerrado correctamente",
+      "id": 136
+    },
+    {
+      "timestamp": "2025-08-22 13:38:19",
+      "type": "PROCESOS",
+      "message": "Proceso principal detenido",
+      "id": 135
+    },
+    {
+      "timestamp": "2025-08-22 13:38:19",
+      "type": "SYSTEM",
+      "message": "Hilos de fondo detenidos",
+      "id": 134
+    },
+    {
+      "timestamp": "2025-08-22 13:38:19",
+      "type": "SYSTEM",
+      "message": "Ventana de Chrome cerrada",
+      "id": 133
+    },
+    {
+      "timestamp": "2025-08-22 13:38:19",
+      "type": "SYSTEM",
+      "message": "Ventana de Chrome cerrada, apagando sistema completo...",
+      "id": 132
+    },
+    {
+      "timestamp": "2025-08-22 13:30:34",
+      "type": "SYSTEM",
+      "message": "Polígono cargado desde configuración",
+      "id": 131
+    },
+    {
+      "timestamp": "2025-08-22 13:30:34",
+      "type": "SYSTEM",
+      "message": "Polígono cargado desde configuración",
+      "id": 130
+    },
+    {
+      "timestamp": "2025-08-22 13:30:32",
+      "type": "SYSTEM",
+      "message": "Chrome lanzado correctamente",
+      "id": 129
+    },
+    {
+      "timestamp": "2025-08-22 13:30:32",
+      "type": "SYSTEM",
+      "message": "Servidor web iniciado en puerto 8000",
+      "id": 128
+    },
+    {
+      "timestamp": "2025-08-22 13:30:32",
+      "type": "SYSTEM",
+      "message": "Hilos de fondo iniciados",
+      "id": 127
+    },
+    {
+      "timestamp": "2025-08-22 13:30:31",
+      "type": "SYSTEM",
+      "message": "Sistema de terminal iniciado",
+      "id": 126
+    },
+    {
+      "timestamp": "2025-08-22 13:30:08",
+      "type": "SYSTEM",
+      "message": "Servidor cerrado correctamente",
+      "id": 125
+    },
+    {
+      "timestamp": "2025-08-22 13:30:05",
+      "type": "PROCESOS",
+      "message": "Proceso principal detenido",
+      "id": 124
+    },
+    {
+      "timestamp": "2025-08-22 13:30:05",
+      "type": "SYSTEM",
+      "message": "Hilos de fondo detenidos",
+      "id": 123
+    },
+    {
+      "timestamp": "2025-08-22 13:30:05",
+      "type": "SYSTEM",
+      "message": "Ventana de Chrome cerrada",
+      "id": 122
+    },
+    {
+      "timestamp": "2025-08-22 13:30:05",
+      "type": "SYSTEM",
+      "message": "Ventana de Chrome cerrada, apagando sistema completo...",
+      "id": 121
+    },
+    {
+      "timestamp": "2025-08-22 13:29:47",
+      "type": "SYSTEM",
+      "message": "Polígono cargado desde configuración",
+      "id": 120
+    },
+    {
+      "timestamp": "2025-08-22 13:29:47",
+      "type": "SYSTEM",
+      "message": "Polígono cargado desde configuración",
+      "id": 119
+    },
+    {
+      "timestamp": "2025-08-22 13:29:46",
+      "type": "SYSTEM",
+      "message": "Chrome lanzado correctamente",
+      "id": 118
+    },
+    {
+      "timestamp": "2025-08-22 13:29:46",
+      "type": "SYSTEM",
+      "message": "Servidor web iniciado en puerto 8000",
+      "id": 117
+    },
+    {
+      "timestamp": "2025-08-22 13:29:46",
+      "type": "SYSTEM",
+      "message": "Hilos de fondo iniciados",
+      "id": 116
+    },
+    {
+      "timestamp": "2025-08-22 13:29:45",
+      "type": "SYSTEM",
+      "message": "Sistema de terminal iniciado",
+      "id": 115
+    },
+    {
+      "timestamp": "2025-08-22 13:28:20",
+      "type": "SYSTEM",
+      "message": "Servidor cerrado correctamente",
+      "id": 114
+    },
+    {
+      "timestamp": "2025-08-22 13:28:17",
+      "type": "PROCESOS",
+      "message": "Proceso principal detenido",
+      "id": 113
+    },
+    {
+      "timestamp": "2025-08-22 13:28:17",
+      "type": "SYSTEM",
+      "message": "Hilos de fondo detenidos",
+      "id": 112
+    },
+    {
+      "timestamp": "2025-08-22 13:28:16",
+      "type": "SYSTEM",
+      "message": "Ventana de Chrome cerrada",
+      "id": 111
+    },
+    {
+      "timestamp": "2025-08-22 13:28:16",
+      "type": "SYSTEM",
+      "message": "Ventana de Chrome cerrada, apagando sistema completo...",
+      "id": 110
+    },
+    {
+      "timestamp": "2025-08-22 13:28:12",
+      "type": "ERROR",
+      "message": "Error en GET /template/filter_config.html: [WinError 10053] Se ha anulado una conexión establecida por el software en su equipo host",
+      "id": 109
+    },
+    {
+      "timestamp": "2025-08-22 13:28:11",
+      "type": "SYSTEM",
+      "message": "Polígono cargado desde configuración",
+      "id": 108
+    },
+    {
+      "timestamp": "2025-08-22 13:28:11",
+      "type": "SYSTEM",
+      "message": "Polígono cargado desde configuración",
+      "id": 107
+    },
+    {
+      "timestamp": "2025-08-22 13:28:10",
+      "type": "SYSTEM",
+      "message": "Chrome lanzado correctamente",
+      "id": 106
+    },
+    {
+      "timestamp": "2025-08-22 13:28:10",
+      "type": "SYSTEM",
+      "message": "Servidor web iniciado en puerto 8000",
+      "id": 105
+    },
+    {
+      "timestamp": "2025-08-22 13:28:10",
+      "type": "SYSTEM",
+      "message": "Hilos de fondo iniciados",
+      "id": 104
+    },
+    {
+      "timestamp": "2025-08-22 13:28:09",
+      "type": "SYSTEM",
+      "message": "Sistema de terminal iniciado",
+      "id": 103
+    },
+    {
+      "timestamp": "2025-08-22 13:28:04",
+      "type": "SYSTEM",
+      "message": "Servidor cerrado correctamente",
+      "id": 102
+    },
+    {
+      "timestamp": "2025-08-22 13:28:01",
+      "type": "PROCESOS",
+      "message": "Proceso principal detenido",
+      "id": 101
+    },
+    {
+      "timestamp": "2025-08-22 13:28:01",
+      "type": "SYSTEM",
+      "message": "Hilos de fondo detenidos",
+      "id": 100
+    },
+    {
+      "timestamp": "2025-08-22 13:28:01",
+      "type": "SYSTEM",
+      "message": "Ventana de Chrome cerrada",
+      "id": 99
+    },
+    {
+      "timestamp": "2025-08-22 13:28:00",
+      "type": "SYSTEM",
+      "message": "Ventana de Chrome cerrada, apagando sistema completo...",
+      "id": 98
+    },
+    {
+      "timestamp": "2025-08-22 13:26:55",
+      "type": "SYSTEM",
+      "message": "Polígono cargado desde configuración",
+      "id": 97
+    },
+    {
+      "timestamp": "2025-08-22 13:26:55",
+      "type": "SYSTEM",
+      "message": "Polígono cargado desde configuración",
+      "id": 96
+    },
+    {
+      "timestamp": "2025-08-22 13:26:54",
+      "type": "SYSTEM",
+      "message": "Chrome lanzado correctamente",
+      "id": 95
+    },
+    {
+      "timestamp": "2025-08-22 13:26:54",
+      "type": "SYSTEM",
+      "message": "Servidor web iniciado en puerto 8000",
+      "id": 94
+    },
+    {
+      "timestamp": "2025-08-22 13:26:54",
+      "type": "SYSTEM",
+      "message": "Hilos de fondo iniciados",
+      "id": 93
+    },
+    {
+      "timestamp": "2025-08-22 13:26:53",
+      "type": "SYSTEM",
+      "message": "Sistema de terminal iniciado",
+      "id": 92
+    },
+    {
+      "timestamp": "2025-08-22 13:26:51",
+      "type": "SYSTEM",
+      "message": "Servidor cerrado correctamente",
+      "id": 91
+    },
+    {
+      "timestamp": "2025-08-22 13:26:48",
+      "type": "PROCESOS",
+      "message": "Proceso principal detenido",
+      "id": 90
+    },
+    {
+      "timestamp": "2025-08-22 13:26:48",
+      "type": "SYSTEM",
+      "message": "Hilos de fondo detenidos",
+      "id": 89
+    },
+    {
+      "timestamp": "2025-08-22 13:26:48",
+      "type": "SYSTEM",
+      "message": "Ventana de Chrome cerrada",
+      "id": 88
+    },
+    {
+      "timestamp": "2025-08-22 13:26:47",
+      "type": "SYSTEM",
+      "message": "Ventana de Chrome cerrada, apagando sistema completo...",
+      "id": 87
+    },
+    {
+      "timestamp": "2025-08-22 13:26:31",
+      "type": "SYSTEM",
+      "message": "Polígono cargado desde configuración",
+      "id": 86
+    },
+    {
+      "timestamp": "2025-08-22 13:26:31",
+      "type": "SYSTEM",
+      "message": "Polígono cargado desde configuración",
+      "id": 85
+    },
+    {
+      "timestamp": "2025-08-22 13:26:30",
+      "type": "SYSTEM",
+      "message": "Chrome lanzado correctamente",
+      "id": 84
+    },
+    {
+      "timestamp": "2025-08-22 13:26:30",
+      "type": "SYSTEM",
+      "message": "Servidor web iniciado en puerto 8000",
+      "id": 83
+    },
+    {
+      "timestamp": "2025-08-22 13:26:30",
+      "type": "SYSTEM",
+      "message": "Hilos de fondo iniciados",
+      "id": 82
+    },
+    {
+      "timestamp": "2025-08-22 13:26:29",
+      "type": "SYSTEM",
+      "message": "Sistema de terminal iniciado",
+      "id": 81
+    },
+    {
+      "timestamp": "2025-08-22 13:25:37",
+      "type": "SYSTEM",
+      "message": "Servidor cerrado correctamente",
+      "id": 80
+    },
+    {
+      "timestamp": "2025-08-22 13:25:34",
+      "type": "PROCESOS",
+      "message": "Proceso principal detenido",
+      "id": 79
+    },
+    {
+      "timestamp": "2025-08-22 13:25:34",
+      "type": "SYSTEM",
+      "message": "Hilos de fondo detenidos",
+      "id": 78
+    },
+    {
+      "timestamp": "2025-08-22 13:25:33",
+      "type": "SYSTEM",
+      "message": "Ventana de Chrome cerrada",
+      "id": 77
+    },
+    {
+      "timestamp": "2025-08-22 13:25:33",
+      "type": "SYSTEM",
+      "message": "Ventana de Chrome cerrada, apagando sistema completo...",
+      "id": 76
+    },
+    {
+      "timestamp": "2025-08-22 13:25:25",
+      "type": "ERROR",
+      "message": "Error en GET /template/filter_config.html: [WinError 10053] Se ha anulado una conexión establecida por el software en su equipo host",
+      "id": 75
+    },
+    {
+      "timestamp": "2025-08-22 13:25:24",
+      "type": "SYSTEM",
+      "message": "Polígono cargado desde configuración",
+      "id": 74
+    },
+    {
+      "timestamp": "2025-08-22 13:25:24",
+      "type": "SYSTEM",
+      "message": "Polígono cargado desde configuración",
+      "id": 73
+    },
+    {
+      "timestamp": "2025-08-22 13:25:23",
+      "type": "SYSTEM",
+      "message": "Chrome lanzado correctamente",
+      "id": 72
+    },
+    {
+      "timestamp": "2025-08-22 13:25:23",
+      "type": "SYSTEM",
+      "message": "Servidor web iniciado en puerto 8000",
+      "id": 71
+    },
+    {
+      "timestamp": "2025-08-22 13:25:23",
+      "type": "SYSTEM",
+      "message": "Hilos de fondo iniciados",
+      "id": 70
+    },
+    {
+      "timestamp": "2025-08-22 13:25:22",
+      "type": "SYSTEM",
+      "message": "Sistema de terminal iniciado",
+      "id": 69
+    },
+    {
+      "timestamp": "2025-08-22 13:22:21",
+      "type": "SYSTEM",
+      "message": "Servidor cerrado correctamente",
+      "id": 68
+    },
+    {
+      "timestamp": "2025-08-22 13:22:20",
+      "type": "PROCESOS",
+      "message": "Proceso principal detenido",
+      "id": 67
+    },
+    {
+      "timestamp": "2025-08-22 13:22:20",
+      "type": "SYSTEM",
+      "message": "Hilos de fondo detenidos",
+      "id": 66
+    },
+    {
+      "timestamp": "2025-08-22 13:22:19",
+      "type": "SYSTEM",
+      "message": "Ventana de Chrome cerrada",
+      "id": 65
+    },
+    {
+      "timestamp": "2025-08-22 13:22:19",
+      "type": "SYSTEM",
+      "message": "Ventana de Chrome cerrada, apagando sistema completo...",
+      "id": 64
+    },
+    {
+      "timestamp": "2025-08-22 13:21:42",
+      "type": "SYSTEM",
+      "message": "Polígono cargado desde configuración",
+      "id": 63
+    },
+    {
+      "timestamp": "2025-08-22 13:21:42",
+      "type": "SYSTEM",
+      "message": "Polígono cargado desde configuración",
+      "id": 62
+    },
+    {
+      "timestamp": "2025-08-22 13:21:42",
+      "type": "SYSTEM",
+      "message": "Chrome lanzado correctamente",
+      "id": 61
+    },
+    {
+      "timestamp": "2025-08-22 13:21:42",
+      "type": "SYSTEM",
+      "message": "Servidor web iniciado en puerto 8000",
+      "id": 60
+    },
+    {
+      "timestamp": "2025-08-22 13:21:42",
+      "type": "SYSTEM",
+      "message": "Hilos de fondo iniciados",
+      "id": 59
+    },
+    {
+      "timestamp": "2025-08-22 13:21:41",
+      "type": "SYSTEM",
+      "message": "Sistema de terminal iniciado",
+      "id": 58
+    },
+    {
+      "timestamp": "2025-08-22 13:21:15",
+      "type": "SYSTEM",
+      "message": "Sistema de terminal iniciado",
+      "id": 57
+    },
+    {
+      "timestamp": "2025-08-22 13:21:07",
+      "type": "SYSTEM",
+      "message": "Servidor cerrado correctamente",
+      "id": 56
+    },
+    {
+      "timestamp": "2025-08-22 13:21:05",
+      "type": "PROCESOS",
+      "message": "Proceso principal detenido",
+      "id": 55
+    },
+    {
+      "timestamp": "2025-08-22 13:21:05",
+      "type": "SYSTEM",
+      "message": "Hilos de fondo detenidos",
+      "id": 54
+    },
+    {
+      "timestamp": "2025-08-22 13:21:05",
+      "type": "SYSTEM",
+      "message": "Polígono cargado desde configuración",
+      "id": 53
+    },
+    {
+      "timestamp": "2025-08-22 13:21:05",
+      "type": "SYSTEM",
+      "message": "Polígono cargado desde configuración",
+      "id": 52
+    },
+    {
+      "timestamp": "2025-08-22 13:21:05",
+      "type": "SYSTEM",
+      "message": "Ventana de Chrome cerrada",
+      "id": 51
+    },
+    {
+      "timestamp": "2025-08-22 13:21:04",
+      "type": "SYSTEM",
+      "message": "Ventana de Chrome cerrada, apagando sistema completo...",
+      "id": 50
+    },
+    {
+      "timestamp": "2025-08-22 13:21:04",
+      "type": "SYSTEM",
+      "message": "Chrome lanzado correctamente",
+      "id": 49
+    },
+    {
+      "timestamp": "2025-08-22 13:21:04",
+      "type": "SYSTEM",
+      "message": "Servidor web iniciado en puerto 8000",
+      "id": 48
+    },
+    {
+      "timestamp": "2025-08-22 13:21:04",
+      "type": "SYSTEM",
+      "message": "Hilos de fondo iniciados",
+      "id": 47
+    },
+    {
+      "timestamp": "2025-08-22 13:21:03",
+      "type": "SYSTEM",
+      "message": "Sistema de terminal iniciado",
+      "id": 46
+    },
+    {
+      "timestamp": "2025-08-22 13:20:24",
+      "type": "SYSTEM",
+      "message": "Servidor cerrado correctamente",
+      "id": 45
+    },
+    {
+      "timestamp": "2025-08-22 13:20:22",
+      "type": "PROCESOS",
+      "message": "Proceso principal detenido",
+      "id": 44
+    },
+    {
+      "timestamp": "2025-08-22 13:20:21",
+      "type": "SYSTEM",
+      "message": "Hilos de fondo detenidos",
+      "id": 43
+    },
+    {
+      "timestamp": "2025-08-22 13:20:21",
+      "type": "SYSTEM",
+      "message": "Polígono cargado desde configuración",
+      "id": 42
+    },
+    {
+      "timestamp": "2025-08-22 13:20:21",
+      "type": "SYSTEM",
+      "message": "Polígono cargado desde configuración",
+      "id": 41
+    },
+    {
+      "timestamp": "2025-08-22 13:20:21",
+      "type": "SYSTEM",
+      "message": "Ventana de Chrome cerrada",
+      "id": 40
+    },
+    {
+      "timestamp": "2025-08-22 13:20:21",
+      "type": "SYSTEM",
+      "message": "Ventana de Chrome cerrada, apagando sistema completo...",
+      "id": 39
+    },
+    {
+      "timestamp": "2025-08-22 13:20:21",
+      "type": "SYSTEM",
+      "message": "Chrome lanzado correctamente",
+      "id": 38
+    },
+    {
+      "timestamp": "2025-08-22 13:20:21",
+      "type": "SYSTEM",
+      "message": "Servidor web iniciado en puerto 8000",
+      "id": 37
+    },
+    {
+      "timestamp": "2025-08-22 13:20:21",
+      "type": "SYSTEM",
+      "message": "Hilos de fondo iniciados",
+      "id": 36
+    },
+    {
+      "timestamp": "2025-08-22 13:20:19",
+      "type": "SYSTEM",
+      "message": "Sistema de terminal iniciado",
+      "id": 35
+    },
+    {
+      "timestamp": "2025-08-22 13:19:37",
+      "type": "SYSTEM",
+      "message": "Servidor cerrado correctamente",
+      "id": 34
+    },
+    {
+      "timestamp": "2025-08-22 13:19:34",
+      "type": "PROCESOS",
+      "message": "Proceso principal detenido",
+      "id": 33
+    },
+    {
+      "timestamp": "2025-08-22 13:19:34",
+      "type": "SYSTEM",
+      "message": "Hilos de fondo detenidos",
+      "id": 32
+    },
+    {
+      "timestamp": "2025-08-22 13:19:33",
+      "type": "SYSTEM",
+      "message": "Ventana de Chrome cerrada",
+      "id": 31
+    },
+    {
+      "timestamp": "2025-08-22 13:19:25",
+      "type": "ERROR",
+      "message": "Error en GET /template/filter_config.html: [WinError 10053] Se ha anulado una conexión establecida por el software en su equipo host",
+      "id": 30
+    },
+    {
+      "timestamp": "2025-08-22 13:19:08",
+      "type": "SYSTEM",
+      "message": "Polígono cargado desde configuración",
+      "id": 29
+    },
+    {
+      "timestamp": "2025-08-22 13:19:08",
+      "type": "SYSTEM",
+      "message": "Polígono cargado desde configuración",
+      "id": 28
+    },
+    {
+      "timestamp": "2025-08-22 13:19:07",
+      "type": "SYSTEM",
+      "message": "Chrome lanzado correctamente",
+      "id": 27
+    },
+    {
+      "timestamp": "2025-08-22 13:19:07",
+      "type": "SYSTEM",
+      "message": "Servidor web iniciado en puerto 8000",
+      "id": 26
+    },
+    {
+      "timestamp": "2025-08-22 13:19:07",
+      "type": "SYSTEM",
+      "message": "Hilos de fondo iniciados",
+      "id": 25
+    },
+    {
+      "timestamp": "2025-08-22 13:19:06",
+      "type": "SYSTEM",
+      "message": "Sistema de terminal iniciado",
+      "id": 24
+    },
+    {
+      "timestamp": "2025-08-22 13:18:47",
+      "type": "SYSTEM",
+      "message": "Servidor cerrado correctamente",
+      "id": 23
+    },
+    {
+      "timestamp": "2025-08-22 13:18:44",
+      "type": "PROCESOS",
+      "message": "Proceso principal detenido",
+      "id": 22
+    },
+    {
+      "timestamp": "2025-08-22 13:18:44",
+      "type": "SYSTEM",
+      "message": "Hilos de fondo detenidos",
+      "id": 21
+    },
+    {
+      "timestamp": "2025-08-22 13:18:44",
+      "type": "SYSTEM",
+      "message": "Ventana de Chrome cerrada",
+      "id": 20
+    },
+    {
+      "timestamp": "2025-08-22 13:18:43",
+      "type": "SYSTEM",
+      "message": "Ventana de Chrome cerrada, apagando sistema completo...",
+      "id": 19
+    },
+    {
+      "timestamp": "2025-08-22 13:18:38",
+      "type": "ERROR",
+      "message": "Error en GET /template/filter_config.html: [WinError 10053] Se ha anulado una conexión establecida por el software en su equipo host",
+      "id": 18
+    },
+    {
+      "timestamp": "2025-08-22 13:18:37",
+      "type": "SYSTEM",
+      "message": "Polígono cargado desde configuración",
+      "id": 17
+    },
+    {
+      "timestamp": "2025-08-22 13:18:37",
+      "type": "SYSTEM",
+      "message": "Polígono cargado desde configuración",
+      "id": 16
+    },
+    {
+      "timestamp": "2025-08-22 13:18:36",
+      "type": "SYSTEM",
+      "message": "Chrome lanzado correctamente",
+      "id": 15
+    },
+    {
+      "timestamp": "2025-08-22 13:18:36",
+      "type": "SYSTEM",
+      "message": "Servidor web iniciado en puerto 8000",
+      "id": 14
+    },
+    {
+      "timestamp": "2025-08-22 13:18:36",
+      "type": "SYSTEM",
+      "message": "Hilos de fondo iniciados",
+      "id": 13
+    },
+    {
+      "timestamp": "2025-08-22 13:18:35",
+      "type": "SYSTEM",
+      "message": "Sistema de terminal iniciado",
+      "id": 12
+    },
+    {
+      "timestamp": "2025-08-22 13:17:44",
+      "type": "SYSTEM",
+      "message": "Servidor cerrado correctamente",
+      "id": 11
+    },
+    {
+      "timestamp": "2025-08-22 13:17:42",
+      "type": "PROCESOS",
+      "message": "Proceso principal detenido",
+      "id": 10
+    },
+    {
+      "timestamp": "2025-08-22 13:17:42",
+      "type": "SYSTEM",
+      "message": "Hilos de fondo detenidos",
+      "id": 9
+    },
+    {
+      "timestamp": "2025-08-22 13:17:41",
+      "type": "SYSTEM",
+      "message": "Ventana de Chrome cerrada",
+      "id": 8
+    },
+    {
+      "timestamp": "2025-08-22 13:17:40",
+      "type": "SYSTEM",
+      "message": "Ventana de Chrome cerrada, apagando sistema completo...",
+      "id": 7
+    },
+    {
+      "timestamp": "2025-08-22 13:17:33",
+      "type": "ERROR",
+      "message": "Error en GET /template/filter_config.html: [WinError 10053] Se ha anulado una conexión establecida por el software en su equipo host",
+      "id": 6
+    },
+    {
+      "timestamp": "2025-08-22 13:17:06",
+      "type": "SYSTEM",
+      "message": "Aprendizaje del fondo detenido manualmente",
+      "id": 5
+    },
+    {
+      "timestamp": "2025-08-22 13:17:06",
+      "type": "SYSTEM",
+      "message": "Aprendizaje automático completado después de 5000ms",
+      "id": 4
+    },
+    {
+      "timestamp": "2025-08-22 13:17:01",
+      "type": "SYSTEM",
+      "message": "Filtro webcam cambiado a detection",
+      "id": 3
+    },
+    {
+      "timestamp": "2025-08-22 13:17:01",
+      "type": "SYSTEM",
+      "message": "Iniciando aprendizaje automático por 5000ms",
+      "id": 2
+    },
+    {
+      "timestamp": "2025-08-22 13:16:56",
+      "type": "SYSTEM",
+      "message": "Terminal limpiado",
+      "id": 1
+    }
+  ]
+}

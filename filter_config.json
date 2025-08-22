@@ -1,0 +1,273 @@
+{
+  "active_profile": "default-balanced",
+  "profiles": {
+    "default-balanced": {
+      "id": "default-balanced",
+      "name": "Balanceado (Defecto)",
+      "description": "Configuración equilibrada entre sensibilidad y precisión",
+      "is_default": true,
+      "config": {
+        "cascade_filters": [
+          {
+            "id": 1,
+            "type": "grayscale",
+            "enabled": true,
+            "params": {}
+          },
+          {
+            "id": 2,
+            "type": "noise_reduction",
+            "enabled": true,
+            "params": {
+              "h": 8,
+              "hColor": 8,
+              "templateWindowSize": 7,
+              "searchWindowSize": 21
+            }
+          },
+          {
+            "id": 3,
+            "type": "bilateral",
+            "enabled": true,
+            "params": {
+              "d": 7,
+              "sigmaColor": 60,
+              "sigmaSpace": 60
+            }
+          },
+          {
+            "id": 4,
+            "type": "gaussian",
+            "enabled": false,
+            "params": {
+              "kernel_size": 5,
+              "sigma": 1.0
+            }
+          },
+          {
+            "id": 5,
+            "type": "contrast_enhance",
+            "enabled": true,
+            "params": {
+              "clip_limit": 2.5,
+              "tile_grid_size": 8
+            }
+          },
+          {
+            "id": 6,
+            "type": "edge_enhance",
+            "enabled": false,
+            "params": {
+              "kernel_size": 3,
+              "alpha": 0.5
+            }
+          }
+        ],
+        "detection": {
+          "detection_method": "MOG2",
+          "var_threshold": 25,
+          "detect_shadows": false,
+          "training_time": 5000,
+          "show_progress": true,
+          "min_contour_area": 500,
+          "max_contour_area": 50000,
+          "contour_approximation": 0.02,
+          "threshold_value": 128,
+          "threshold_type": "binary",
+          "aspect_ratio_min": 0.3,
+          "aspect_ratio_max": 3.0,
+          "contour_polish_enabled": true,
+          "polygon_restriction_enabled": true,
+          "epsilon_factor": 0.02,
+          "smoothing_factor": 0.1,
+          "min_point_distance": 3,
+          "min_contour_points": 5,
+          "max_contour_points": 1000,
+          "max_area_ratio": 0.7,
+          "min_solidity": 0.5,
+          "solidity_threshold": 0.7,
+          "polygon_margin": 5
+        }
+      }
+    },
+    "sensitive": {
+      "id": "sensitive",
+      "name": "Sensible",
+      "description": "Configuración sensible para detectar objetos pequeños",
+      "is_default": false,
+      "config": {
+        "cascade_filters": [
+          {
+            "id": 1,
+            "type": "grayscale",
+            "enabled": true,
+            "params": {}
+          },
+          {
+            "id": 2,
+            "type": "noise_reduction",
+            "enabled": true,
+            "params": {
+              "h": 5,
+              "hColor": 5,
+              "templateWindowSize": 5,
+              "searchWindowSize": 15
+            }
+          },
+          {
+            "id": 3,
+            "type": "bilateral",
+            "enabled": true,
+            "params": {
+              "d": 5,
+              "sigmaColor": 50,
+              "sigmaSpace": 50
+            }
+          },
+          {
+            "id": 4,
+            "type": "gaussian",
+            "enabled": true,
+            "params": {
+              "kernel_size": 3,
+              "sigma": 0.5
+            }
+          },
+          {
+            "id": 5,
+            "type": "contrast_enhance",
+            "enabled": true,
+            "params": {
+              "clip_limit": 3.0,
+              "tile_grid_size": 4
+            }
+          },
+          {
+            "id": 6,
+            "type": "edge_enhance",
+            "enabled": true,
+            "params": {
+              "kernel_size": 3,
+              "alpha": 0.3
+            }
+          }
+        ],
+        "detection": {
+          "detection_method": "KNN",
+          "var_threshold": 15,
+          "detect_shadows": false,
+          "training_time": 8000,
+          "show_progress": true,
+          "min_contour_area": 200,
+          "max_contour_area": 30000,
+          "contour_approximation": 0.02,
+          "threshold_value": 128,
+          "threshold_type": "binary",
+          "aspect_ratio_min": 0.5,
+          "aspect_ratio_max": 2,
+          "contour_polish_enabled": true,
+          "polygon_restriction_enabled": true,
+          "epsilon_factor": 0.02,
+          "smoothing_factor": 0.1,
+          "min_point_distance": 2,
+          "min_contour_points": 4,
+          "max_contour_points": 1000,
+          "max_area_ratio": 0.8,
+          "min_solidity": 0.3,
+          "solidity_threshold": 0.5,
+          "polygon_margin": 5
+        }
+      }
+    },
+    "strict": {
+      "id": "strict",
+      "name": "Estricto",
+      "description": "Configuración estricta para detectar solo objetos bien definidos",
+      "is_default": false,
+      "config": {
+                 "cascade_filters": [
+           {
+             "id": 1,
+             "type": "grayscale",
+             "enabled": true,
+             "params": {}
+           },
+           {
+             "id": 2,
+             "type": "noise_reduction",
+             "enabled": true,
+             "params": {
+               "h": 10,
+               "hColor": 10,
+               "templateWindowSize": 7,
+               "searchWindowSize": 21
+             }
+           },
+           {
+             "id": 3,
+             "type": "bilateral",
+             "enabled": true,
+             "params": {
+               "d": 9,
+               "sigmaColor": 75,
+               "sigmaSpace": 75
+             }
+           },
+           {
+             "id": 4,
+             "type": "gaussian",
+             "enabled": false,
+             "params": {
+               "kernel_size": 5,
+               "sigma": 1.0
+             }
+           },
+           {
+             "id": 5,
+             "type": "contrast_enhance",
+             "enabled": true,
+             "params": {
+               "clip_limit": 2.0,
+               "tile_grid_size": 8
+             }
+           },
+           {
+             "id": 6,
+             "type": "edge_enhance",
+             "enabled": false,
+             "params": {
+               "kernel_size": 3,
+               "alpha": 0.5
+             }
+           }
+         ],
+        "detection": {
+          "detection_method": "MOG2",
+          "var_threshold": 40,
+          "detect_shadows": false,
+          "training_time": 10000,
+          "show_progress": true,
+          "min_contour_area": 1000,
+          "max_contour_area": 100000,
+          "contour_approximation": 0.01,
+          "threshold_value": 128,
+          "threshold_type": "binary",
+          "aspect_ratio_min": 0.7,
+          "aspect_ratio_max": 1.5,
+          "contour_polish_enabled": true,
+          "polygon_restriction_enabled": true,
+          "epsilon_factor": 0.01,
+          "smoothing_factor": 0.05,
+          "min_point_distance": 5,
+          "min_contour_points": 8,
+          "max_contour_points": 500,
+          "max_area_ratio": 0.5,
+          "min_solidity": 0.8,
+          "solidity_threshold": 0.9,
+          "polygon_margin": 5
+        }
+      }
+    }
+  },
+  "last_updated": "2025-08-22 13:00:00"
+}

@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración de Algoritmo - Illinois Eyes</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="algorithm-config-container">
+        <!-- Header con botón de volver -->
+        <div class="page-header">
+            <h1 id="algorithmTitle">Configuración de Algoritmo</h1>
+            <div class="header-buttons">
+                <button type="button" id="backToDetectionBtn" class="btn btn-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+                    </svg>
+                    Volver a Detección
+                </button>
+            </div>
+        </div>
+
+        <!-- Descripción del algoritmo -->
+        <div class="info-box">
+            <h4 id="algorithmName">Algoritmo de Detección</h4>
+            <p id="algorithmDescription">
+                Configura los parámetros específicos del algoritmo seleccionado para optimizar la detección de objetos.
+            </p>
+        </div>
+
+        <!-- Configuración específica por algoritmo -->
+        <div id="algorithmConfig">
+            <!-- MOG2 Configuration -->
+            <div id="MOG2-config" class="algorithm-section" style="display: none;">
+                <div class="config-section">
+                    <h4>Parámetros MOG2</h4>
+                    
+                    <div class="form-group">
+                        <label for="mog2-history">Historial (frames):</label>
+                        <div class="range-container">
+                            <input type="range" id="mog2-history" min="100" max="1000" step="50" value="500" class="range-slider">
+                            <label class="slider-value" id="mog2-historyValue">500</label>
+                        </div>
+                        <small class="param-description">
+                            Número de frames utilizados para construir el modelo de fondo. 
+                            Valores más altos crean un modelo más estable pero más lento de adaptar.
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mog2-varThreshold">Umbral de Varianza:</label>
+                        <div class="range-container">
+                            <input type="range" id="mog2-varThreshold" min="1" max="100" step="1" value="16" class="range-slider">
+                            <label class="slider-value" id="mog2-varThresholdValue">16</label>
+                        </div>
+                        <small class="param-description">
+                            Umbral de la varianza del modelo de mezcla de gaussianas. 
+                            Controla la sensibilidad del detector.
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mog2-detectShadows">Detección de Sombras:</label>
+                        <select id="mog2-detectShadows" class="form-control">
+                            <option value="true">Activada</option>
+                            <option value="false">Desactivada</option>
+                        </select>
+                        <small class="param-description">
+                            Permite detectar sombras como parte de los objetos. 
+                            Útil en entornos con iluminación variable.
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mog2-shadowValue">Valor de Sombra:</label>
+                        <div class="range-container">
+                            <input type="range" id="mog2-shadowValue" min="0" max="255" step="1" value="127" class="range-slider">
+                            <label class="slider-value" id="mog2-shadowValueValue">127</label>
+                        </div>
+                        <small class="param-description">
+                            Valor asignado a los píxeles detectados como sombras. 
+                            Normalmente se usa 127 (gris medio).
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MOG Configuration -->
+            <div id="MOG-config" class="algorithm-section" style="display: none;">
+                <div class="config-section">
+                    <h4>Parámetros MOG</h4>
+                    
+                    <div class="form-group">
+                        <label for="mog-history">Historial (frames):</label>
+                        <div class="range-container">
+                            <input type="range" id="mog-history" min="50" max="500" step="25" value="200" class="range-slider">
+                            <label class="slider-value" id="mog-historyValue">200</label>
+                        </div>
+                        <small class="param-description">
+                            Número de frames utilizados para construir el modelo de fondo. 
+                            MOG es más rápido que MOG2 pero menos preciso.
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mog-nmixtures">Número de Mezclas:</label>
+                        <div class="range-container">
+                            <input type="range" id="mog-nmixtures" min="1" max="10" step="1" value="3" class="range-slider">
+                            <label class="slider-value" id="mog-nmixturesValue">3</label>
+                        </div>
+                        <small class="param-description">
+                            Número de gaussianas en la mezcla. 
+                            Más mezclas permiten modelar mejor la variabilidad del fondo.
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mog-backgroundRatio">Ratio de Fondo:</label>
+                        <div class="range-container">
+                            <input type="range" id="mog-backgroundRatio" min="0.1" max="1.0" step="0.1" value="0.7" class="range-slider">
+                            <label class="slider-value" id="mog-backgroundRatioValue">0.7</label>
+                        </div>
+                        <small class="param-description">
+                            Proporción de píxeles que deben ser de fondo. 
+                            Valores más altos hacen el detector más conservador.
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mog-noiseSigma">Sigma de Ruido:</label>
+                        <div class="range-container">
+                            <input type="range" id="mog-noiseSigma" min="0" max="50" step="1" value="0" class="range-slider">
+                            <label class="slider-value" id="mog-noiseSigmaValue">0</label>
+                        </div>
+                        <small class="param-description">
+                            Desviación estándar del ruido. 
+                            Normalmente se deja en 0 para detección automática.
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KNN Configuration -->
+            <div id="KNN-config" class="algorithm-section" style="display: none;">
+                <div class="config-section">
+                    <h4>Parámetros KNN</h4>
+                    
+                    <div class="form-group">
+                        <label for="knn-history">Historial (frames):</label>
+                        <div class="range-container">
+                            <input type="range" id="knn-history" min="100" max="1000" step="50" value="500" class="range-slider">
+                            <label class="slider-value" id="knn-historyValue">500</label>
+                        </div>
+                        <small class="param-description">
+                            Número de frames utilizados para construir el modelo de fondo. 
+                            KNN es más preciso pero más lento que MOG/MOG2.
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="knn-dist2Threshold">Umbral de Distancia Cuadrada:</label>
+                        <div class="range-container">
+                            <input type="range" id="knn-dist2Threshold" min="100" max="10000" step="100" value="400" class="range-slider">
+                            <label class="slider-value" id="knn-dist2ThresholdValue">400</label>
+                        </div>
+                        <small class="param-description">
+                            Umbral de distancia cuadrada para determinar si un píxel es de fondo. 
+                            Valores más bajos son más sensibles.
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="knn-detectShadows">Detección de Sombras:</label>
+                        <select id="knn-detectShadows" class="form-control">
+                            <option value="true">Activada</option>
+                            <option value="false">Desactivada</option>
+                        </select>
+                        <small class="param-description">
+                            Permite detectar sombras como parte de los objetos. 
+                            KNN tiene mejor detección de sombras que MOG/MOG2.
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="knn-shadowValue">Valor de Sombra:</label>
+                        <div class="range-container">
+                            <input type="range" id="knn-shadowValue" min="0" max="255" step="1" value="127" class="range-slider">
+                            <label class="slider-value" id="knn-shadowValueValue">127</label>
+                        </div>
+                        <small class="param-description">
+                            Valor asignado a los píxeles detectados como sombras. 
+                            Normalmente se usa 127 (gris medio).
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección de Aprendizaje del Modelo -->
+            <div class="learning-section">
+                <h3>Aprendizaje del Modelo</h3>
+                <p class="section-description">
+                    Configura los parámetros de entrenamiento del modelo de supresión de fondo.
+                    Estos parámetros controlan cómo el algoritmo aprende y se adapta a los cambios en el fondo.
+                </p>
+
+                <div class="config-section">
+                    <h4>Parámetros del Modelo</h4>
+                    
+                    <div class="form-group">
+                        <label for="learningRate">Tasa de aprendizaje:</label>
+                        <div class="range-container">
+                            <input type="range" id="learningRate" min="0.001" max="0.1" step="0.001" value="0.01" class="range-slider">
+                            <label class="slider-value" id="learningRateValue">0.01</label>
+                        </div>
+                        <small class="param-description">
+                            Controla qué tan rápido aprende el modelo. 
+                            Valores más altos aprenden más rápido pero pueden ser inestables.
+                            Durante la detección se usa 0.0 para evitar que los objetos se asimilen al fondo.
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="epochs">Número de épocas:</label>
+                        <div class="range-container">
+                            <input type="range" id="epochs" min="10" max="1000" step="10" value="100" class="range-slider">
+                            <label class="slider-value" id="epochsValue">100</label>
+                        </div>
+                        <small class="param-description">
+                            Define cuántas veces se procesa todo el conjunto de datos durante el entrenamiento. 
+                            Más épocas pueden mejorar la precisión pero aumentan el tiempo de entrenamiento.
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="batchSize">Tamaño del lote:</label>
+                        <div class="range-container">
+                            <input type="range" id="batchSize" min="1" max="64" step="1" value="16" class="range-slider">
+                            <label class="slider-value" id="batchSizeValue">16</label>
+                        </div>
+                        <small class="param-description">
+                            Número de muestras que se procesan antes de actualizar los pesos del modelo. 
+                            Lotes más grandes son más estables pero requieren más memoria.
+                        </small>
+                    </div>
+                </div>
+
+                <div class="config-section">
+                    <h4>Configuración de Validación</h4>
+                    
+                    <div class="form-group">
+                        <label for="validationSplit">División de validación:</label>
+                        <div class="range-container">
+                            <input type="range" id="validationSplit" min="0.1" max="0.5" step="0.05" value="0.2" class="range-slider">
+                            <label class="slider-value" id="validationSplitValue">0.2</label>
+                        </div>
+                        <small class="param-description">
+                            Porcentaje de datos que se usan para validación durante el entrenamiento. 
+                            Ayuda a detectar overfitting y ajustar hiperparámetros.
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="earlyStopping">Parada temprana:</label>
+                        <select id="earlyStopping" class="form-control">
+                            <option value="true">Activada</option>
+                            <option value="false">Desactivada</option>
+                        </select>
+                        <small class="param-description">
+                            Detiene el entrenamiento cuando la precisión de validación deja de mejorar. 
+                            Previene overfitting y reduce el tiempo de entrenamiento.
+                        </small>
+                    </div>
+                </div>
+
+                <div class="config-section">
+                    <h4>Configuración de Datos</h4>
+                    
+                    <div class="form-group">
+                        <label for="dataAugmentation">Aumentación de datos:</label>
+                        <select id="dataAugmentation" class="form-control">
+                            <option value="true">Activada</option>
+                            <option value="false">Desactivada</option>
+                        </select>
+                        <small class="param-description">
+                            Aplica transformaciones aleatorias a los datos de entrenamiento para mejorar la generalización.
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="normalization">Normalización:</label>
+                        <select id="normalization" class="form-control">
+                            <option value="standard">Estándar</option>
+                            <option value="minmax">Min-Max</option>
+                            <option value="none">Ninguna</option>
+                        </select>
+                        <small class="param-description">
+                            Método de normalización aplicado a los datos de entrada.
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botones de acción -->
+        <div class="config-actions">
+            <button type="button" id="saveAlgorithmConfigBtn" class="btn btn-primary">
+                <i class="icon-save"></i> Guardar Configuración
+            </button>
+            <button type="button" id="resetAlgorithmConfigBtn" class="btn btn-secondary">
+                <i class="icon-refresh"></i> Restaurar Valores por Defecto
+            </button>
+        </div>
+    </div>
+
+    <script src="/static/common.js"></script>
+    <script>
+        // Variables globales
+        let currentAlgorithm = 'MOG2';
+                         let algorithmConfigs = {
+                     MOG2: {
+                         history: 500,
+                         varThreshold: 16,
+                         detectShadows: true,
+                         shadowValue: 127
+                     },
+                     MOG: {
+                         history: 200,
+                         nmixtures: 3,
+                         backgroundRatio: 0.7,
+                         noiseSigma: 0
+                     },
+                     KNN: {
+                         history: 500,
+                         dist2Threshold: 400,
+                         detectShadows: true,
+                         shadowValue: 127
+                     }
+                 };
+
+                 let learningConfig = {
+                     learning_rate: 0.01,
+                     epochs: 100,
+                     batch_size: 16,
+                     validation_split: 0.2,
+                     early_stopping: true,
+                     data_augmentation: true,
+                     normalization: 'standard'
+                 };
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeAlgorithmConfig();
+            setupEventListeners();
+            loadCurrentAlgorithm();
+        });
+
+        function initializeAlgorithmConfig() {
+            // Configurar sliders para MOG2
+            setupSlider('mog2-history', 'mog2-historyValue', 100, 1000, 50);
+            setupSlider('mog2-varThreshold', 'mog2-varThresholdValue', 1, 100, 1);
+            setupSlider('mog2-shadowValue', 'mog2-shadowValueValue', 0, 255, 1);
+
+            // Configurar sliders para MOG
+            setupSlider('mog-history', 'mog-historyValue', 50, 500, 25);
+            setupSlider('mog-nmixtures', 'mog-nmixturesValue', 1, 10, 1);
+            setupSlider('mog-backgroundRatio', 'mog-backgroundRatioValue', 0.1, 1.0, 0.1);
+            setupSlider('mog-noiseSigma', 'mog-noiseSigmaValue', 0, 50, 1);
+
+            // Configurar sliders para KNN
+            setupSlider('knn-history', 'knn-historyValue', 100, 1000, 50);
+            setupSlider('knn-dist2Threshold', 'knn-dist2ThresholdValue', 100, 10000, 100);
+            setupSlider('knn-shadowValue', 'knn-shadowValueValue', 0, 255, 1);
+
+            // Configurar sliders para Aprendizaje del Modelo
+            setupSlider('learningRate', 'learningRateValue', 0.001, 0.1, 0.001);
+            setupSlider('epochs', 'epochsValue', 10, 1000, 10);
+            setupSlider('batchSize', 'batchSizeValue', 1, 64, 1);
+            setupSlider('validationSplit', 'validationSplitValue', 0.1, 0.5, 0.05);
+        }
+
+        function setupSlider(sliderId, valueId, min, max, step) {
+            const slider = document.getElementById(sliderId);
+            const valueLabel = document.getElementById(valueId);
+            
+            if (slider && valueLabel) {
+                slider.addEventListener('input', function() {
+                    valueLabel.textContent = this.value;
+                });
+            }
+        }
+
+        function setupEventListeners() {
+            // Botón de volver
+            document.getElementById('backToDetectionBtn').addEventListener('click', function() {
+                console.log('[algorithm_config] Botón volver presionado');
+                window.parent.postMessage({
+                    action: 'navigateToDetection',
+                    source: 'algorithm_config'
+                }, '*');
+            });
+
+            // Botón de guardar
+            document.getElementById('saveAlgorithmConfigBtn').addEventListener('click', function() {
+                saveAlgorithmConfig();
+            });
+
+            // Botón de reset
+            document.getElementById('resetAlgorithmConfigBtn').addEventListener('click', function() {
+                resetAlgorithmConfig();
+            });
+        }
+
+        function loadCurrentAlgorithm() {
+            // Obtener el algoritmo actual desde el almacenamiento o configuración
+            const savedAlgorithm = localStorage.getItem('currentDetectionAlgorithm') || 'MOG2';
+            setCurrentAlgorithm(savedAlgorithm);
+        }
+
+        function setCurrentAlgorithm(algorithm) {
+            currentAlgorithm = algorithm;
+            
+                         // Ocultar todas las secciones de algoritmos
+             document.querySelectorAll('.algorithm-section').forEach(section => {
+                 section.style.display = 'none';
+             });
+
+             // Mostrar la sección correspondiente al algoritmo
+             const algorithmSection = document.getElementById(`${algorithm}-config`);
+             if (algorithmSection) {
+                 algorithmSection.style.display = 'block';
+             }
+
+             // Mostrar siempre la sección de aprendizaje
+             document.querySelectorAll('.learning-section').forEach(section => {
+                 section.style.display = 'block';
+             });
+
+            // Actualizar título y descripción
+            updateAlgorithmInfo(algorithm);
+
+            // Cargar valores guardados
+            loadAlgorithmValues(algorithm);
+        }
+
+        function updateAlgorithmInfo(algorithm) {
+            const titles = {
+                'MOG2': 'Configuración MOG2 (Mixture of Gaussians v2)',
+                'MOG': 'Configuración MOG (Mixture of Gaussians)',
+                'KNN': 'Configuración KNN (K-Nearest Neighbors)'
+            };
+
+            const descriptions = {
+                'MOG2': 'MOG2 es el algoritmo más equilibrado, ofreciendo buena precisión y velocidad. Es la opción recomendada para la mayoría de aplicaciones.',
+                'MOG': 'MOG es más rápido que MOG2 pero menos preciso. Ideal para aplicaciones donde la velocidad es prioritaria.',
+                'KNN': 'KNN es el más preciso pero más lento. Recomendado para aplicaciones donde la precisión es crítica.'
+            };
+
+            document.getElementById('algorithmTitle').textContent = titles[algorithm];
+            document.getElementById('algorithmName').textContent = titles[algorithm];
+            document.getElementById('algorithmDescription').textContent = descriptions[algorithm];
+        }
+
+                         function loadAlgorithmValues(algorithm) {
+                     const config = algorithmConfigs[algorithm];
+                     if (!config) return;
+
+                     // Cargar valores según el algoritmo
+                     if (algorithm === 'MOG2') {
+                         document.getElementById('mog2-history').value = config.history;
+                         document.getElementById('mog2-historyValue').textContent = config.history;
+                         document.getElementById('mog2-varThreshold').value = config.varThreshold;
+                         document.getElementById('mog2-varThresholdValue').textContent = config.varThreshold;
+                         document.getElementById('mog2-detectShadows').value = config.detectShadows.toString();
+                         document.getElementById('mog2-shadowValue').value = config.shadowValue;
+                         document.getElementById('mog2-shadowValueValue').textContent = config.shadowValue;
+                     } else if (algorithm === 'MOG') {
+                         document.getElementById('mog-history').value = config.history;
+                         document.getElementById('mog-historyValue').textContent = config.history;
+                         document.getElementById('mog-nmixtures').value = config.nmixtures;
+                         document.getElementById('mog-nmixturesValue').textContent = config.nmixtures;
+                         document.getElementById('mog-backgroundRatio').value = config.backgroundRatio;
+                         document.getElementById('mog-backgroundRatioValue').textContent = config.backgroundRatio;
+                         document.getElementById('mog-noiseSigma').value = config.noiseSigma;
+                         document.getElementById('mog-noiseSigmaValue').textContent = config.noiseSigma;
+                     } else if (algorithm === 'KNN') {
+                         document.getElementById('knn-history').value = config.history;
+                         document.getElementById('knn-historyValue').textContent = config.history;
+                         document.getElementById('knn-dist2Threshold').value = config.dist2Threshold;
+                         document.getElementById('knn-dist2ThresholdValue').textContent = config.dist2Threshold;
+                         document.getElementById('knn-detectShadows').value = config.detectShadows.toString();
+                         document.getElementById('knn-shadowValue').value = config.shadowValue;
+                         document.getElementById('knn-shadowValueValue').textContent = config.shadowValue;
+                     }
+
+                     // Cargar valores de aprendizaje
+                     loadLearningValues();
+                 }
+
+                 function loadLearningValues() {
+                     // Cargar valores de aprendizaje desde localStorage o usar valores por defecto
+                     const savedLearning = localStorage.getItem('learningConfig');
+                     if (savedLearning) {
+                         try {
+                             learningConfig = JSON.parse(savedLearning);
+                         } catch (e) {
+                             console.error('[algorithm_config] Error cargando configuración de aprendizaje:', e);
+                         }
+                     }
+
+                     // Aplicar valores a los controles
+                     document.getElementById('learningRate').value = learningConfig.learning_rate;
+                     document.getElementById('learningRateValue').textContent = learningConfig.learning_rate;
+                     document.getElementById('epochs').value = learningConfig.epochs;
+                     document.getElementById('epochsValue').textContent = learningConfig.epochs;
+                     document.getElementById('batchSize').value = learningConfig.batch_size;
+                     document.getElementById('batchSizeValue').textContent = learningConfig.batch_size;
+                     document.getElementById('validationSplit').value = learningConfig.validation_split;
+                     document.getElementById('validationSplitValue').textContent = learningConfig.validation_split;
+                     document.getElementById('earlyStopping').value = learningConfig.early_stopping.toString();
+                     document.getElementById('dataAugmentation').value = learningConfig.data_augmentation.toString();
+                     document.getElementById('normalization').value = learningConfig.normalization;
+                 }
+
+                         function saveAlgorithmConfig() {
+                     const config = {};
+
+                     if (currentAlgorithm === 'MOG2') {
+                         config.history = parseInt(document.getElementById('mog2-history').value);
+                         config.varThreshold = parseInt(document.getElementById('mog2-varThreshold').value);
+                         config.detectShadows = document.getElementById('mog2-detectShadows').value === 'true';
+                         config.shadowValue = parseInt(document.getElementById('mog2-shadowValue').value);
+                     } else if (currentAlgorithm === 'MOG') {
+                         config.history = parseInt(document.getElementById('mog-history').value);
+                         config.nmixtures = parseInt(document.getElementById('mog-nmixtures').value);
+                         config.backgroundRatio = parseFloat(document.getElementById('mog-backgroundRatio').value);
+                         config.noiseSigma = parseInt(document.getElementById('mog-noiseSigma').value);
+                     } else if (currentAlgorithm === 'KNN') {
+                         config.history = parseInt(document.getElementById('knn-history').value);
+                         config.dist2Threshold = parseInt(document.getElementById('knn-dist2Threshold').value);
+                         config.detectShadows = document.getElementById('knn-detectShadows').value === 'true';
+                         config.shadowValue = parseInt(document.getElementById('knn-shadowValue').value);
+                     }
+
+                     // Guardar configuración del algoritmo
+                     algorithmConfigs[currentAlgorithm] = config;
+                     localStorage.setItem(`algorithmConfig_${currentAlgorithm}`, JSON.stringify(config));
+
+                     // Enviar configuración del algoritmo al servidor
+                     saveAlgorithmConfigToServer(currentAlgorithm, config);
+
+                     // Guardar configuración de aprendizaje
+                     saveLearningConfig();
+
+                     // Mostrar mensaje de éxito
+                     showMessage('Configuración guardada exitosamente', 'success');
+                 }
+
+                 function saveLearningConfig() {
+                     // Recopilar valores de aprendizaje
+                     learningConfig.learning_rate = parseFloat(document.getElementById('learningRate').value);
+                     learningConfig.epochs = parseInt(document.getElementById('epochs').value);
+                     learningConfig.batch_size = parseInt(document.getElementById('batchSize').value);
+                     learningConfig.validation_split = parseFloat(document.getElementById('validationSplit').value);
+                     learningConfig.early_stopping = document.getElementById('earlyStopping').value === 'true';
+                     learningConfig.data_augmentation = document.getElementById('dataAugmentation').value === 'true';
+                     learningConfig.normalization = document.getElementById('normalization').value;
+
+                     // Guardar en localStorage
+                     localStorage.setItem('learningConfig', JSON.stringify(learningConfig));
+
+                     // Enviar al servidor
+                     saveLearningConfigToServer();
+                 }
+
+                 function saveLearningConfigToServer() {
+                     fetch('/api/detection/learning_config', {
+                         method: 'POST',
+                         headers: {
+                             'Content-Type': 'application/json'
+                         },
+                         body: JSON.stringify(learningConfig)
+                     })
+                     .then(response => response.json())
+                     .then(data => {
+                         if (data.ok) {
+                             console.log('[algorithm_config] Configuración de aprendizaje guardada');
+                         } else {
+                             console.error('[algorithm_config] Error guardando configuración de aprendizaje:', data.error);
+                         }
+                     })
+                     .catch(error => {
+                         console.error('[algorithm_config] Error de red:', error);
+                     });
+                 }
+
+        function saveAlgorithmConfigToServer(algorithm, config) {
+            fetch('/api/detection/algorithm_config', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    algorithm: algorithm,
+                    config: config
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.ok) {
+                    console.log(`[algorithm_config] Configuración de ${algorithm} guardada`);
+                } else {
+                    console.error(`[algorithm_config] Error guardando configuración:`, data.error);
+                }
+            })
+            .catch(error => {
+                console.error(`[algorithm_config] Error de red:`, error);
+            });
+        }
+
+                         function resetAlgorithmConfig() {
+                     // Restaurar valores por defecto del algoritmo
+                     const defaultConfigs = {
+                         MOG2: {
+                             history: 500,
+                             varThreshold: 16,
+                             detectShadows: true,
+                             shadowValue: 127
+                         },
+                         MOG: {
+                             history: 200,
+                             nmixtures: 3,
+                             backgroundRatio: 0.7,
+                             noiseSigma: 0
+                         },
+                         KNN: {
+                             history: 500,
+                             dist2Threshold: 400,
+                             detectShadows: true,
+                             shadowValue: 127
+                         }
+                     };
+
+                     algorithmConfigs[currentAlgorithm] = defaultConfigs[currentAlgorithm];
+                     loadAlgorithmValues(currentAlgorithm);
+
+                     // Restaurar valores por defecto de aprendizaje
+                     learningConfig = {
+                         learning_rate: 0.01,
+                         epochs: 100,
+                         batch_size: 16,
+                         validation_split: 0.2,
+                         early_stopping: true,
+                         data_augmentation: true,
+                         normalization: 'standard'
+                     };
+                     loadLearningValues();
+
+                     showMessage('Valores restaurados por defecto', 'info');
+                 }
+
+        function showMessage(message, type = 'info') {
+            // Implementar sistema de mensajes
+            console.log(`[algorithm_config] ${message}`);
+        }
+
+        // Función para recibir mensajes del padre
+        window.addEventListener('message', function(event) {
+            if (event.data.action === 'setAlgorithm') {
+                setCurrentAlgorithm(event.data.algorithm);
+            }
+        });
+    </script>
+</body>
+</html>

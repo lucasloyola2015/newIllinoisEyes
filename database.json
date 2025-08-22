@@ -1,0 +1,116 @@
+{
+  "Juntas": [
+    {
+      "modelo": "TC-728",
+      "Lote": {
+        "x": -321.1,
+        "y": -142,
+        "rotacion": 0
+      },
+      "Texto_Illinois": {
+        "x": 0,
+        "y": -142,
+        "rotacion": 0
+      },
+      "Codigo": {
+        "x": 349.5,
+        "y": -142,
+        "rotacion": 0
+      },
+      "Muescas": {
+        "x": 410,
+        "y": -58,
+        "rotacion": 90,
+        "Cantidad": 3
+      },
+      "centroCilindros": {
+        "x": 486.14,
+        "y": 158.74
+      }
+    },
+    {
+      "modelo": "TC-690-15",
+      "Lote": {
+        "x": null,
+        "y": null,
+        "rotacion": null
+      },
+      "Texto_Illinois": {
+        "x": null,
+        "y": null,
+        "rotacion": null
+      },
+      "Codigo": {
+        "x": null,
+        "y": null,
+        "rotacion": null
+      },
+      "Muescas": {
+        "x": null,
+        "y": null,
+        "rotacion": null,
+        "Cantidad": null
+      },
+      "centroCilindros": {
+        "x": 451.05,
+        "y": 154.64
+      }
+    },
+    {
+      "modelo": "TC-124-15",
+      "Lote": {
+        "x": 101,
+        "y": -120,
+        "rotacion": null
+      },
+      "Texto_Illinois": {
+        "x": null,
+        "y": null,
+        "rotacion": null
+      },
+      "Codigo": {
+        "x": null,
+        "y": null,
+        "rotacion": null
+      },
+      "Muescas": {
+        "x": 200,
+        "y": -187.8,
+        "rotacion": 0,
+        "Cantidad": 3
+      },
+      "centroCilindros": {
+        "x": 459.72,
+        "y": 194.07
+      }
+    },
+    {
+      "modelo": "irregular",
+      "Lote": {
+        "x": null,
+        "y": null,
+        "rotacion": null
+      },
+      "Texto_Illinois": {
+        "x": null,
+        "y": null,
+        "rotacion": null
+      },
+      "Codigo": {
+        "x": null,
+        "y": null,
+        "rotacion": null
+      },
+      "Muescas": {
+        "x": null,
+        "y": null,
+        "rotacion": null,
+        "Cantidad": null
+      },
+      "centroCilindros": {
+        "x": 1563.42,
+        "y": 370.62
+      }
+    }
+  ]
+}

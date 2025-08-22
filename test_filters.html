@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Test Filtros</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <script src="/static/common.js"></script>
+</head>
+<body>
+  <div class="wrap">
+    <h1 class="page-header">Test de Filtros</h1>
+
+    <div class="grid-main">
+      <div class="card">
+        <div class="flex items-center justify-between" style="margin-bottom: 12px;">
+          <strong>Webcam en vivo</strong>
+          <div class="flex gap-2">
+                         <!-- Pestañas de filtros -->
+             <div class="filter-tabs">
+               <button class="filter-tab active" data-filter="original">Original</button>
+               <button class="filter-tab" data-filter="object_detection">Objetos</button>
+               <button class="filter-tab" data-filter="area_detection">Área</button>
+               <button class="filter-tab" data-filter="junta_detection">Detección Junta</button>
+               <button class="filter-tab" data-filter="background_training">Entrenar Fondo</button>
+               <button class="filter-tab" data-filter="debug_stages">Debug Etapas</button>
+             </div>
+            
+            
+             
+                           <!-- Botón de aprendizaje del fondo -->
+              <button id="btnBackgroundLearning" class="btn btn-sm btn-learning" title="Aprender fondo" onclick="aprenderFondo()">
+               <svg class="ico" fill="currentColor" viewBox="0 0 640 640" style="width: 16px; height: 16px;">
+                 <path d="M80 259.8L289.2 345.9C299 349.9 309.4 352 320 352C330.6 352 341 349.9 350.8 345.9L593.2 246.1C602.2 242.4 608 233.7 608 224C608 214.3 602.2 205.6 593.2 201.9L350.8 102.1C341 98.1 330.6 96 320 96C309.4 96 299 98.1 289.2 102.1L46.8 201.9C37.8 205.6 32 214.3 32 224L32 520C32 533.3 42.7 544 56 544C69.3 544 80 533.3 80 520L80 259.8zM128 331.5L128 448C128 501 214 544 320 544C426 544 512 501 512 448L512 331.4L369.1 390.3C353.5 396.7 336.9 400 320 400C303.1 400 286.5 396.7 270.9 390.3L128 331.4z"/>
+               </svg>
+             </button>
+             
+                           
+             
+             <!-- Botón de reconocer junta -->
+             <button id="btnReconocerJunta" class="btn btn-sm btn-camera" title="Reconocer junta" onclick="reconocerJunta()">
+               <svg class="ico" fill="currentColor" viewBox="0 0 640 640" style="width: 16px; height: 16px;">
+                 <path d="M320 96C238.8 96 172.8 162 172.8 243.2C172.8 324.4 238.8 390.4 320 390.4C401.2 390.4 467.2 324.4 467.2 243.2C467.2 162 401.2 96 320 96ZM320 358.4C256.8 358.4 204.8 306.4 204.8 243.2C204.8 180 256.8 128 320 128C383.2 128 435.2 180 435.2 243.2C435.2 306.4 383.2 358.4 320 358.4Z"/>
+                 <path d="M320 160C275.2 160 236.8 198.4 236.8 243.2C236.8 288 275.2 326.4 320 326.4C364.8 326.4 403.2 288 403.2 243.2C403.2 198.4 364.8 160 320 160ZM320 294.4C294.4 294.4 268.8 268.8 268.8 243.2C268.8 217.6 294.4 192 320 192C345.6 192 371.2 217.6 371.2 243.2C371.2 268.8 345.6 294.4 320 294.4Z"/>
+               </svg>
+             </button>
+             
+             <!-- Botón de verificar anomalías -->
+             <button id="btnCheckAnomalies" class="btn btn-sm btn-warning" title="Verificar anomalías" onclick="checkAnomalies()">
+               <svg class="ico" fill="currentColor" viewBox="0 0 640 640" style="width: 16px; height: 16px;">
+                 <path d="M320 96C238.8 96 172.8 162 172.8 243.2C172.8 324.4 238.8 390.4 320 390.4C401.2 390.4 467.2 324.4 467.2 243.2C467.2 162 401.2 96 320 96ZM320 358.4C256.8 358.4 204.8 306.4 204.8 243.2C204.8 180 256.8 128 320 128C383.2 128 435.2 180 435.2 243.2C435.2 306.4 383.2 358.4 320 358.4Z"/>
+                 <path d="M320 160C275.2 160 236.8 198.4 236.8 243.2C236.8 288 275.2 326.4 320 326.4C364.8 326.4 403.2 288 403.2 243.2C403.2 198.4 364.8 160 320 160ZM320 294.4C294.4 294.4 268.8 268.8 268.8 243.2C268.8 217.6 294.4 192 320 192C345.6 192 371.2 217.6 371.2 243.2C371.2 268.8 345.6 294.4 320 294.4Z"/>
+               </svg>
+             </button>
+          </div>
+        </div>
+        
+        <div class="video-wrap" style="margin-top:8px;">
+          <img id="camStream" alt="Stream" src="" onload="Common.hideCamError()" onerror="Common.showCamError('No se pudo cargar el stream.')" />
+          <div id="camStatus" class="video-overlay" style="display:none;"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <strong>Debug Info</strong>
+        <div id="debugInfo" style="margin-top: 8px; font-family: monospace; font-size: 12px;">
+          Cargando...
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <script>
+    window.addEventListener("load", Common.autoConnectCamera);
+    
+    // ============================================================
+    // Sistema de Filtros
+    // ============================================================
+    let currentFilter = 'original';
+    let filterParams = {};
+
+    async function initFilterSystem() {
+      try {
+        console.log('[filters] Inicializando sistema de filtros...');
+        
+        // Cargar filtro actual
+        await loadCurrentFilter();
+        
+        // Cargar estado del aprendizaje del fondo
+        await loadBackgroundLearningStatus();
+        
+        // Cargar estado del área de detección
+        await loadAreaStatus();
+        
+        // Event listeners para pestañas
+        const filterTabs = document.querySelectorAll('.filter-tab');
+        console.log('[filters] Encontradas pestañas:', filterTabs.length);
+        
+        filterTabs.forEach(tab => {
+          tab.addEventListener('click', function() {
+            const filterName = this.dataset.filter;
+            console.log('[filters] Pestaña clickeada:', filterName);
+            changeFilter(filterName);
+          });
+        });
+        
+
+        
+        console.log('[filters] Sistema de filtros inicializado correctamente');
+        updateDebugInfo();
+      } catch (error) {
+        console.error('[filters] Error inicializando sistema de filtros:', error);
+      }
+    }
+
+    async function loadCurrentFilter() {
+      try {
+        console.log('[filters] Cargando filtro actual...');
+        const response = await Common.fetchWithTimeout('/api/webcam/filter');
+        const data = await response.json();
+        
+        if (data.ok) {
+          currentFilter = data.current_filter.name;
+          filterParams = data.current_filter.params;
+          console.log('[filters] Filtro actual cargado:', currentFilter, filterParams);
+          updateFilterTabs();
+        } else {
+          console.error('[filters] Error del servidor al cargar filtro:', data.error);
+        }
+      } catch (error) {
+        console.error('[filters] Error cargando filtro actual:', error);
+        // Usar valores por defecto si hay error
+        currentFilter = 'original';
+        filterParams = {};
+        updateFilterTabs();
+      }
+    }
+
+    async function changeFilter(filterName) {
+      try {
+        console.log('[filters] Cambiando filtro a:', filterName);
+        
+        const response = await Common.fetchWithTimeout('/api/webcam/filter', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            filter_name: filterName,
+            params: filterParams[filterName] || {}
+          })
+        });
+        
+        const data = await response.json();
+        if (data.ok) {
+          currentFilter = filterName;
+          updateFilterTabs();
+          console.log('[filters] Filtro cambiado exitosamente a:', filterName);
+          
+          // Recargar el stream para aplicar el nuevo filtro
+          const img = document.getElementById('camStream');
+          if (img) {
+            img.src = "/video_feed?t=" + Date.now();
+          }
+          
+          updateDebugInfo();
+        } else {
+          console.error('[filters] Error del servidor:', data.error);
+        }
+      } catch (error) {
+        console.error('[filters] Error cambiando filtro:', error);
+      }
+    }
+
+    function updateFilterTabs() {
+      const tabs = document.querySelectorAll('.filter-tab');
+      console.log('[filters] Actualizando pestañas, filtro actual:', currentFilter);
+      
+      tabs.forEach(tab => {
+        tab.classList.remove('active');
+        if (tab.dataset.filter === currentFilter) {
+          tab.classList.add('active');
+          console.log('[filters] Pestaña activada:', tab.dataset.filter);
+        }
+      });
+    }
+
+    function updateDebugInfo() {
+      const debugInfo = document.getElementById('debugInfo');
+      if (debugInfo) {
+        debugInfo.innerHTML = `
+          <div>Filtro actual: <strong>${currentFilter}</strong></div>
+          <div>Parámetros: <code>${JSON.stringify(filterParams)}</code></div>
+          <div>Aprendizaje del fondo: <strong>${isBackgroundLearning ? 'ACTIVO' : 'INACTIVO'}</strong></div>
+          <div>Pestañas encontradas: ${document.querySelectorAll('.filter-tab').length}</div>
+  
+          <div>Botón aprendizaje encontrado: ${document.getElementById('btnBackgroundLearning') ? 'Sí' : 'No'}</div>
+        `;
+      }
+    }
+
+
+
+    // ============================================================
+    // Sistema de Detección de Objetos
+    // ============================================================
+    let isBackgroundLearning = false;
+
+    async function toggleBackgroundLearning() {
+      try {
+        console.log('[object_detection] Alternando aprendizaje del fondo...');
+        
+        const response = await Common.fetchWithTimeout('/api/webcam/object_detection', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'toggle_learning'
+          })
+        });
+        
+        const data = await response.json();
+        if (data.ok) {
+          isBackgroundLearning = data.is_learning;
+          updateBackgroundLearningButton();
+          console.log('[object_detection] Aprendizaje del fondo:', isBackgroundLearning ? 'iniciado' : 'detenido');
+          
+          // Si se activó el aprendizaje, cambiar automáticamente al filtro de detección de objetos
+          if (isBackgroundLearning && currentFilter !== 'object_detection') {
+            await changeFilter('object_detection');
+          }
+        } else {
+          console.error('[object_detection] Error del servidor:', data.error);
+        }
+      } catch (error) {
+        console.error('[object_detection] Error alternando aprendizaje:', error);
+      }
+    }
+
+    function updateBackgroundLearningButton() {
+      const btn = document.getElementById('btnBackgroundLearning');
+      if (btn) {
+        if (isBackgroundLearning) {
+          btn.classList.add('active');
+          btn.title = 'Detener aprendizaje del fondo';
+        } else {
+          btn.classList.remove('active');
+          btn.title = 'Aprender fondo';
+        }
+      }
+    }
+
+    async function loadBackgroundLearningStatus() {
+      try {
+        const response = await Common.fetchWithTimeout('/api/webcam/object_detection');
+        const data = await response.json();
+        
+        if (data.ok) {
+          isBackgroundLearning = data.is_learning;
+          updateBackgroundLearningButton();
+        }
+      } catch (error) {
+        console.error('[object_detection] Error cargando estado:', error);
+      }
+    }
+
+    // ============================================================
+
+
+    // ============================================================
+    // Sistema de Detección de Juntas
+    // ============================================================
+    
+    async function aprenderFondo() {
+      try {
+        console.log('[junta_detector] Iniciando entrenamiento de fondo...');
+        
+        // Mostrar indicador visual
+        const btn = document.getElementById('btnBackgroundLearning');
+        if (btn) {
+          btn.classList.add('active');
+          btn.title = 'Entrenando fondo...';
+        }
+        
+        // Llamar al endpoint real
+        const response = await Common.fetchWithTimeout('/api/junta_detector/train_background', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            frames: 30
+          })
+        });
+        
+        const data = await response.json();
+        if (data.ok) {
+          console.log('[junta_detector] Fondo entrenado exitosamente:', data.message);
+          alert(`Fondo entrenado: ${data.message}`);
+        } else {
+          console.error('[junta_detector] Error entrenando fondo:', data.message);
+          alert(`Error: ${data.message}`);
+        }
+        
+        // Restaurar botón
+        if (btn) {
+          btn.classList.remove('active');
+          btn.title = 'Aprender fondo';
+        }
+        
+      } catch (error) {
+        console.error('[junta_detector] Error iniciando entrenamiento:', error);
+        alert('Error iniciando entrenamiento');
+        
+        // Restaurar botón en caso de error
+        const btn = document.getElementById('btnBackgroundLearning');
+        if (btn) {
+          btn.classList.remove('active');
+          btn.title = 'Aprender fondo';
+        }
+      }
+    }
+    
+    async function reconocerJunta() {
+      try {
+        console.log('[junta_detector] Iniciando reconocimiento de junta...');
+        
+        // Mostrar indicador visual
+        const btn = document.getElementById('btnReconocerJunta');
+        if (btn) {
+          btn.classList.add('active');
+          btn.title = 'Reconociendo junta...';
+        }
+        
+        // Llamar al endpoint real
+        const response = await Common.fetchWithTimeout('/api/junta_detector/detect', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            modelo: 'TC-124-15'
+          })
+        });
+        
+        const data = await response.json();
+        if (data.ok) {
+          console.log('[junta_detector] Junta detectada exitosamente:', data.message);
+          alert(`Junta detectada: ${data.message}\nScore: ${data.similarity_score.toFixed(3)}`);
+        } else {
+          console.error('[junta_detector] Error detectando junta:', data.message);
+          alert(`Error: ${data.message}`);
+        }
+        
+        // Restaurar botón
+        if (btn) {
+          btn.classList.remove('active');
+          btn.title = 'Reconocer junta';
+        }
+        
+      } catch (error) {
+        console.error('[junta_detector] Error iniciando reconocimiento:', error);
+        alert('Error iniciando reconocimiento');
+        
+        // Restaurar botón en caso de error
+        const btn = document.getElementById('btnReconocerJunta');
+        if (btn) {
+          btn.classList.remove('active');
+          btn.title = 'Reconocer junta';
+        }
+      }
+    }
+    
+    async function checkAnomalies() {
+      try {
+        console.log('[junta_detector] Verificando anomalías...');
+        
+        const response = await Common.fetchWithTimeout('/api/junta_detector/anomalies', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        
+        const data = await response.json();
+        if (data.ok) {
+          console.log('[junta_detector] Anomalías:', data.message);
+          alert(`Anomalías: ${data.message}`);
+        } else {
+          console.error('[junta_detector] Error verificando anomalías:', data.message);
+          alert(`Error: ${data.message}`);
+        }
+        
+      } catch (error) {
+        console.error('[junta_detector] Error verificando anomalías:', error);
+        alert('Error verificando anomalías');
+      }
+    }
+    
+    // ============================================================
+    // Funciones del Modal de Polígono
+    // ============================================================
+    
+    function showPolygonModal() {
+      document.getElementById('polygonModal').style.display = 'block';
+    }
+    
+    function closePolygonModal() {
+      document.getElementById('polygonModal').style.display = 'none';
+    }
+    
+    async function savePolygon() {
+      try {
+        console.log('[area_detection] Guardando polígono...');
+        
+        const response = await Common.fetchWithTimeout('/api/webcam/area_detection', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'save_polygon'
+          })
+        });
+        
+        const data = await response.json();
+        if (data.ok) {
+          console.log('[area_detection] Polígono guardado exitosamente');
+          alert('Polígono guardado en configuración');
+        } else {
+          console.error('[area_detection] Error guardando polígono:', data.message);
+          alert(`Error: ${data.message}`);
+        }
+      } catch (error) {
+        console.error('[area_detection] Error guardando polígono:', error);
+        alert('Error guardando polígono');
+      } finally {
+        closePolygonModal();
+      }
+    }
+
+
+
+    // Inicializar cuando se carga la página
+    document.addEventListener('DOMContentLoaded', function() {
+      initFilterSystem();
+    });
+  </script>
+
+  <!-- Modal de confirmación para guardar polígono -->
+  <div id="polygonModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Guardar Polígono</h3>
+      </div>
+      <div class="modal-body">
+        <p>¿Deseas guardar el polígono actual en la configuración?</p>
+        <p><small>El polígono se cargará automáticamente al iniciar el sistema.</small></p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closePolygonModal()">Cancelar</button>
+        <button class="btn btn-primary" onclick="savePolygon()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Perfiles</title>
+</head>
+<body>
+    <h1>Test de Carga de Perfiles</h1>
+    <div id="status">Cargando...</div>
+    <div id="profiles"></div>
+
+    <script>
+        async function loadProfiles() {
+            console.log('[profiles] Iniciando carga de perfiles...');
+            try {
+                console.log('[profiles] Haciendo petición a http://localhost:8001/api/cascade_filters/config...');
+                const response = await fetch('http://localhost:8001/api/cascade_filters/config', {
+                    method: 'GET'
+                });
+                
+                console.log('[profiles] Respuesta recibida:', response.status);
+                const data = await response.json();
+                console.log('[profiles] Datos recibidos:', data);
+                
+                if (data.ok && data.config && data.config.profiles) {
+                    const profiles = Object.values(data.config.profiles);
+                    document.getElementById('status').innerHTML = `✅ Perfiles cargados: ${profiles.length} perfiles`;
+                    
+                    const profilesDiv = document.getElementById('profiles');
+                    profiles.forEach(profile => {
+                        const profileDiv = document.createElement('div');
+                        profileDiv.innerHTML = `
+                            <h3>${profile.name}</h3>
+                            <p>ID: ${profile.id}</p>
+                            <p>Descripción: ${profile.description}</p>
+                            <p>Por defecto: ${profile.is_default ? 'Sí' : 'No'}</p>
+                        `;
+                        profilesDiv.appendChild(profileDiv);
+                    });
+                    
+                    console.log(`[profiles] ✅ Perfiles cargados: ${profiles.length} perfiles`);
+                } else {
+                    console.warn('[profiles] ⚠️ No se encontraron perfiles en la respuesta, usando por defecto');
+                    console.warn('[profiles] Respuesta completa:', data);
+                    document.getElementById('status').innerHTML = '⚠️ No se encontraron perfiles';
+                }
+            } catch (error) {
+                console.error('[profiles] ❌ Error cargando perfiles:', error);
+                document.getElementById('status').innerHTML = `❌ Error: ${error.message}`;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadProfiles);
+    </script>
+</body>
+</html>

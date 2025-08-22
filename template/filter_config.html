@@ -1,0 +1,2804 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Configuración de Filtros</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <script src="/static/common.js"></script>
+</head>
+<body>
+  <div class="wrap">
+    <div class="page-header">
+      <h1>Configuración de Filtros</h1>
+      <div class="header-buttons">
+        <div class="profile-selector">
+          <div class="profile-info">
+            <select id="profileSelect" class="profile-dropdown" onchange="onProfileChange()">
+              <option value="">Seleccionar Perfil...</option>
+            </select>
+            <span id="profileModifiedIndicator" class="modified-indicator" style="display: none;">*</span>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="createNewProfile()" title="Crear nuevo perfil">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+            </svg>
+          </button>
+          <button class="btn btn-success btn-sm" onclick="saveCurrentProfile()" title="Guardar cambios en perfil actual">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z"/>
+            </svg>
+          </button>
+          <button class="btn btn-danger btn-sm" onclick="deleteCurrentProfile()" title="Eliminar perfil seleccionado">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5z"/>
+              <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+            </svg>
+          </button>
+        </div>
+        <button class="btn btn-secondary" onclick="goBackToControl()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+          </svg>
+          Volver
+        </button>
+        <button class="btn btn-secondary" onclick="restoreAllConfig()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
+            <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
+          </svg>
+          Restaurar
+        </button>
+        <button class="btn btn-primary" onclick="saveAllConfig()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z"/>
+          </svg>
+          Guardar
+        </button>
+      </div>
+    </div>
+
+    <!-- Sistema de Tabs -->
+    <div class="tabs-container">
+      <div class="tabs-header">
+        <button class="tab-button active" onclick="switchTab('filters')" id="tab-filters">
+          Filtros de Imagen
+        </button>
+        <button class="tab-button" onclick="switchTab('detection')" id="tab-detection">
+          Detección de Objetos
+        </button>
+        <button class="tab-button" onclick="switchTab('camera')" id="tab-camera">
+          Calibración de Cámara
+        </button>
+        <button class="tab-button" onclick="switchTab('camera-params')" id="tab-camera-params">
+          Parámetros de Cámara
+        </button>
+      </div>
+
+      <!-- Contenido de los Tabs -->
+      <div class="tab-content">
+        <!-- Tab 1: Filtros de Imagen -->
+        <div id="tab-filters-content" class="tab-panel active">
+          <div class="filter-config-container">
+            <!-- Información del Modo Configuración -->
+            <div class="config-mode-info">
+              <div class="info-box">
+                <h3>MODO CONFIGURACIÓN</h3>
+                <p>La imagen se procesa a través de los filtros en orden secuencial. Selecciona un checkbox para marcar el punto de procesamiento (funcionalidad pendiente).</p>
+              </div>
+            </div>
+
+            <!-- Sistema de Filtros en Cascada -->
+            <div class="cascade-filters-container">
+              <h3>Filtros de Suavizado (Orden Secuencial)</h3>
+              
+              <div class="filters-list">
+                <!-- Filtro 1 -->
+                <div class="filter-row" data-filter-id="1">
+                  <div class="filter-checkbox">
+                    <input type="checkbox" name="filterPreview" id="checkbox1" value="1">
+                    <label for="checkbox1">1</label>
+                  </div>
+                  <div class="filter-enable">
+                    <input type="checkbox" name="filterEnable" id="enable1" value="1" onchange="onFilterEnableChange(1)">
+                    <label for="enable1">Habilitar</label>
+                  </div>
+                  <div class="filter-dropdown">
+                    <select id="filter1" class="form-control" onchange="onFilterTypeChange(1)">
+                      <option value="none">Ninguno</option>
+                      <option value="default">Por defecto (Bilateral + Gaussiano + Morfológico)</option>
+                      <option value="bilateral">Bilateral</option>
+                      <option value="gaussian">Gaussiano</option>
+                      <option value="median">Mediana</option>
+                      <option value="morphological">Morfológico</option>
+                      <option value="aggressive">Agresivo</option>
+                      <option value="contour_clean">Limpieza de Contorno</option>
+                      <option value="grayscale">Grayscale</option>
+                      <option value="binary">Binary</option>
+                      <option value="noise_reduction">Reducción de Ruido</option>
+                      <option value="contrast_enhance">Mejora de Contraste</option>
+                      <option value="edge_enhance">Mejora de Bordes</option>
+                      <option value="clahe">CLAHE</option>
+                      <option value="sharpen">Agudizado</option>
+                    </select>
+                  </div>
+                  <div class="filter-config-btn">
+                    <button class="btn btn-sm btn-secondary" onclick="openFilterConfig(1)" id="configBtn1" disabled>
+                      Configurar
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Filtro 2 -->
+                <div class="filter-row" data-filter-id="2">
+                  <div class="filter-checkbox">
+                    <input type="checkbox" name="filterPreview" id="checkbox2" value="2">
+                    <label for="checkbox2">2</label>
+                  </div>
+                  <div class="filter-enable">
+                    <input type="checkbox" name="filterEnable" id="enable2" value="2" onchange="onFilterEnableChange(2)">
+                    <label for="enable2">Habilitar</label>
+                  </div>
+                  <div class="filter-dropdown">
+                    <select id="filter2" class="form-control" onchange="onFilterTypeChange(2)">
+                      <option value="none">Ninguno</option>
+                      <option value="default">Por defecto (Bilateral + Gaussiano + Morfológico)</option>
+                      <option value="bilateral">Bilateral</option>
+                      <option value="gaussian">Gaussiano</option>
+                      <option value="median">Mediana</option>
+                      <option value="morphological">Morfológico</option>
+                      <option value="aggressive">Agresivo</option>
+                      <option value="contour_clean">Limpieza de Contorno</option>
+                      <option value="grayscale">Grayscale</option>
+                      <option value="binary">Binary</option>
+                      <option value="noise_reduction">Reducción de Ruido</option>
+                      <option value="contrast_enhance">Mejora de Contraste</option>
+                      <option value="edge_enhance">Mejora de Bordes</option>
+                      <option value="clahe">CLAHE</option>
+                      <option value="sharpen">Agudizado</option>
+                    </select>
+                  </div>
+                  <div class="filter-config-btn">
+                    <button class="btn btn-sm btn-secondary" onclick="openFilterConfig(2)" id="configBtn2" disabled>
+                      Configurar
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Filtro 3 -->
+                <div class="filter-row" data-filter-id="3">
+                  <div class="filter-checkbox">
+                    <input type="checkbox" name="filterPreview" id="checkbox3" value="3">
+                    <label for="checkbox3">3</label>
+                  </div>
+                  <div class="filter-enable">
+                    <input type="checkbox" name="filterEnable" id="enable3" value="3" onchange="onFilterEnableChange(3)">
+                    <label for="enable3">Habilitar</label>
+                  </div>
+                  <div class="filter-dropdown">
+                    <select id="filter3" class="form-control" onchange="onFilterTypeChange(3)">
+                      <option value="none">Ninguno</option>
+                      <option value="default">Por defecto (Bilateral + Gaussiano + Morfológico)</option>
+                      <option value="bilateral">Bilateral</option>
+                      <option value="gaussian">Gaussiano</option>
+                      <option value="median">Mediana</option>
+                      <option value="morphological">Morfológico</option>
+                      <option value="aggressive">Agresivo</option>
+                      <option value="contour_clean">Limpieza de Contorno</option>
+                      <option value="grayscale">Grayscale</option>
+                      <option value="binary">Binary</option>
+                      <option value="noise_reduction">Reducción de Ruido</option>
+                      <option value="contrast_enhance">Mejora de Contraste</option>
+                      <option value="edge_enhance">Mejora de Bordes</option>
+                      <option value="clahe">CLAHE</option>
+                      <option value="sharpen">Agudizado</option>
+                    </select>
+                  </div>
+                  <div class="filter-config-btn">
+                    <button class="btn btn-sm btn-secondary" onclick="openFilterConfig(3)" id="configBtn3" disabled>
+                      Configurar
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Filtro 4 -->
+                <div class="filter-row" data-filter-id="4">
+                  <div class="filter-checkbox">
+                    <input type="checkbox" name="filterPreview" id="checkbox4" value="4">
+                    <label for="checkbox4">4</label>
+                  </div>
+                  <div class="filter-enable">
+                    <input type="checkbox" name="filterEnable" id="enable4" value="4" onchange="onFilterEnableChange(4)">
+                    <label for="enable4">Habilitar</label>
+                  </div>
+                  <div class="filter-dropdown">
+                    <select id="filter4" class="form-control" onchange="onFilterTypeChange(4)">
+                      <option value="none">Ninguno</option>
+                      <option value="default">Por defecto (Bilateral + Gaussiano + Morfológico)</option>
+                      <option value="bilateral">Bilateral</option>
+                      <option value="gaussian">Gaussiano</option>
+                      <option value="median">Mediana</option>
+                      <option value="morphological">Morfológico</option>
+                      <option value="aggressive">Agresivo</option>
+                      <option value="contour_clean">Limpieza de Contorno</option>
+                      <option value="grayscale">Grayscale</option>
+                      <option value="binary">Binary</option>
+                      <option value="noise_reduction">Reducción de Ruido</option>
+                      <option value="contrast_enhance">Mejora de Contraste</option>
+                      <option value="edge_enhance">Mejora de Bordes</option>
+                      <option value="clahe">CLAHE</option>
+                      <option value="sharpen">Agudizado</option>
+                    </select>
+                  </div>
+                  <div class="filter-config-btn">
+                    <button class="btn btn-sm btn-secondary" onclick="openFilterConfig(4)" id="configBtn4" disabled>
+                      Configurar
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Filtro 5 -->
+                <div class="filter-row" data-filter-id="5">
+                  <div class="filter-checkbox">
+                    <input type="checkbox" name="filterPreview" id="checkbox5" value="5">
+                    <label for="checkbox5">5</label>
+                  </div>
+                  <div class="filter-enable">
+                    <input type="checkbox" name="filterEnable" id="enable5" value="5" onchange="onFilterEnableChange(5)">
+                    <label for="enable5">Habilitar</label>
+                  </div>
+                  <div class="filter-dropdown">
+                    <select id="filter5" class="form-control" onchange="onFilterTypeChange(5)">
+                      <option value="none">Ninguno</option>
+                      <option value="default">Por defecto (Bilateral + Gaussiano + Morfológico)</option>
+                      <option value="bilateral">Bilateral</option>
+                      <option value="gaussian">Gaussiano</option>
+                      <option value="median">Mediana</option>
+                      <option value="morphological">Morfológico</option>
+                      <option value="aggressive">Agresivo</option>
+                      <option value="contour_clean">Limpieza de Contorno</option>
+                      <option value="grayscale">Grayscale</option>
+                      <option value="binary">Binary</option>
+                      <option value="noise_reduction">Reducción de Ruido</option>
+                      <option value="contrast_enhance">Mejora de Contraste</option>
+                      <option value="edge_enhance">Mejora de Bordes</option>
+                      <option value="clahe">CLAHE</option>
+                      <option value="sharpen">Agudizado</option>
+                    </select>
+                  </div>
+                  <div class="filter-config-btn">
+                    <button class="btn btn-sm btn-secondary" onclick="openFilterConfig(5)" id="configBtn5" disabled>
+                      Configurar
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Filtro 6 -->
+                <div class="filter-row" data-filter-id="6">
+                  <div class="filter-checkbox">
+                    <input type="checkbox" name="filterPreview" id="checkbox6" value="6">
+                    <label for="checkbox6">6</label>
+                  </div>
+                  <div class="filter-enable">
+                    <input type="checkbox" name="filterEnable" id="enable6" value="6" onchange="onFilterEnableChange(6)">
+                    <label for="enable6">Habilitar</label>
+                  </div>
+                  <div class="filter-dropdown">
+                    <select id="filter6" class="form-control" onchange="onFilterTypeChange(6)">
+                      <option value="none">Ninguno</option>
+                      <option value="default">Por defecto (Bilateral + Gaussiano + Morfológico)</option>
+                      <option value="bilateral">Bilateral</option>
+                      <option value="gaussian">Gaussiano</option>
+                      <option value="median">Mediana</option>
+                      <option value="morphological">Morfológico</option>
+                      <option value="aggressive">Agresivo</option>
+                      <option value="contour_clean">Limpieza de Contorno</option>
+                      <option value="grayscale">Grayscale</option>
+                      <option value="binary">Binary</option>
+                      <option value="noise_reduction">Reducción de Ruido</option>
+                      <option value="contrast_enhance">Mejora de Contraste</option>
+                      <option value="edge_enhance">Mejora de Bordes</option>
+                      <option value="clahe">CLAHE</option>
+                      <option value="sharpen">Agudizado</option>
+                    </select>
+                  </div>
+                  <div class="filter-config-btn">
+                    <button class="btn btn-sm btn-secondary" onclick="openFilterConfig(6)" id="configBtn6" disabled>
+                      Configurar
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Detección de Objetos -->
+        <div id="tab-detection-content" class="tab-panel">
+          <div class="detection-config-container">
+            <h3>Parámetros de Detección de Objetos</h3>
+            
+
+            
+            <div class="config-section">
+              
+              <div class="form-group">
+                <label for="detectionMethod">Algoritmo de Detección:</label>
+                <select id="detectionMethod" class="form-control">
+                  <option value="MOG2">MOG2 (Recomendado)</option>
+                  <option value="MOG">MOG (Más rápido)</option>
+                  <option value="KNN">KNN (Más preciso)</option>
+                </select>
+                <small class="param-description">
+                  MOG2 es el más equilibrado para la mayoría de casos. 
+                  MOG es más rápido, KNN es más preciso pero más lento.
+                </small>
+              </div>
+              
+              <div class="form-group">
+                <div class="checkbox-container">
+                  <input type="checkbox" id="backgroundSuppressionEnabled" class="form-checkbox" checked>
+                  <label for="backgroundSuppressionEnabled" class="checkbox-label">Habilitar Supresión de Fondo</label>
+                </div>
+                <small class="param-description">
+                  Desactiva si quieres detectar objetos sin aprender el fondo primero.
+                </small>
+              </div>
+              
+              <div class="form-group">
+                <div class="checkbox-container">
+                  <input type="checkbox" id="polygonRestrictionEnabled" class="form-checkbox" checked>
+                  <label for="polygonRestrictionEnabled" class="checkbox-label">Limitar Detección al Área del Polígono</label>
+                </div>
+                <small class="param-description">
+                  Cuando está activado, solo detecta objetos dentro del área del polígono. 
+                  Cuando está desactivado, detecta objetos en toda la imagen.
+                </small>
+              </div>
+              
+            </div>
+            
+            <div class="config-section">
+              <h4>Parámetros de Detección</h4>
+              
+              <div class="form-group">
+                <label for="varThreshold">Sensibilidad (Umbral de Variación):</label>
+                <div class="range-container">
+                  <input type="range" id="varThreshold" min="1" max="100" step="1" value="25" class="range-slider">
+                  <label class="slider-value" id="varThresholdValue">25</label>
+                </div>
+                <small class="param-description">
+                  Valores bajos = más sensible, Valores altos = menos falsos positivos
+                </small>
+              </div>
+              
+              <div class="form-group">
+                <label for="detectShadows">Detección de Sombras:</label>
+                <select id="detectShadows" class="form-control">
+                  <option value="false">Desactivada</option>
+                  <option value="true">Activada</option>
+                </select>
+                <small class="param-description">
+                  Útil en entornos con iluminación variable.
+                </small>
+              </div>
+            </div>
+            
+            <div class="config-section">
+              <h4>Configuración de Entrenamiento</h4>
+              
+
+              
+              <div class="form-group">
+                <label for="trainingTime">Tiempo de Entrenamiento (ms):</label>
+                <div class="range-container">
+                  <input type="range" id="trainingTime" min="1000" max="30000" step="500" value="5000" class="range-slider">
+                  <label class="slider-value" id="trainingTimeValue">5000</label>
+                </div>
+                <small class="param-description">
+                  Define el tiempo en milisegundos que durará el entrenamiento del modelo de fondo. 
+                  Tiempos más largos producen modelos más robustos pero requieren más paciencia.
+                  Recomendado: 5000-10000ms para entornos estables, 15000-20000ms para entornos variables.
+                </small>
+              </div>
+              
+              <div class="form-group">
+                <label for="trainingProgress">Mostrar Progreso:</label>
+                <select id="trainingProgress" class="form-control">
+                  <option value="true">Activado</option>
+                  <option value="false">Desactivado</option>
+                </select>
+                <small class="param-description">
+                  Muestra una barra de progreso durante el entrenamiento. Útil para monitorear el avance.
+                </small>
+              </div>
+            </div>
+            
+            <div class="config-section">
+              <h4>Configuración de Contornos</h4>
+              
+              <div class="form-group">
+                <label for="minContourArea">Área mínima de contorno:</label>
+                <div class="range-container">
+                  <input type="range" id="minContourArea" min="100" max="10000" step="100" value="1000" class="range-slider">
+                  <label class="slider-value" id="minContourAreaValue">1000</label>
+                </div>
+                <small class="param-description">
+                  Define el tamaño mínimo que debe tener un contorno para ser considerado un objeto válido. 
+                  Valores más altos ignoran objetos pequeños y ruido.
+                </small>
+              </div>
+
+              <div class="form-group">
+                <label for="maxContourArea">Área máxima de contorno:</label>
+                <div class="range-container">
+                  <input type="range" id="maxContourArea" min="1000" max="50000" step="1000" value="20000" class="range-slider">
+                  <label class="slider-value" id="maxContourAreaValue">20000</label>
+                </div>
+                <small class="param-description">
+                  Define el tamaño máximo que puede tener un contorno para ser considerado un objeto válido. 
+                  Valores más bajos ignoran objetos muy grandes.
+                </small>
+              </div>
+
+              <div class="form-group">
+                <label for="contourApproximation">Precisión de aproximación:</label>
+                <div class="range-container">
+                  <input type="range" id="contourApproximation" min="0.01" max="0.1" step="0.01" value="0.02" class="range-slider">
+                  <label class="slider-value" id="contourApproximationValue">0.02</label>
+                </div>
+                <small class="param-description">
+                  Controla qué tan precisa debe ser la aproximación del contorno. 
+                  Valores más bajos producen contornos más detallados pero más ruidosos.
+                </small>
+              </div>
+            </div>
+
+            <div class="config-section">
+              <h4>Configuración de Umbral</h4>
+              
+              <div class="form-group">
+                <label for="thresholdValue">Valor de umbral:</label>
+                <div class="range-container">
+                  <input type="range" id="thresholdValue" min="0" max="255" value="128" class="range-slider">
+                  <label class="slider-value" id="thresholdValueValue">128</label>
+                </div>
+                <small class="param-description">
+                  Define el umbral para convertir la imagen a binaria. 
+                  Píxeles por encima de este valor se convierten en blancos, los demás en negros.
+                </small>
+              </div>
+
+              <div class="form-group">
+                <label for="thresholdType">Tipo de umbral:</label>
+                <select id="thresholdType" class="form-control">
+                  <option value="binary">Binario</option>
+                  <option value="binary_inv">Binario Invertido</option>
+                  <option value="trunc">Truncado</option>
+                  <option value="tozero">A Cero</option>
+                  <option value="tozero_inv">A Cero Invertido</option>
+                </select>
+                <small class="param-description">
+                  Define cómo se aplica el umbral a la imagen. 
+                  Cada tipo produce diferentes resultados según el tipo de imagen.
+                </small>
+              </div>
+            </div>
+
+            <div class="config-section">
+              <h4>Configuración de Filtrado</h4>
+              
+              <div class="form-group">
+                <label for="aspectRatioMin">Relación de aspecto mínima:</label>
+                <div class="range-container">
+                  <input type="range" id="aspectRatioMin" min="0.1" max="2.0" step="0.1" value="0.5" class="range-slider">
+                  <label class="slider-value" id="aspectRatioMinValue">0.5</label>
+                </div>
+                <small class="param-description">
+                  Filtra objetos cuya relación ancho/alto sea menor que este valor. 
+                  Útil para eliminar objetos muy alargados o muy anchos.
+                </small>
+              </div>
+
+              <div class="form-group">
+                <label for="aspectRatioMax">Relación de aspecto máxima:</label>
+                <div class="range-container">
+                  <input type="range" id="aspectRatioMax" min="0.5" max="5.0" step="0.1" value="2.0" class="range-slider">
+                  <label class="slider-value" id="aspectRatioMaxValue">2.0</label>
+                </div>
+                <small class="param-description">
+                  Filtra objetos cuya relación ancho/alto sea mayor que este valor. 
+                  Complementa el filtro de relación mínima.
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+        <!-- Tab 4: Calibración de Cámara -->
+        <div id="tab-camera-content" class="tab-panel">
+          <div class="camera-calibration-container">
+            <h3>Calibración de Cámara</h3>
+            
+            <div class="calibration-section">
+              <h4>Configuración de Calibración</h4>
+              
+              <div class="form-group">
+                <label for="cameraMatrix">Matriz de Calibración (K):</label>
+                <textarea id="cameraMatrix" class="form-control" rows="3" readonly></textarea>
+                <small class="param-description">
+                  Matriz de 3x3 que describe la relación entre el mundo y la imagen.
+                </small>
+              </div>
+
+              <div class="form-group">
+                <label for="distCoeffs">Coeficientes de Distorsión (D):</label>
+                <textarea id="distCoeffs" class="form-control" rows="3" readonly></textarea>
+                <small class="param-description">
+                  Vector de 5x1 que describe la distorsión radial y tangencial de la lente.
+                </small>
+              </div>
+
+              <div class="form-group">
+                <label for="newCameraMatrix">Matriz de Calibración Re-calibrada (K'):</label>
+                <textarea id="newCameraMatrix" class="form-control" rows="3" readonly></textarea>
+                <small class="param-description">
+                  Matriz de 3x3 que describe la relación entre el mundo y la imagen después de la calibración.
+                </small>
+              </div>
+            </div>
+
+            <div class="calibration-section">
+              <h4>Parámetros de Calibración</h4>
+              
+              <div class="form-group">
+                <label for="calibrationSquareSize">Tamaño de la Cuadricula (mm):</label>
+                <div class="range-container">
+                  <input type="range" id="calibrationSquareSize" min="10" max="50" step="5" value="20" class="range-slider">
+                  <label class="slider-value" id="calibrationSquareSizeValue">20</label>
+                </div>
+                <small class="param-description">
+                  Define el tamaño real de un cuadrado en la cuadrícula de calibración.
+                </small>
+              </div>
+
+              <div class="form-group">
+                <label for="calibrationChessboardRows">Filas de la Cuadricula:</label>
+                <div class="range-container">
+                  <input type="range" id="calibrationChessboardRows" min="3" max="10" step="1" value="7" class="range-slider">
+                  <label class="slider-value" id="calibrationChessboardRowsValue">7</label>
+                </div>
+                <small class="param-description">
+                  Número de filas de cuadrados en la cuadrícula.
+                </small>
+              </div>
+
+              <div class="form-group">
+                <label for="calibrationChessboardCols">Columnas de la Cuadricula:</label>
+                <div class="range-container">
+                  <input type="range" id="calibrationChessboardCols" min="3" max="10" step="1" value="7" class="range-slider">
+                  <label class="slider-value" id="calibrationChessboardColsValue">7</label>
+                </div>
+                <small class="param-description">
+                  Número de columnas de cuadrados en la cuadrícula.
+                </small>
+              </div>
+            </div>
+
+            <div class="calibration-section">
+              <h4>Configuración de Calibración</h4>
+              
+              <div class="form-group">
+                <label for="calibrationFlags">Flags de Calibración:</label>
+                <select id="calibrationFlags" class="form-control">
+                  <option value="0">Ninguno</option>
+                  <option value="1">Calibración de Distorsión</option>
+                  <option value="2">Calibración de Distorsión + Re-calibración</option>
+                  <option value="4">Calibración de Distorsión + Re-calibración + Optimización</option>
+                </select>
+                <small class="param-description">
+                  Define qué tipo de calibración se realiza.
+                </small>
+              </div>
+
+              <div class="form-group">
+                <label for="calibrationIterations">Iteraciones de Optimización:</label>
+                <div class="range-container">
+                  <input type="range" id="calibrationIterations" min="10" max="100" step="10" value="30" class="range-slider">
+                  <label class="slider-value" id="calibrationIterationsValue">30</label>
+                </div>
+                <small class="param-description">
+                  Número de iteraciones para optimizar los parámetros de calibración.
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 5: Parámetros de Cámara -->
+        <div id="tab-camera-params-content" class="tab-panel">
+          <div class="camera-params-container">
+            <h3>Parámetros de Cámara</h3>
+            
+            <div class="params-section">
+              <h4>Configuración de Parámetros</h4>
+              
+              <div class="form-group">
+                <label for="cameraResolution">Resolución de la Cámara:</label>
+                <select id="cameraResolution" class="form-control">
+                  <option value="320x240">320x240 (QVGA)</option>
+                  <option value="640x480" selected>640x480 (VGA)</option>
+                  <option value="800x600">800x600 (SVGA)</option>
+                  <option value="1024x768">1024x768 (XGA)</option>
+                  <option value="1280x720">1280x720 (HD)</option>
+                  <option value="1280x960">1280x960</option>
+                  <option value="1600x1200">1600x1200 (UXGA)</option>
+                  <option value="1920x1080">1920x1080 (Full HD)</option>
+                  <option value="2560x1440">2560x1440 (2K)</option>
+                  <option value="3840x2160">3840x2160 (4K)</option>
+                </select>
+                <small class="param-description">
+                  Selecciona la resolución estándar para la captura de video. 
+                  Resoluciones más altas proporcionan mejor calidad pero requieren más recursos.
+                </small>
+              </div>
+
+              <div class="form-group">
+                <label for="cameraFPS">FPS (Frames por Segundo):</label>
+                <div class="range-container">
+                  <input type="range" id="cameraFPS" min="1" max="30" step="1" value="10" class="range-slider">
+                  <label class="slider-value" id="cameraFPSValue">10</label>
+                </div>
+                <small class="param-description">
+                  Define la tasa de refresco de la cámara.
+                </small>
+              </div>
+            </div>
+
+            <div class="params-section">
+              <h4>Configuración de Calibración</h4>
+              
+              <div class="form-group">
+                <label for="cameraCalibrationSquareSize">Tamaño de la Cuadricula (mm):</label>
+                <div class="range-container">
+                  <input type="range" id="cameraCalibrationSquareSize" min="10" max="50" step="5" value="20" class="range-slider">
+                  <label class="slider-value" id="cameraCalibrationSquareSizeValue">20</label>
+                </div>
+                <small class="param-description">
+                  Define el tamaño real de un cuadrado en la cuadrícula de calibración.
+                </small>
+              </div>
+
+              <div class="form-group">
+                <label for="cameraCalibrationChessboardRows">Filas de la Cuadricula:</label>
+                <div class="range-container">
+                  <input type="range" id="cameraCalibrationChessboardRows" min="3" max="10" step="1" value="7" class="range-slider">
+                  <label class="slider-value" id="cameraCalibrationChessboardRowsValue">7</label>
+                </div>
+                <small class="param-description">
+                  Número de filas de cuadrados en la cuadrícula.
+                </small>
+              </div>
+
+              <div class="form-group">
+                <label for="cameraCalibrationChessboardCols">Columnas de la Cuadricula:</label>
+                <div class="range-container">
+                  <input type="range" id="cameraCalibrationChessboardCols" min="3" max="10" step="1" value="7" class="range-slider">
+                  <label class="slider-value" id="cameraCalibrationChessboardColsValue">7</label>
+                </div>
+                <small class="param-description">
+                  Número de columnas de cuadrados en la cuadrícula.
+                </small>
+              </div>
+            </div>
+
+            <div class="params-section">
+              <h4>Configuración de Calibración</h4>
+              
+              <div class="form-group">
+                <label for="cameraCalibrationFlags">Flags de Calibración:</label>
+                <select id="cameraCalibrationFlags" class="form-control">
+                  <option value="0">Ninguno</option>
+                  <option value="1">Calibración de Distorsión</option>
+                  <option value="2">Calibración de Distorsión + Re-calibración</option>
+                  <option value="4">Calibración de Distorsión + Re-calibración + Optimización</option>
+                </select>
+                <small class="param-description">
+                  Define qué tipo de calibración se realiza.
+                </small>
+              </div>
+
+              <div class="form-group">
+                <label for="cameraCalibrationIterations">Iteraciones de Optimización:</label>
+                <div class="range-container">
+                  <input type="range" id="cameraCalibrationIterations" min="10" max="100" step="10" value="30" class="range-slider">
+                  <label class="slider-value" id="cameraCalibrationIterationsValue">30</label>
+                </div>
+                <small class="param-description">
+                  Número de iteraciones para optimizar los parámetros de calibración.
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección de Estado -->
+    <div id="statusMessage" class="status-message" style="display: none;"></div>
+  </div>
+
+
+
+  <!-- Modal de Configuración de Filtro -->
+  <div id="filterConfigModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modalTitle">Configurar Filtro</h3>
+        <button class="modal-close" onclick="closeFilterConfigModal()">&times;</button>
+      </div>
+      <div class="modal-body" id="modalBody">
+        <!-- El contenido se genera dinámicamente según el tipo de filtro -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="restoreFilterParams()">Restaurar</button>
+        <button class="btn btn-secondary" onclick="closeFilterConfigModal()">Cancelar</button>
+        <button class="btn btn-primary" onclick="acceptFilterParams()">Aceptar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    console.log('[filter_config] Página de configuración de filtros cargada');
+
+    // Variables globales
+    let currentFilterConfig = {};
+    let originalFilterParams = {};
+    let currentEditingFilter = null;
+
+    // Función para cambiar entre tabs
+    function switchTab(tabName) {
+      // Ocultar todos los paneles
+      const panels = document.querySelectorAll('.tab-panel');
+      panels.forEach(panel => panel.classList.remove('active'));
+      
+      // Desactivar todos los botones
+      const buttons = document.querySelectorAll('.tab-button');
+      buttons.forEach(button => button.classList.remove('active'));
+      
+      // Mostrar el panel seleccionado
+      const selectedPanel = document.getElementById(`tab-${tabName}-content`);
+      if (selectedPanel) {
+        selectedPanel.classList.add('active');
+      }
+      
+      // Activar el botón seleccionado
+      const selectedButton = document.getElementById(`tab-${tabName}`);
+      if (selectedButton) {
+        selectedButton.classList.add('active');
+      }
+    }
+
+    // Función para volver a la página de control
+    async function goBackToControl() {
+      try {
+        // Desactivar modo configuración antes de salir
+        await Common.fetchWithTimeout('/api/cascade_filters/config_mode?enabled=false', {
+          method: 'GET'
+        });
+      } catch (error) {
+        console.error('[filter_config] Error desactivando modo configuración:', error);
+      }
+      
+      // Notificar al padre que se está cerrando la página de configuración
+      if (window.parent) {
+        window.parent.postMessage({
+          type: 'filter_config_closed'
+        }, '*');
+      }
+      
+      if (window.parent && window.parent.setLeftPane) {
+        window.parent.setLeftPane('control');
+      } else {
+        window.location.href = '/template/control.html';
+      }
+    }
+
+    // Función para restaurar toda la configuración desde el JSON
+    async function restoreAllConfig() {
+      try {
+        console.log('[filter_config] Restaurando toda la configuración...');
+        
+        // Cargar configuración desde el backend
+        const response = await Common.fetchWithTimeout('/api/cascade_filters/config', {
+          method: 'GET'
+        });
+        
+        const data = await response.json();
+        if (data.ok) {
+          // Obtener el perfil activo
+          const activeProfileId = data.config.active_profile || 'default-balanced';
+          const activeProfile = data.config.profiles?.[activeProfileId];
+          
+          if (activeProfile && activeProfile.config) {
+            // Restaurar configuración de filtros en cascada
+            loadInitialConfig({ cascade_filters: activeProfile.config.cascade_filters });
+            
+            // Restaurar configuración de detección
+            loadDetectionConfig({ detection: activeProfile.config.detection });
+            
+            // Actualizar el selector de perfil
+            updateProfileSelector(activeProfileId);
+          } else {
+            // Fallback a configuración antigua
+            loadInitialConfig(data.config);
+            loadDetectionConfig(data.config);
+          }
+          
+          showStatus('Configuración restaurada exitosamente', 'success');
+        } else {
+          showStatus('Error al cargar la configuración', 'error');
+        }
+      } catch (error) {
+        console.error('[filter_config] Error restaurando configuración:', error);
+        showStatus('Error al restaurar la configuración', 'error');
+      }
+    }
+    
+    // Funciones auxiliares para manejar perfiles
+    function getActiveProfileId() {
+      const profileSelect = document.getElementById('profileSelect');
+      return profileSelect ? profileSelect.value : 'default-balanced';
+    }
+    
+    function getProfileName(profileId) {
+      const profileNames = {
+        'default-balanced': 'Equilibrado',
+        'sensitive': 'Sensible',
+        'strict': 'Estricto'
+      };
+      return profileNames[profileId] || 'Sin nombre';
+    }
+    
+    function getProfileDescription(profileId) {
+      const profileDescriptions = {
+        'default-balanced': 'Configuración equilibrada para detección general',
+        'sensitive': 'Configuración sensible para detectar objetos pequeños',
+        'strict': 'Configuración estricta para detectar solo objetos grandes'
+      };
+      return profileDescriptions[profileId] || '';
+    }
+    
+    function updateProfileSelector(activeProfileId) {
+      console.log('[profiles] Actualizando selector de perfil activo:', activeProfileId);
+      const profileSelect = document.getElementById('profileSelect');
+      if (profileSelect) {
+        // Verificar que el perfil existe en las opciones
+        const optionExists = Array.from(profileSelect.options).some(option => option.value === activeProfileId);
+        if (optionExists) {
+          profileSelect.value = activeProfileId;
+          console.log('[profiles] ✅ Perfil activo establecido:', activeProfileId);
+        } else {
+          console.warn('[profiles] ⚠️ Perfil activo no encontrado en las opciones:', activeProfileId);
+          // Establecer el primer perfil disponible si el activo no existe
+          if (profileSelect.options.length > 1) {
+            profileSelect.value = profileSelect.options[1].value;
+            console.log('[profiles] Establecido primer perfil disponible:', profileSelect.options[1].value);
+          }
+        }
+      } else {
+        console.error('[profiles] ❌ No se encontró el elemento select#profileSelect');
+      }
+    }
+
+    // Función para guardar toda la configuración en el JSON
+    async function saveAllConfig() {
+      try {
+        console.log('[filter_config] Guardando toda la configuración...');
+        
+        // Obtener el perfil activo
+        const activeProfileId = getActiveProfileId();
+        
+        // Recopilar toda la configuración
+        const config = {
+          active_profile: activeProfileId,
+          profiles: {
+            [activeProfileId]: {
+              id: activeProfileId,
+              name: getProfileName(activeProfileId),
+              description: getProfileDescription(activeProfileId),
+              is_default: activeProfileId === 'default-balanced',
+              config: {
+                cascade_filters: collectFilterConfig(),
+                detection: collectDetectionConfig()
+              }
+            }
+          }
+        };
+        
+        // Guardar en el backend
+        const response = await Common.fetchWithTimeout('/api/cascade_filters/save', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(config)
+        });
+        
+        const data = await response.json();
+        if (data.ok) {
+          showStatus('Configuración guardada exitosamente', 'success');
+        } else {
+          showStatus('Error al guardar la configuración', 'error');
+        }
+      } catch (error) {
+        console.error('[filter_config] Error guardando configuración:', error);
+        showStatus('Error al guardar la configuración', 'error');
+      }
+    }
+
+    // Función para manejar cambios en el tipo de filtro
+    async function onFilterTypeChange(filterId) {
+      const select = document.getElementById(`filter${filterId}`);
+      const configBtn = document.getElementById(`configBtn${filterId}`);
+      const filterType = select.value;
+      
+      // Habilitar/deshabilitar botón de configuración
+      // Solo grayscale no requiere configuración
+      configBtn.disabled = filterType === 'none' || filterType === 'grayscale';
+      
+      // Actualizar filtro en el backend
+      try {
+        const response = await Common.fetchWithTimeout('/api/cascade_filters/update', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            filter_id: filterId,
+            filter_type: filterType,
+            params: {}
+          })
+        });
+        
+        const data = await response.json();
+        if (data.ok) {
+          console.log(`[filter_config] Filtro ${filterId} actualizado: ${filterType}`);
+        } else {
+          console.error(`[filter_config] Error actualizando filtro: ${data.message}`);
+        }
+      } catch (error) {
+        console.error(`[filter_config] Error actualizando filtro ${filterId}:`, error);
+      }
+    }
+
+    // Función para abrir configuración de filtro
+    function openFilterConfig(filterId) {
+      const select = document.getElementById(`filter${filterId}`);
+      const filterType = select.value;
+      
+      if (filterType === 'none' || filterType === 'grayscale') {
+        showStatus('Este filtro no requiere configuración', 'info');
+        return;
+      }
+      
+      if (window.parent && window.parent.setLeftPane) {
+        // Si estamos en un iframe, comunicarnos con el padre
+        window.parent.setLeftPane('filter_specific_config');
+        // Actualizar la URL del iframe con parámetros codificados
+        const url = `/template/filter_specific_config.html?filterId=${encodeURIComponent(filterId)}&filterType=${encodeURIComponent(filterType)}`;
+        window.parent.document.getElementById('leftFrame').src = url;
+      } else {
+        // Fallback: redirigir directamente
+        const url = `/template/filter_specific_config.html?filterId=${encodeURIComponent(filterId)}&filterType=${encodeURIComponent(filterType)}`;
+        window.location.href = url;
+      }
+    }
+
+    // Función para manejar comportamiento exclusivo de checkboxes
+    async function handleExclusiveCheckboxes(changedCheckbox) {
+      // Si el checkbox que se cambió está marcado, desmarcar todos los demás
+      if (changedCheckbox.checked) {
+        const allCheckboxes = document.querySelectorAll('input[name="filterPreview"]');
+        allCheckboxes.forEach(checkbox => {
+          if (checkbox !== changedCheckbox) {
+            checkbox.checked = false;
+          }
+        });
+      }
+      
+      console.log(`[filter_config] Checkbox ${changedCheckbox.value} ${changedCheckbox.checked ? 'activado' : 'desactivado'}`);
+      
+      // Actualizar preview en el dashboard
+      if (window.parent) {
+        try {
+          const filterId = parseInt(changedCheckbox.value);
+          
+          if (changedCheckbox.checked) {
+            // Enviar configuración de preview con el filtro seleccionado
+            const response = await Common.fetchWithTimeout('/api/webcam/filter_preview', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                filter_name: 'original',
+                cascade_preview: [filterId]
+              })
+            });
+            
+            const data = await response.json();
+            if (data.ok) {
+              console.log(`[filter_config] Preview actualizado con filtro ${filterId}`);
+              // Notificar al dashboard para recargar el stream
+              window.parent.postMessage({
+                type: 'update_preview',
+                filterId: filterId
+              }, '*');
+            }
+          } else {
+            // Desactivar preview, mostrar cámara cruda
+            const response = await Common.fetchWithTimeout('/api/webcam/filter_preview', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                filter_name: 'original',
+                cascade_preview: []
+              })
+            });
+            
+            const data = await response.json();
+            if (data.ok) {
+              console.log(`[filter_config] Preview desactivado`);
+              // Notificar al dashboard para recargar el stream
+              window.parent.postMessage({
+                type: 'update_preview',
+                filterId: null
+              }, '*');
+            }
+          }
+        } catch (error) {
+          console.error('[filter_config] Error actualizando preview:', error);
+        }
+      }
+    }
+
+    // Función para manejar cambios en la habilitación de filtros
+    async function onFilterEnableChange(filterId) {
+      const enableCheckbox = document.getElementById(`enable${filterId}`);
+      const enabled = enableCheckbox.checked;
+      
+      // Marcar que el perfil ha sido modificado
+      if (currentProfileId) {
+        isProfileModified = true;
+      }
+      
+      try {
+        // Actualizar el estado de habilitación en el backend
+        const response = await Common.fetchWithTimeout('/api/cascade_filters/enable', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            filter_id: filterId,
+            enabled: enabled
+          })
+        });
+        
+        const data = await response.json();
+        if (data.ok) {
+          console.log(`[filter_config] Filtro ${filterId} ${enabled ? 'habilitado' : 'deshabilitado'}`);
+          showStatus(`Filtro ${filterId} ${enabled ? 'habilitado' : 'deshabilitado'}`, 'success');
+        } else {
+          console.error(`[filter_config] Error cambiando estado del filtro: ${data.message}`);
+          showStatus('Error cambiando estado del filtro', 'error');
+          // Revertir el checkbox si hubo error
+          enableCheckbox.checked = !enabled;
+        }
+      } catch (error) {
+        console.error(`[filter_config] Error cambiando estado del filtro ${filterId}:`, error);
+        showStatus('Error cambiando estado del filtro', 'error');
+        // Revertir el checkbox si hubo error
+        enableCheckbox.checked = !enabled;
+      }
+    }
+
+    // Función para mostrar mensajes de estado
+    function showStatus(message, type = 'info') {
+      const statusElement = document.getElementById('statusMessage');
+      statusElement.textContent = message;
+      statusElement.className = `status-message ${type}`;
+      statusElement.style.display = 'block';
+      
+      setTimeout(() => {
+        statusElement.style.display = 'none';
+      }, 5000);
+    }
+
+    // Función para cargar configuración inicial
+    async function loadInitialConfig(config = null) {
+      try {
+        let configData;
+        
+        if (config) {
+          // Usar configuración proporcionada
+          configData = config;
+        } else {
+          // Cargar configuración desde el servidor
+          const response = await Common.fetchWithTimeout('/api/cascade_filters/config', {
+            method: 'GET'
+          });
+          
+          const data = await response.json();
+          if (!data.ok) {
+            console.error('[filter_config] Error cargando configuración del servidor');
+            return;
+          }
+          configData = data.config;
+        }
+        
+        // Obtener el perfil activo
+        const activeProfileId = configData.active_profile || 'default-balanced';
+        const activeProfile = configData.profiles?.[activeProfileId];
+        
+        if (activeProfile && activeProfile.config && activeProfile.config.cascade_filters) {
+          // Cargar configuración de filtros del perfil activo
+          activeProfile.config.cascade_filters.forEach(filter => {
+            const select = document.getElementById(`filter${filter.id}`);
+            const configBtn = document.getElementById(`configBtn${filter.id}`);
+            const enableCheckbox = document.getElementById(`enable${filter.id}`);
+            
+            if (select) {
+              select.value = filter.type;
+              configBtn.disabled = filter.type === 'none' || filter.type === 'grayscale';
+            }
+            
+            // Cargar estado de habilitación
+            if (enableCheckbox) {
+              enableCheckbox.checked = filter.enabled || false;
+            }
+          });
+          
+          console.log(`[filter_config] Configuración del perfil "${activeProfile.name}" cargada`);
+        } else {
+          console.warn('[filter_config] No se encontró configuración de filtros en el perfil activo');
+        }
+        
+        // Activar modo configuración automáticamente
+        await activateConfigMode();
+        
+        console.log('[filter_config] Configuración inicial cargada y modo configuración activado');
+      } catch (error) {
+        console.error('[filter_config] Error cargando configuración inicial:', error);
+      }
+    }
+
+    // Función para activar modo configuración
+    async function activateConfigMode() {
+      try {
+        const response = await Common.fetchWithTimeout('/api/cascade_filters/config_mode?enabled=true', {
+          method: 'GET'
+        });
+        
+        const data = await response.json();
+        if (data.ok) {
+          console.log('[filter_config] Modo configuración activado');
+        } else {
+          console.error('[filter_config] Error activando modo configuración');
+        }
+      } catch (error) {
+        console.error('[filter_config] Error activando modo configuración:', error);
+      }
+    }
+
+    // Funciones para cargar configuración de cada tab
+    function loadDetectionConfig(config) {
+      // Manejar tanto la estructura antigua (detection_params) como la nueva (detection)
+      const detection = config.detection || config.detection_params || {};
+      
+      if (detection) {
+        
+        // Cargar método de detección
+        if (detection.detection_method) {
+          document.getElementById('detectionMethod').value = detection.detection_method;
+        }
+        
+        if (detection.var_threshold) {
+          document.getElementById('varThreshold').value = detection.var_threshold;
+          document.getElementById('varThresholdValue').textContent = detection.var_threshold;
+        }
+        
+        if (detection.detect_shadows !== undefined) {
+          document.getElementById('detectShadows').value = detection.detect_shadows.toString();
+        }
+        
+        // Configuración de entrenamiento
+        if (detection.training_time) {
+          document.getElementById('trainingTime').value = detection.training_time;
+          document.getElementById('trainingTimeValue').textContent = detection.training_time;
+        }
+        
+        if (detection.show_progress !== undefined) {
+          document.getElementById('trainingProgress').value = detection.show_progress.toString();
+        }
+        
+        // Cargar valores de sliders
+        if (detection.min_contour_area) {
+          document.getElementById('minContourArea').value = detection.min_contour_area;
+          document.getElementById('minContourAreaValue').textContent = detection.min_contour_area;
+        }
+        
+        if (detection.max_contour_area) {
+          document.getElementById('maxContourArea').value = detection.max_contour_area;
+          document.getElementById('maxContourAreaValue').textContent = detection.max_contour_area;
+        }
+        
+        if (detection.contour_approximation) {
+          document.getElementById('contourApproximation').value = detection.contour_approximation;
+          document.getElementById('contourApproximationValue').textContent = detection.contour_approximation;
+        }
+        
+        if (detection.threshold_value) {
+          document.getElementById('thresholdValue').value = detection.threshold_value;
+          document.getElementById('thresholdValueValue').textContent = detection.threshold_value;
+        }
+        
+        if (detection.threshold_type) {
+          document.getElementById('thresholdType').value = detection.threshold_type;
+        }
+        
+        if (detection.aspect_ratio_min) {
+          document.getElementById('aspectRatioMin').value = detection.aspect_ratio_min;
+          document.getElementById('aspectRatioMinValue').textContent = detection.aspect_ratio_min;
+        }
+        
+        if (detection.aspect_ratio_max) {
+          document.getElementById('aspectRatioMax').value = detection.aspect_ratio_max;
+          document.getElementById('aspectRatioMaxValue').textContent = detection.aspect_ratio_max;
+        }
+        
+        // Cargar parámetros adicionales si existen
+        if (detection.contour_polish_enabled !== undefined) {
+          const checkbox = document.getElementById('backgroundSuppressionEnabled');
+          if (checkbox) {
+            checkbox.checked = detection.contour_polish_enabled;
+          }
+        }
+        
+        if (detection.polygon_restriction_enabled !== undefined) {
+          const checkbox = document.getElementById('polygonRestrictionEnabled');
+          if (checkbox) {
+            checkbox.checked = detection.polygon_restriction_enabled;
+          }
+        }
+        
+        if (detection.epsilon_factor) {
+          document.getElementById('contourApproximation').value = detection.epsilon_factor;
+          document.getElementById('contourApproximationValue').textContent = detection.epsilon_factor;
+        }
+        
+        console.log('[detection] Configuración de detección cargada');
+      }
+    }
+
+    // ============================================================
+    // SISTEMA DE PERFILES SIMPLIFICADO
+    // ============================================================
+    
+    let profiles = [];
+    let currentProfileId = null;
+    
+    // Cargar perfiles al iniciar
+    async function loadProfiles() {
+      console.log('[profiles] ==========================================');
+      console.log('[profiles] INICIANDO CARGA DE PERFILES');
+      console.log('[profiles] ==========================================');
+      console.log('[profiles] Common.fetchWithTimeout disponible:', typeof Common.fetchWithTimeout);
+      console.log('[profiles] Common disponible:', typeof Common);
+      
+      try {
+        // Cargar desde el archivo principal de configuración
+        console.log('[profiles] Haciendo petición a /api/cascade_filters/config...');
+        const response = await Common.fetchWithTimeout('/api/cascade_filters/config', {
+          method: 'GET'
+        });
+        
+        console.log('[profiles] Respuesta recibida:', response.status);
+        console.log('[profiles] Headers de respuesta:', response.headers);
+        
+        const data = await response.json();
+        console.log('[profiles] Datos recibidos (estructura):', {
+          ok: data.ok,
+          hasConfig: !!data.config,
+          hasProfiles: !!(data.config && data.config.profiles),
+          profilesCount: data.config && data.config.profiles ? Object.keys(data.config.profiles).length : 0,
+          activeProfile: data.config ? data.config.active_profile : 'undefined'
+        });
+        
+        if (data.ok && data.config && data.config.profiles) {
+          // Convertir el objeto de perfiles a array
+          profiles = Object.values(data.config.profiles);
+          console.log('[profiles] Perfiles convertidos a array:', profiles.length, 'perfiles');
+          console.log('[profiles] IDs de perfiles encontrados:', profiles.map(p => p.id));
+          
+          // Actualizar dropdown primero
+          updateProfileDropdown();
+          
+          // Esperar un momento para asegurar que el dropdown se actualice
+          setTimeout(() => {
+            // Establecer el perfil activo después de que el dropdown esté listo
+            const activeProfileId = data.config.active_profile || 'default-balanced';
+            console.log('[profiles] Perfil activo configurado:', activeProfileId);
+            updateProfileSelector(activeProfileId);
+            
+            console.log(`[profiles] ✅ CARGA EXITOSA: ${profiles.length} perfiles cargados, activo: ${activeProfileId}`);
+            console.log('[profiles] ==========================================');
+          }, 100);
+        } else {
+          console.warn('[profiles] ⚠️ No se encontraron perfiles en la respuesta');
+          console.warn('[profiles] Estructura de datos recibida:', {
+            ok: data.ok,
+            hasConfig: !!data.config,
+            hasProfiles: !!(data.config && data.config.profiles),
+            configKeys: data.config ? Object.keys(data.config) : 'no config'
+          });
+          console.warn('[profiles] Respuesta completa:', data);
+          
+          profiles = getDefaultProfiles();
+          console.log('[profiles] Usando perfiles por defecto:', profiles.length, 'perfiles');
+          updateProfileDropdown();
+          console.log('[profiles] ==========================================');
+        }
+      } catch (error) {
+        console.error('[profiles] ❌ ERROR CARGANDO PERFILES:', error);
+        console.error('[profiles] Stack trace:', error.stack);
+        // Usar perfiles por defecto si hay error
+        profiles = getDefaultProfiles();
+        console.log('[profiles] Usando perfiles por defecto debido al error:', profiles.length, 'perfiles');
+        updateProfileDropdown();
+        console.log('[profiles] ==========================================');
+      }
+    }
+    
+    function getDefaultProfiles() {
+      return [
+        {
+          id: 'default-balanced',
+          name: 'Equilibrado',
+          description: 'Configuración equilibrada para detección general',
+          is_default: true,
+          config: {
+            cascade_filters: [
+              { id: 1, enabled: false, type: 'grayscale', params: {} },
+              { id: 2, enabled: false, type: 'noise_reduction', params: { h: 10 } },
+              { id: 3, enabled: false, type: 'bilateral', params: { d: 12, sigma_color: 75, sigma_space: 75 } },
+              { id: 4, enabled: false, type: 'gaussian', params: { kernel_size: 7, sigma: 1.5 } },
+              { id: 5, enabled: false, type: 'contrast_enhance', params: { alpha: 1.3, beta: 20 } },
+              { id: 6, enabled: false, type: 'edge_enhance', params: { strength: 0.5 } }
+            ],
+            detection: {
+              detection_method: 'MOG2',
+              var_threshold: 25,
+              detect_shadows: false,
+              training_time: 5000,
+              show_progress: true,
+              min_contour_area: 500,
+              max_contour_area: 20000,
+              contour_approximation: 0.02,
+              threshold_value: 128,
+              threshold_type: 'binary',
+              aspect_ratio_min: 0.5,
+              aspect_ratio_max: 2.0,
+              contour_polish_enabled: true,
+              polygon_restriction_enabled: true,
+              epsilon_factor: 0.02,
+              smoothing_factor: 0.1,
+              min_point_distance: 2.0,
+              min_contour_points: 4,
+              max_contour_points: 1000,
+              max_area_ratio: 0.8,
+              min_solidity: 0.3
+            }
+          }
+        }
+      ];
+    }
+    
+    function updateProfileDropdown() {
+      console.log('[profiles] Actualizando dropdown de perfiles...');
+      const select = document.getElementById('profileSelect');
+      if (!select) {
+        console.error('[profiles] ❌ No se encontró el elemento select#profileSelect');
+        return;
+      }
+      
+      console.log('[profiles] Elemento select encontrado, limpiando opciones...');
+      // Mantener la opción por defecto
+      select.innerHTML = '<option value="">Seleccionar Perfil...</option>';
+      
+      console.log('[profiles] Agregando perfiles al dropdown:', profiles.length, 'perfiles');
+      // Agregar perfiles
+      profiles.forEach((profile, index) => {
+        const option = document.createElement('option');
+        option.value = profile.id;
+        option.textContent = profile.name;
+        select.appendChild(option);
+        console.log(`[profiles] Agregado perfil ${index + 1}: ${profile.name} (ID: ${profile.id})`);
+      });
+      
+      console.log('[profiles] Dropdown actualizado. Opciones totales:', select.options.length);
+      
+      // Verificar que las opciones se agregaron correctamente
+      const optionsCount = select.options.length;
+      if (optionsCount > 1) {
+        console.log('[profiles] ✅ Dropdown actualizado correctamente con', optionsCount - 1, 'perfiles');
+      } else {
+        console.warn('[profiles] ⚠️ Dropdown solo tiene la opción por defecto');
+      }
+    }
+    
+    // Variables para el estado del perfil actual
+    let currentProfileId = null;
+    let isProfileModified = false;
+    
+    function onProfileChange() {
+      const select = document.getElementById('profileSelect');
+      const selectedId = select.value;
+      
+      if (isProfileModified && currentProfileId) {
+        if (confirm('¿Guardar cambios en el perfil actual antes de cambiar?')) {
+          saveCurrentProfile();
+        }
+      }
+      
+      if (selectedId) {
+        loadProfile(selectedId);
+        currentProfileId = selectedId;
+        isProfileModified = false;
+        updateModifiedIndicator();
+      } else {
+        currentProfileId = null;
+        isProfileModified = false;
+        updateModifiedIndicator();
+      }
+    }
+    
+    function updateModifiedIndicator() {
+      const indicator = document.getElementById('profileModifiedIndicator');
+      if (isProfileModified && currentProfileId) {
+        indicator.style.display = 'inline';
+        indicator.style.color = '#ff6b6b';
+        indicator.title = 'Perfil modificado - Guardar cambios';
+      } else {
+        indicator.style.display = 'none';
+      }
+    }
+    
+    async function createNewProfile() {
+      const name = prompt('Nombre para el nuevo perfil:');
+      if (!name || !name.trim()) return;
+      
+      const description = prompt('Descripción del perfil (opcional):') || `Perfil personalizado: ${name.trim()}`;
+      
+      const profileId = `profile_${Date.now()}`;
+      const currentConfig = {
+        cascade_filters: collectFilterConfig(),
+        detection: collectDetectionConfig()
+      };
+      
+      const newProfile = {
+        id: profileId,
+        name: name.trim(),
+        description: description,
+        is_default: false,
+        config: currentConfig
+      };
+      
+      try {
+        const response = await Common.fetchWithTimeout('/api/profiles/create', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newProfile)
+        });
+        
+        const data = await response.json();
+        if (data.ok) {
+          profiles.push(newProfile);
+          updateProfileDropdown();
+          updateProfileSelector(profileId);
+          currentProfileId = profileId;
+          isProfileModified = false;
+          showNotification('Nuevo perfil creado exitosamente', 'success');
+        } else {
+          showNotification('Error creando perfil: ' + data.error, 'error');
+        }
+      } catch (error) {
+        console.error('[profiles] Error creando perfil:', error);
+        showNotification('Error de conexión', 'error');
+      }
+    }
+    
+    async function saveCurrentProfile() {
+      if (!currentProfileId) {
+        showNotification('No hay perfil seleccionado para guardar', 'error');
+        return;
+      }
+      
+      const profile = profiles.find(p => p.id === currentProfileId);
+      if (!profile) {
+        showNotification('Perfil no encontrado', 'error');
+        return;
+      }
+      
+      // Actualizar configuración del perfil actual
+      profile.config = {
+        cascade_filters: collectFilterConfig(),
+        detection: collectDetectionConfig()
+      };
+      
+      try {
+        const response = await Common.fetchWithTimeout('/api/profiles/update', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(profile)
+        });
+        
+        const data = await response.json();
+        if (data.ok) {
+          isProfileModified = false;
+          showNotification('Perfil actualizado exitosamente', 'success');
+        } else {
+          showNotification('Error actualizando perfil: ' + data.error, 'error');
+        }
+      } catch (error) {
+        console.error('[profiles] Error actualizando perfil:', error);
+        showNotification('Error de conexión', 'error');
+      }
+    }
+    
+    async function deleteCurrentProfile() {
+      const select = document.getElementById('profileSelect');
+      const selectedId = select.value;
+      
+      if (!selectedId) {
+        showNotification('Selecciona un perfil para eliminar', 'error');
+        return;
+      }
+      
+      const profile = profiles.find(p => p.id === selectedId);
+      if (!profile) return;
+      
+      if (profile.is_default) {
+        showNotification('No se puede eliminar el perfil por defecto', 'error');
+        return;
+      }
+      
+      if (!confirm(`¿Eliminar el perfil "${profile.name}"?`)) {
+        return;
+      }
+      
+      try {
+        const response = await Common.fetchWithTimeout(`/api/profiles/delete/${selectedId}`, {
+          method: 'DELETE'
+        });
+        
+        const data = await response.json();
+        if (data.ok) {
+          profiles = profiles.filter(p => p.id !== selectedId);
+          updateProfileDropdown();
+          select.value = '';
+          showNotification('Perfil eliminado exitosamente', 'success');
+        } else {
+          showNotification('Error eliminando perfil: ' + data.error, 'error');
+        }
+      } catch (error) {
+        console.error('[profiles] Error eliminando perfil:', error);
+        showNotification('Error de conexión', 'error');
+      }
+    }
+    
+    function loadProfile(profileId) {
+      const profile = profiles.find(p => p.id === profileId);
+      if (!profile) {
+        showNotification('Perfil no encontrado', 'error');
+        return;
+      }
+      
+      // Aplicar configuración de filtros
+      if (profile.config.cascade_filters) {
+        applyFilterConfig(profile.config.cascade_filters);
+      }
+      
+      // Aplicar configuración de detección
+      if (profile.config.detection) {
+        applyDetectionConfig(profile.config.detection);
+      }
+      
+      showNotification(`Perfil "${profile.name}" cargado`, 'info');
+    }
+    
+    function applyFilterConfig(filterConfig) {
+      filterConfig.forEach((filter, index) => {
+        const filterId = index + 1;
+        const enableCheckbox = document.getElementById(`enable${filterId}`);
+        const typeSelect = document.getElementById(`filter${filterId}`);
+        
+        if (enableCheckbox) {
+          enableCheckbox.checked = filter.enabled;
+        }
+        
+        if (typeSelect) {
+          typeSelect.value = filter.type;
+          updateFilterParams(filterId, filter.type, filter.params);
+        }
+      });
+    }
+    
+    function applyDetectionConfig(config) {
+      // Aplicar configuración de detección
+      if (config.detection_method) {
+        document.getElementById('detectionMethod').value = config.detection_method;
+      }
+      
+      if (config.var_threshold) {
+        document.getElementById('varThreshold').value = config.var_threshold;
+        document.getElementById('varThresholdValue').textContent = config.var_threshold;
+      }
+      
+      if (config.detect_shadows !== undefined) {
+        document.getElementById('detectShadows').value = config.detect_shadows.toString();
+      }
+      
+      if (config.training_time) {
+        document.getElementById('trainingTime').value = config.training_time;
+        document.getElementById('trainingTimeValue').textContent = config.training_time;
+      }
+      
+      if (config.show_progress !== undefined) {
+        document.getElementById('trainingProgress').value = config.show_progress.toString();
+      }
+      
+      if (config.min_contour_area) {
+        document.getElementById('minContourArea').value = config.min_contour_area;
+        document.getElementById('minContourAreaValue').textContent = config.min_contour_area;
+      }
+      
+      if (config.max_contour_area) {
+        document.getElementById('maxContourArea').value = config.max_contour_area;
+        document.getElementById('maxContourAreaValue').textContent = config.max_contour_area;
+      }
+      
+      // Determinar y activar el perfil correspondiente
+      determineAndActivateProfile(config);
+    }
+    
+    async function loadSelectedProfile(profileId) {
+      const profile = profiles.find(p => p.id === profileId);
+      if (!profile) {
+        showNotification('Perfil no encontrado', 'error');
+        return;
+      }
+      
+      try {
+        // Aplicar configuración de filtros en cascada
+        if (profile.config.cascade_filters) {
+          loadInitialConfig({ cascade_filters: profile.config.cascade_filters });
+        }
+        
+        // Aplicar configuración de detección
+        if (profile.config.detection) {
+          loadDetectionConfig({ detection: profile.config.detection });
+        }
+        
+        // Actualizar parámetros de detección
+        await updateDetectionParams();
+        
+        // Actualizar el perfil activo
+        updateProfileSelector(profileId);
+        
+        showNotification(`Perfil "${profile.name}" cargado exitosamente`, 'success');
+      } catch (error) {
+        console.error('[profiles] Error cargando perfil:', error);
+        showNotification('Error cargando perfil', 'error');
+      }
+    }
+    
+    // Función para cargar el método de detección actual desde el servidor
+    async function loadCurrentDetectionMethod() {
+      try {
+        console.log('[detection] Cargando método de detección actual...');
+        
+        const response = await Common.fetchWithTimeout('/api/webcam/detection_method', {
+          method: 'GET'
+        });
+        
+        const data = await response.json();
+        if (data.ok) {
+          console.log('[detection] Método de detección actual:', data.method);
+          
+          // Actualizar interfaz
+          const methodSelect = document.getElementById('detectionMethod');
+          const varThresholdSlider = document.getElementById('varThreshold');
+          const detectShadowsSelect = document.getElementById('detectShadows');
+          
+          if (methodSelect) methodSelect.value = data.method;
+          if (varThresholdSlider) {
+            varThresholdSlider.value = data.params.var_threshold || 25;
+            document.getElementById('varThresholdValue').textContent = data.params.var_threshold || 25;
+          }
+          if (detectShadowsSelect) {
+            detectShadowsSelect.value = (data.params.detect_shadows || false).toString();
+          }
+          
+          console.log('[detection] Método de detección cargado exitosamente');
+        } else {
+          console.error('[detection] Error cargando método de detección:', data.error);
+        }
+      } catch (error) {
+        console.error('[detection] Error cargando método de detección:', error);
+      }
+    }
+
+    function loadLearningConfig(config) {
+      if (config.learning) {
+        const learning = config.learning;
+        
+        if (learning.learning_rate) {
+          document.getElementById('learningRate').value = learning.learning_rate;
+          document.getElementById('learningRateValue').textContent = learning.learning_rate;
+        }
+        
+        if (learning.epochs) {
+          document.getElementById('epochs').value = learning.epochs;
+          document.getElementById('epochsValue').textContent = learning.epochs;
+        }
+        
+        if (learning.batch_size) {
+          document.getElementById('batchSize').value = learning.batch_size;
+          document.getElementById('batchSizeValue').textContent = learning.batch_size;
+        }
+        
+        if (learning.validation_split) {
+          document.getElementById('validationSplit').value = learning.validation_split;
+          document.getElementById('validationSplitValue').textContent = learning.validation_split;
+        }
+        
+        if (learning.early_stopping) {
+          document.getElementById('earlyStopping').value = learning.early_stopping.toString();
+        }
+        
+        if (learning.data_augmentation) {
+          document.getElementById('dataAugmentation').value = learning.data_augmentation.toString();
+        }
+        
+        if (learning.normalization) {
+          document.getElementById('normalization').value = learning.normalization;
+        }
+      }
+    }
+
+    function loadCameraConfig(config) {
+      if (config.camera) {
+        const camera = config.camera;
+        
+        if (camera.calibration_square_size) {
+          document.getElementById('calibrationSquareSize').value = camera.calibration_square_size;
+          document.getElementById('calibrationSquareSizeValue').textContent = camera.calibration_square_size;
+        }
+        
+        if (camera.calibration_chessboard_rows) {
+          document.getElementById('calibrationChessboardRows').value = camera.calibration_chessboard_rows;
+          document.getElementById('calibrationChessboardRowsValue').textContent = camera.calibration_chessboard_rows;
+        }
+        
+        if (camera.calibration_chessboard_cols) {
+          document.getElementById('calibrationChessboardCols').value = camera.calibration_chessboard_cols;
+          document.getElementById('calibrationChessboardColsValue').textContent = camera.calibration_chessboard_cols;
+        }
+        
+        if (camera.calibration_flags) {
+          document.getElementById('calibrationFlags').value = camera.calibration_flags;
+        }
+        
+        if (camera.calibration_iterations) {
+          document.getElementById('calibrationIterations').value = camera.calibration_iterations;
+          document.getElementById('calibrationIterationsValue').textContent = camera.calibration_iterations;
+        }
+        
+        // Cargar matrices de calibración si existen
+        if (camera.camera_matrix) {
+          document.getElementById('cameraMatrix').value = JSON.stringify(camera.camera_matrix, null, 2);
+        }
+        
+        if (camera.dist_coeffs) {
+          document.getElementById('distCoeffs').value = JSON.stringify(camera.dist_coeffs, null, 2);
+        }
+        
+        if (camera.new_camera_matrix) {
+          document.getElementById('newCameraMatrix').value = JSON.stringify(camera.new_camera_matrix, null, 2);
+        }
+      }
+    }
+
+    function loadCameraParamsConfig(config) {
+      if (config.camera_params) {
+        const cameraParams = config.camera_params;
+        
+        if (cameraParams.resolution) {
+          document.getElementById('cameraResolution').value = cameraParams.resolution;
+        }
+        
+        if (cameraParams.fps) {
+          document.getElementById('cameraFPS').value = cameraParams.fps;
+          document.getElementById('cameraFPSValue').textContent = cameraParams.fps;
+        }
+        
+        if (cameraParams.calibration_square_size) {
+          document.getElementById('cameraCalibrationSquareSize').value = cameraParams.calibration_square_size;
+          document.getElementById('cameraCalibrationSquareSizeValue').textContent = cameraParams.calibration_square_size;
+        }
+        
+        if (cameraParams.calibration_chessboard_rows) {
+          document.getElementById('cameraCalibrationChessboardRows').value = cameraParams.calibration_chessboard_rows;
+          document.getElementById('cameraCalibrationChessboardRowsValue').textContent = cameraParams.calibration_chessboard_rows;
+        }
+        
+        if (cameraParams.calibration_chessboard_cols) {
+          document.getElementById('cameraCalibrationChessboardCols').value = cameraParams.calibration_chessboard_cols;
+          document.getElementById('cameraCalibrationChessboardColsValue').textContent = cameraParams.calibration_chessboard_cols;
+        }
+        
+        if (cameraParams.calibration_flags) {
+          document.getElementById('cameraCalibrationFlags').value = cameraParams.calibration_flags;
+        }
+        
+        if (cameraParams.calibration_iterations) {
+          document.getElementById('cameraCalibrationIterations').value = cameraParams.calibration_iterations;
+          document.getElementById('cameraCalibrationIterationsValue').textContent = cameraParams.calibration_iterations;
+        }
+      }
+    }
+
+    // Funciones para recopilar configuración de cada tab
+    function collectFilterConfig() {
+      const filters = [];
+      
+      for (let i = 1; i <= 6; i++) {
+        const select = document.getElementById(`filter${i}`);
+        const enableCheckbox = document.getElementById(`enable${i}`);
+        
+        if (select && enableCheckbox) {
+          filters.push({
+            id: i,
+            type: select.value,
+            enabled: enableCheckbox.checked,
+            params: {}
+          });
+        }
+      }
+      
+      return filters;
+    }
+
+    function collectDetectionConfig() {
+      return {
+        detection_method: document.getElementById('detectionMethod').value,
+        var_threshold: parseInt(document.getElementById('varThreshold').value),
+        detect_shadows: document.getElementById('detectShadows').value === 'true',
+        training_time: parseInt(document.getElementById('trainingTime').value),
+        show_progress: document.getElementById('trainingProgress').value === 'true',
+        min_contour_area: parseInt(document.getElementById('minContourArea').value),
+        max_contour_area: parseInt(document.getElementById('maxContourArea').value),
+        contour_approximation: parseFloat(document.getElementById('contourApproximation').value),
+        threshold_value: parseInt(document.getElementById('thresholdValue').value),
+        threshold_type: document.getElementById('thresholdType').value,
+        aspect_ratio_min: parseFloat(document.getElementById('aspectRatioMin').value),
+        aspect_ratio_max: parseFloat(document.getElementById('aspectRatioMax').value),
+        // Parámetros adicionales que están en el JSON actual
+        contour_polish_enabled: document.getElementById('backgroundSuppressionEnabled')?.checked || true,
+        polygon_restriction_enabled: document.getElementById('polygonRestrictionEnabled')?.checked || true,
+        epsilon_factor: parseFloat(document.getElementById('contourApproximation').value),
+        smoothing_factor: 0.1, // Valor por defecto
+        min_point_distance: 2.0, // Valor por defecto
+        min_contour_points: 4, // Valor por defecto
+        max_contour_points: 1000, // Valor por defecto
+        max_area_ratio: 0.8, // Valor por defecto
+        min_solidity: 0.3 // Valor por defecto
+      };
+    }
+
+
+
+    function collectLearningConfig() {
+      return {
+        learning_rate: parseFloat(document.getElementById('learningRate').value),
+        epochs: parseInt(document.getElementById('epochs').value),
+        batch_size: parseInt(document.getElementById('batchSize').value),
+        validation_split: parseFloat(document.getElementById('validationSplit').value),
+        early_stopping: document.getElementById('earlyStopping').value === 'true',
+        data_augmentation: document.getElementById('dataAugmentation').value === 'true',
+        normalization: document.getElementById('normalization').value
+      };
+    }
+
+    function collectCameraConfig() {
+      return {
+        calibration_square_size: parseInt(document.getElementById('calibrationSquareSize').value),
+        calibration_chessboard_rows: parseInt(document.getElementById('calibrationChessboardRows').value),
+        calibration_chessboard_cols: parseInt(document.getElementById('calibrationChessboardCols').value),
+        calibration_flags: parseInt(document.getElementById('calibrationFlags').value),
+        calibration_iterations: parseInt(document.getElementById('calibrationIterations').value),
+        camera_matrix: null, // Se llena desde el backend
+        dist_coeffs: null, // Se llena desde el backend
+        new_camera_matrix: null // Se llena desde el backend
+      };
+    }
+
+    function collectCameraParamsConfig() {
+      return {
+        resolution: document.getElementById('cameraResolution').value,
+        fps: parseInt(document.getElementById('cameraFPS').value),
+        calibration_square_size: parseInt(document.getElementById('cameraCalibrationSquareSize').value),
+        calibration_chessboard_rows: parseInt(document.getElementById('cameraCalibrationChessboardRows').value),
+        calibration_chessboard_cols: parseInt(document.getElementById('cameraCalibrationChessboardCols').value),
+        calibration_flags: parseInt(document.getElementById('cameraCalibrationFlags').value),
+        calibration_iterations: parseInt(document.getElementById('cameraCalibrationIterations').value)
+      };
+    }
+
+    // Funciones para manejar cambios en detección
+    async function updateDetectionMethod(method) {
+      try {
+        console.log('[detection] Actualizando método de detección a:', method);
+        
+        const response = await Common.fetchWithTimeout('/api/webcam/detection_method', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            method: method
+          })
+        });
+        
+        const data = await response.json();
+        if (data.ok) {
+          console.log('[detection] Método de detección actualizado:', data.message);
+          // Mostrar notificación de éxito
+          showNotification('Método de detección actualizado', 'success');
+        } else {
+          console.error('[detection] Error actualizando método:', data.error);
+          showNotification('Error actualizando método: ' + data.error, 'error');
+        }
+      } catch (error) {
+        console.error('[detection] Error en actualización de método:', error);
+        showNotification('Error de conexión', 'error');
+      }
+    }
+    
+    async function loadDetectionMethodState() {
+      try {
+        const response = await Common.fetchWithTimeout('/api/webcam/detection_method', {
+          method: 'GET'
+        });
+        
+        const data = await response.json();
+        if (data.ok) {
+          // Actualizar el método seleccionado
+          const methodSelect = document.getElementById('detectionMethod');
+          if (methodSelect) {
+            methodSelect.value = data.method;
+          }
+          
+          // Actualizar el checkbox de habilitación
+          const backgroundSuppressionCheckbox = document.getElementById('backgroundSuppressionEnabled');
+          if (backgroundSuppressionCheckbox) {
+            backgroundSuppressionCheckbox.checked = data.enabled;
+          }
+          
+          // Actualizar parámetros si están disponibles
+          if (data.params) {
+            const varThresholdSlider = document.getElementById('varThreshold');
+            const varThresholdValue = document.getElementById('varThresholdValue');
+            if (varThresholdSlider && varThresholdValue) {
+              varThresholdSlider.value = data.params.var_threshold || 25;
+              varThresholdValue.textContent = data.params.var_threshold || 25;
+            }
+            
+            const detectShadowsSelect = document.getElementById('detectShadows');
+            if (detectShadowsSelect) {
+              detectShadowsSelect.value = data.params.detect_shadows ? 'true' : 'false';
+            }
+          }
+          
+          console.log('[detection] Estado de detección cargado:', data);
+        } else {
+          console.error('[detection] Error cargando estado:', data.error);
+        }
+      } catch (error) {
+        console.error('[detection] Error cargando estado de detección:', error);
+      }
+    }
+
+    async function updateDetectionParams() {
+      try {
+        const varThreshold = parseInt(document.getElementById('varThreshold').value);
+        const detectShadows = document.getElementById('detectShadows').value === 'true';
+        const method = document.getElementById('detectionMethod').value;
+        const backgroundSuppressionEnabled = document.getElementById('backgroundSuppressionEnabled').checked;
+        
+        console.log('[detection] Actualizando parámetros de detección:', {
+          method, varThreshold, detectShadows, backgroundSuppressionEnabled
+        });
+        
+        const response = await Common.fetchWithTimeout('/api/webcam/detection_method', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            method: method,
+            enabled: backgroundSuppressionEnabled,
+            params: {
+              var_threshold: varThreshold,
+              detect_shadows: detectShadows
+            }
+          })
+        });
+        
+        const data = await response.json();
+        if (data.ok) {
+          console.log('[detection] Parámetros de detección actualizados');
+          showNotification('Parámetros actualizados', 'success');
+        } else {
+          console.error('[detection] Error actualizando parámetros:', data.error);
+          showNotification('Error actualizando parámetros: ' + data.error, 'error');
+        }
+      } catch (error) {
+        console.error('[detection] Error en actualización de parámetros:', error);
+        showNotification('Error de conexión', 'error');
+      }
+    }
+    
+    function showNotification(message, type = 'info') {
+      // Crear notificación temporal
+      const notification = document.createElement('div');
+      notification.className = `notification ${type}`;
+      notification.textContent = message;
+      notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 10px 15px;
+        border-radius: 5px;
+        color: white;
+        font-weight: bold;
+        z-index: 1000;
+        background-color: ${type === 'success' ? '#4CAF50' : type === 'error' ? '#f44336' : '#2196F3'};
+      `;
+      
+      document.body.appendChild(notification);
+      
+      // Remover después de 3 segundos
+      setTimeout(() => {
+        if (notification.parentNode) {
+          notification.parentNode.removeChild(notification);
+        }
+      }, 3000);
+    }
+
+    function openAlgorithmConfig(algorithm) {
+      // Guardar el algoritmo actual
+      localStorage.setItem('currentDetectionAlgorithm', algorithm);
+      
+      // Enviar mensaje al frame padre para cargar la página de configuración
+      window.parent.postMessage({
+        action: 'loadAlgorithmConfig',
+        algorithm: algorithm
+      }, '*');
+    }
+
+    // Escuchar mensajes de la página de configuración de algoritmo
+    window.addEventListener('message', function(event) {
+      if (event.data.action === 'navigateToDetection' && event.data.source === 'algorithm_config') {
+        // Volver a la página de detección
+        console.log('[filter_config] Volviendo desde configuración de algoritmo');
+        // La página ya está cargada, no necesitamos hacer nada
+      } else if (event.data.action === 'switchToDetectionTab') {
+        console.log('[filter_config] Activando pestaña de detección desde navegación');
+        switchTab('detection');
+      }
+    });
+
+    // Configurar listeners cuando se carga la página
+    document.addEventListener('DOMContentLoaded', function() {
+      // Configurar listeners de checkboxes para filtros (comportamiento exclusivo)
+      const checkboxes = document.querySelectorAll('input[name="filterPreview"]');
+      checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+          handleExclusiveCheckboxes(this);
+        });
+      });
+      
+      // Configurar listeners de sliders para detección
+      const detectionSliders = document.querySelectorAll('#tab-detection-content input[type="range"]');
+      detectionSliders.forEach(slider => {
+        slider.addEventListener('input', function() {
+          const valueElement = document.getElementById(this.id + 'Value');
+          if (valueElement) {
+            valueElement.textContent = this.value;
+          }
+        });
+      });
+      
+      // Configurar listener específico para el método de detección
+      const detectionMethodSelect = document.getElementById('detectionMethod');
+      if (detectionMethodSelect) {
+        detectionMethodSelect.addEventListener('change', function() {
+          console.log('[detection] Método de detección cambiado a:', this.value);
+          updateDetectionMethod(this.value);
+        });
+      }
+
+      // Configurar botón de configuración de algoritmo
+      const configureAlgorithmBtn = document.getElementById('configureAlgorithmBtn');
+      if (configureAlgorithmBtn) {
+        configureAlgorithmBtn.addEventListener('click', function() {
+          const currentMethod = detectionMethodSelect.value;
+          console.log('[filter_config] Abriendo configuración para algoritmo:', currentMethod);
+          openAlgorithmConfig(currentMethod);
+        });
+      }
+
+      // Configurar checkbox de habilitación de supresión de fondo
+      const backgroundSuppressionCheckbox = document.getElementById('backgroundSuppressionEnabled');
+      if (backgroundSuppressionCheckbox) {
+        backgroundSuppressionCheckbox.addEventListener('change', function() {
+          console.log('[filter_config] Supresión de fondo habilitada:', this.checked);
+          updateDetectionParams();
+        });
+        
+        // Cargar estado actual del checkbox
+        loadDetectionMethodState();
+      }
+      
+      // Configurar checkbox de restricción de polígono
+      const polygonRestrictionCheckbox = document.getElementById('polygonRestrictionEnabled');
+      if (polygonRestrictionCheckbox) {
+        polygonRestrictionCheckbox.addEventListener('change', function() {
+          console.log('[filter_config] Restricción de polígono habilitada:', this.checked);
+          updateDetectionParams();
+        });
+      }
+      
+      // Configurar listener para el umbral de variación
+      const varThresholdSlider = document.getElementById('varThreshold');
+      if (varThresholdSlider) {
+        varThresholdSlider.addEventListener('change', function() {
+          console.log('[detection] Umbral de variación cambiado a:', this.value);
+          updateDetectionParams();
+        });
+      }
+      
+      // Configurar listener para detección de sombras
+      const detectShadowsSelect = document.getElementById('detectShadows');
+      if (detectShadowsSelect) {
+        detectShadowsSelect.addEventListener('change', function() {
+          console.log('[detection] Detección de sombras cambiada a:', this.value);
+          updateDetectionParams();
+        });
+      }
+      
+      // Configurar listener para tiempo de entrenamiento
+      const trainingTimeSlider = document.getElementById('trainingTime');
+      if (trainingTimeSlider) {
+        trainingTimeSlider.addEventListener('input', function() {
+          const valueElement = document.getElementById('trainingTimeValue');
+          if (valueElement) {
+            valueElement.textContent = this.value;
+          }
+        });
+        
+        trainingTimeSlider.addEventListener('change', function() {
+          console.log('[detection] Tiempo de entrenamiento cambiado a:', this.value, 'ms');
+          updateDetectionParams();
+        });
+      }
+      
+      // Configurar listener para mostrar progreso
+      const trainingProgressSelect = document.getElementById('trainingProgress');
+      if (trainingProgressSelect) {
+        trainingProgressSelect.addEventListener('change', function() {
+          console.log('[detection] Mostrar progreso cambiado a:', this.value);
+          updateDetectionParams();
+        });
+      }
+      
+
+      
+
+      
+      // Configurar sistema de perfiles
+      const profileSelect = document.getElementById('profileSelect');
+      if (profileSelect) {
+        profileSelect.addEventListener('change', function() {
+          const selectedId = this.value;
+          if (selectedId) {
+            loadSelectedProfile(selectedId);
+          }
+        });
+      }
+      
+
+
+      // Configurar listeners de sliders para calibración de cámara
+      const cameraSliders = document.querySelectorAll('#tab-camera-content input[type="range"]');
+      cameraSliders.forEach(slider => {
+        slider.addEventListener('input', function() {
+          const valueElement = document.getElementById(this.id + 'Value');
+          if (valueElement) {
+            valueElement.textContent = this.value;
+          }
+        });
+      });
+      
+      // Configurar listeners de sliders para parámetros de cámara
+      const cameraParamsSliders = document.querySelectorAll('#tab-camera-params-content input[type="range"]');
+      cameraParamsSliders.forEach(slider => {
+        slider.addEventListener('input', function() {
+          const valueElement = document.getElementById(this.id + 'Value');
+          if (valueElement) {
+            valueElement.textContent = this.value;
+          }
+        });
+      });
+      
+      // Configurar listener para cambio de resolución
+      const resolutionSelect = document.getElementById('cameraResolution');
+      if (resolutionSelect) {
+        resolutionSelect.addEventListener('change', function() {
+          const dimensions = this.value.split('x');
+          console.log(`[camera_params] Resolución cambiada a: ${this.value} (${dimensions[0]}x${dimensions[1]})`);
+        });
+      }
+      
+      // Cargar configuración inicial
+      loadInitialConfig();
+      
+      // Cargar método de detección actual
+      loadCurrentDetectionMethod();
+      
+      // Cargar sistema de perfiles
+      console.log('[profiles] DOM cargado, iniciando carga de perfiles...');
+      loadProfiles();
+      console.log('[profiles] Llamada a loadProfiles() completada');
+    });
+  </script>
+
+  <style>
+    /* Estilos específicos para la página de configuración de filtros */
+    body {
+      background: var(--bg);
+      color: var(--ink);
+    }
+
+    .wrap {
+      padding: var(--space-lg);
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-xl);
+      padding-bottom: var(--space-lg);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .page-header h1 {
+      color: var(--ink-bright);
+      font-size: var(--font-size-2xl);
+      margin: 0;
+    }
+
+    /* Estilos para los botones del header */
+    .header-buttons {
+      display: flex;
+      gap: var(--space-md);
+      align-items: center;
+    }
+    
+    .profile-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .modified-indicator {
+      font-weight: bold;
+      font-size: 18px;
+      color: #ff6b6b;
+      cursor: help;
+    }
+
+    .header-buttons .btn {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      padding: var(--space-md) var(--space-lg);
+      font-size: var(--font-size-base);
+      font-weight: 600;
+      border-radius: var(--radius-md);
+      transition: all 0.2s ease;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    .header-buttons .btn svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .header-buttons .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Estilos para el sistema de tabs */
+    .tabs-container {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .tabs-header {
+      display: flex;
+      background: var(--panel-hover);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .tab-button {
+      flex: 1;
+      padding: var(--space-md) var(--space-lg);
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: var(--font-size-base);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border-bottom: 3px solid transparent;
+    }
+
+    .tab-button:hover {
+      background: var(--panel);
+      color: var(--ink);
+    }
+
+    .tab-button.active {
+      color: var(--brand-red);
+      background: var(--panel);
+      border-bottom-color: var(--brand-red);
+    }
+
+    .tab-content {
+      padding: var(--space-xl);
+    }
+
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    /* Estilos para las secciones de configuración */
+    .config-section {
+      background: var(--panel-hover);
+      border: 1px solid var(--line-light);
+      border-radius: var(--radius-md);
+      padding: var(--space-lg);
+      margin-bottom: var(--space-lg);
+    }
+
+    .config-section h4 {
+      color: var(--ink-bright);
+      margin-bottom: var(--space-md);
+      font-size: var(--font-size-lg);
+      border-bottom: 2px solid var(--brand-red);
+      padding-bottom: var(--space-sm);
+    }
+
+    .form-group {
+      margin-bottom: var(--space-lg);
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: var(--space-sm);
+      font-weight: 600;
+      color: var(--ink-bright);
+      font-size: var(--font-size-base);
+    }
+
+    .range-container {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      margin-bottom: var(--space-sm);
+    }
+
+    .range-slider {
+      flex: 1;
+      height: 6px;
+      background: var(--line);
+      border-radius: 3px;
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+      cursor: pointer;
+      border: none;
+    }
+
+    .range-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      background: var(--brand-red);
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid var(--panel);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+      transition: all 0.2s ease;
+    }
+
+    .range-slider::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      background: var(--brand-red);
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid var(--panel);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+      transition: all 0.2s ease;
+    }
+
+    .range-slider:hover::-webkit-slider-thumb {
+      background: #b91c1c;
+      transform: scale(1.1);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    }
+
+    .range-slider:hover::-moz-range-thumb {
+      background: #b91c1c;
+      transform: scale(1.1);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    }
+
+    .slider-value {
+      color: var(--brand-red);
+      font-weight: 600;
+      font-size: var(--font-size-base);
+      min-width: 40px;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+
+    .param-description {
+      color: var(--muted);
+      font-size: var(--font-size-sm);
+      margin-top: var(--space-xs);
+      display: block;
+      line-height: 1.5;
+      background: var(--panel);
+      padding: var(--space-md);
+      border-radius: var(--radius-sm);
+      border-left: 3px solid var(--line-light);
+    }
+
+    .form-control {
+      width: 100%;
+      padding: var(--space-md);
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: var(--radius-sm);
+      color: var(--ink);
+      font-size: var(--font-size-base);
+      transition: all 0.2s ease;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--brand-red);
+      box-shadow: 0 0 0 2px rgba(212, 20, 20, 0.25);
+      background: var(--input-hover);
+    }
+
+    .form-control:hover {
+      border-color: var(--line-hover);
+      background: var(--input-hover);
+    }
+
+    /* Estilos para filtros de imagen */
+    .filter-config-container h3 {
+      color: var(--ink-bright);
+      margin-bottom: var(--space-lg);
+      font-size: var(--font-size-xl);
+      border-bottom: 2px solid var(--brand-red);
+      padding-bottom: var(--space-sm);
+    }
+
+    .config-mode-info {
+      margin-bottom: var(--space-xl);
+    }
+
+    .info-box {
+      background: var(--panel-hover);
+      border: 1px solid var(--line-light);
+      border-radius: var(--radius-md);
+      padding: var(--space-lg);
+      text-align: center;
+    }
+
+    .info-box h3 {
+      color: var(--ink-bright);
+      margin-bottom: var(--space-md);
+      font-size: var(--font-size-lg);
+    }
+
+    .info-box p {
+      color: var(--muted);
+      font-size: var(--font-size-base);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .cascade-filters-container {
+      margin-bottom: var(--space-xl);
+    }
+
+    .filters-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    .filter-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      padding: var(--space-md);
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+    }
+
+    .filter-checkbox {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    .filter-checkbox input[type="checkbox"] {
+      margin: 0;
+      width: 18px;
+      height: 18px;
+      accent-color: var(--brand-red);
+      cursor: pointer;
+    }
+
+    .filter-checkbox label {
+      font-weight: 600;
+      color: var(--ink-bright);
+      cursor: pointer;
+      user-select: none;
+      margin: 0;
+    }
+
+    .filter-enable {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      min-width: 100px;
+    }
+
+    .filter-enable input[type="checkbox"] {
+      margin: 0;
+      width: 16px;
+      height: 16px;
+      accent-color: var(--brand-red);
+      cursor: pointer;
+    }
+
+    .filter-enable label {
+      font-weight: 500;
+      color: var(--ink);
+      cursor: pointer;
+      user-select: none;
+      margin: 0;
+      font-size: var(--font-size-sm);
+    }
+
+    .filter-dropdown {
+      flex: 1;
+    }
+
+    .filter-config-btn {
+      min-width: 120px;
+    }
+
+    .filter-config-actions {
+      display: flex;
+      gap: var(--space-md);
+      justify-content: center;
+      margin-top: var(--space-xl);
+      padding-top: var(--space-xl);
+      border-top: 1px solid var(--line);
+      flex-wrap: wrap;
+    }
+
+    /* Estilos para mensajes de estado */
+    .status-message {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: var(--space-md) var(--space-lg);
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      z-index: 1000;
+      max-width: 300px;
+    }
+
+    .status-message.success {
+      background: #10b981;
+      color: white;
+    }
+
+    .status-message.error {
+      background: #ef4444;
+      color: white;
+    }
+
+    .status-message.info {
+      background: #3b82f6;
+      color: white;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .wrap {
+        padding: var(--space-md);
+      }
+      
+      .page-header {
+        flex-direction: column;
+        gap: var(--space-md);
+        text-align: center;
+      }
+
+      .header-buttons {
+        flex-direction: column;
+        width: 100%;
+      }
+
+      .header-buttons .btn {
+        width: 100%;
+        justify-content: center;
+      }
+      
+      .tabs-header {
+        flex-direction: column;
+      }
+      
+      .tab-button {
+        border-bottom: none;
+        border-right: 3px solid transparent;
+      }
+      
+      .tab-button.active {
+        border-right-color: var(--brand-red);
+        border-bottom-color: transparent;
+      }
+      
+      .filter-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--space-sm);
+      }
+      
+      .filter-enable {
+        min-width: auto;
+        justify-content: center;
+      }
+    }
+
+    /* Estilos específicos para calibración de cámara */
+    .camera-calibration-container h3 {
+      color: var(--ink-bright);
+      margin-bottom: var(--space-lg);
+      font-size: var(--font-size-xl);
+      border-bottom: 2px solid var(--brand-red);
+      padding-bottom: var(--space-sm);
+    }
+
+    .calibration-section {
+      background: var(--panel-hover);
+      border: 1px solid var(--line-light);
+      border-radius: var(--radius-md);
+      padding: var(--space-lg);
+      margin-bottom: var(--space-lg);
+    }
+
+    .calibration-section h4 {
+      color: var(--ink-bright);
+      margin-bottom: var(--space-md);
+      font-size: var(--font-size-lg);
+      border-bottom: 2px solid var(--brand-red);
+      padding-bottom: var(--space-sm);
+    }
+
+    .calibration-section textarea {
+      font-family: 'Courier New', monospace;
+      font-size: var(--font-size-sm);
+      background: var(--panel);
+      border: 1px solid var(--line);
+      color: var(--ink);
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .calibration-section textarea:focus {
+      border-color: var(--brand-red);
+      box-shadow: 0 0 0 2px rgba(212, 20, 20, 0.25);
+    }
+
+    /* Responsive para calibración de cámara */
+    @media (max-width: 768px) {
+      .calibration-section {
+        padding: var(--space-md);
+      }
+
+      .calibration-section textarea {
+        font-size: var(--font-size-xs);
+        min-height: 60px;
+      }
+    }
+
+    /* Estilos específicos para parámetros de cámara */
+    .camera-params-container h3 {
+      color: var(--ink-bright);
+      margin-bottom: var(--space-lg);
+      font-size: var(--font-size-xl);
+      border-bottom: 2px solid var(--brand-red);
+      padding-bottom: var(--space-sm);
+    }
+
+    .params-section {
+      background: var(--panel-hover);
+      border: 1px solid var(--line-light);
+      border-radius: var(--radius-md);
+      padding: var(--space-lg);
+      margin-bottom: var(--space-lg);
+    }
+
+    .params-section h4 {
+      color: var(--ink-bright);
+      margin-bottom: var(--space-md);
+      font-size: var(--font-size-lg);
+      border-bottom: 2px solid var(--brand-red);
+      padding-bottom: var(--space-sm);
+    }
+
+    /* Responsive para parámetros de cámara */
+    @media (max-width: 768px) {
+      .params-section {
+        padding: var(--space-md);
+      }
+    }
+  </style>
+</body>
+</html>
+

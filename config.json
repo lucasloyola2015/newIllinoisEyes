@@ -1,0 +1,160 @@
+{
+  "camera": {
+    "uid": "Webcam 1#1",
+    "name": "Webcam 1",
+    "preferred_resolution": {
+      "width": 1280,
+      "height": 720
+    }
+  },
+  "camera_caps": {
+    "VID_04F2&PID_B729": [
+      [
+        1280,
+        720
+      ],
+      [
+        1920,
+        1080
+      ],
+      [
+        640,
+        480
+      ]
+    ],
+    "Webcam 1#1": [
+      [
+        1280,
+        720
+      ],
+      [
+        640,
+        480
+      ],
+      [
+        640,
+        360
+      ],
+      [
+        320,
+        240
+      ]
+    ],
+    "Webcam 2#1": [
+      [
+        1280,
+        720
+      ],
+      [
+        640,
+        480
+      ],
+      [
+        640,
+        360
+      ],
+      [
+        320,
+        240
+      ]
+    ]
+  },
+  "calibration": {
+    "grid": "4x4",
+    "lib_size": 100,
+    "marker_size_mm": 42.0,
+    "target_id": 50,
+    "px_per_mm": 1.38188,
+    "angle_deg": -92.96,
+    "origin_offset_mm": {
+      "dx": 464.95,
+      "dy": 173.68
+    },
+    "last_image_size_px": [
+      1280,
+      720
+    ],
+    "timestamp": 1755868936
+  },
+  "junta_actual": {
+    "modelo": "TC-124-15"
+  },
+  "ui": {
+    "zoom_factor": 1.1
+  },
+  "devices": {
+    "plc": {
+      "ip": "192.168.29.3"
+    },
+    "winc5g": {
+      "ip": "192.168.29.101"
+    },
+    "robot": {
+      "ip": "192.168.29.2"
+    }
+  },
+  "network": {
+    "selected_interface": "Ethernet"
+  },
+  "vision": {
+    "similarity_threshold": 0.97,
+    "training_frames": 30,
+    "gaussian_kernel_size": 5,
+    "median_kernel_size": 3,
+    "anomaly_threshold": 0.1,
+    "polygon_changed": false,
+    "background_variance_threshold": 0.2,
+    "min_contrast": 30,
+    "max_object_area_percent": 0.05
+  },
+  "polygon_points": [
+    [
+      0.71796875,
+      0.41805555555555557
+    ],
+    [
+      0.7234375,
+      0.001388888888888889
+    ],
+    [
+      0.0203125,
+      0.004166666666666667
+    ],
+    [
+      0.06796875,
+      0.9875
+    ],
+    [
+      0.66875,
+      0.9930555555555556
+    ],
+    [
+      0.68359375,
+      0.42777777777777776
+    ],
+    [
+      0.68359375,
+      0.42777777777777776
+    ]
+  ],
+  "detection": {
+    "area_points": [
+      [
+        0.30078125,
+        0.06805555555555555
+      ],
+      [
+        0.87265625,
+        0.04027777777777778
+      ],
+      [
+        0.91953125,
+        0.9583333333333334
+      ],
+      [
+        0.31328125,
+        0.9625
+      ]
+    ]
+  }
+}

@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Configurar Webcam</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <script src="/static/common.js"></script>
+</head>
+<body>
+  <div class="wrap">
+    <h1 class="page-header">Configurar Webcam</h1>
+
+    <!-- Sección: Origen -->
+    <div class="card">
+      <h2 class="text-lg font-semibold">Origen</h2>
+      <div class="cfg-row" style="margin-top:8px;">
+        <button id="btnScan" class="btn">
+          <svg class="ico" fill="currentColor" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+          </svg>
+          <span>Buscar cámaras</span>
+        </button>
+        <select id="cmbCams" style="min-width:320px">
+          <option value="">— Seleccioná una cámara —</option>
+        </select>
+        <select id="cmbRes" style="min-width:160px" disabled>
+          <option value="">— Resolución —</option>
+        </select>
+        <button id="btnApply" class="btn">
+          <svg class="ico" fill="currentColor" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+            <path d="M13.485 1.929a.75.75 0 0 1 .086 1.057l-7.25 8a.75.75 0 0 1-1.094.03L2.43 8.28a.75.75 0 1 1 1.06-1.06l2.3 2.298 6.72-7.42a.75.75 0 0 1 .975-.168z"/>
+          </svg>
+          <span>Aplicar</span>
+        </button>
+        <span id="msg"></span>
+      </div>
+      <div id="statusCam" class="status-indicator"><span class="dot"></span><span>Buscando cámaras…</span></div>
+      <div id="statusRes" class="status-indicator"><span class="dot"></span><span>Buscando resoluciones disponibles. Por favor, aguarde…</span></div>
+    </div>
+
+    <!-- Sección: Escala -->
+    <div class="card">
+      <h2 class="text-lg font-semibold">Escala</h2>
+      <div class="cfg-row" style="margin-top:8px;">
+        <label>Grid
+          <select id="selGrid">
+            <option value="4x4">4×4</option>
+            <option value="5x5">5×5</option>
+            <option value="6x6">6×6</option>
+            <option value="7x7">7×7</option>
+          </select>
+        </label>
+        <label>Diccionario
+          <select id="selLib">
+            <option value="50">50</option>
+            <option value="100">100</option>
+            <option value="250">250</option>
+            <option value="1000">1000</option>
+          </select>
+        </label>
+        <label>Tamaño (mm)
+          <input id="txtSize" type="number" step="0.1" value="70" style="width:100px">
+        </label>
+        <label>ID
+          <input id="txtId" type="number" value="0" style="width:80px">
+        </label>
+        <button id="btnCalibrate" class="btn">
+          <svg class="ico" fill="currentColor" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+            <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+          </svg>
+          <span>Calibrar</span>
+        </button>
+        <span id="msgCal"></span>
+      </div>
+      <div id="statusCal" class="status-indicator"><span class="dot"></span><span>Calibrando… tomando 1 foto y analizando ArUco</span></div>
+
+      <div id="calResults" class="kv" style="display:none; margin-top:10px;">
+        <div><b>Resultado</b></div><div id="r_found">—</div>
+        <div><b>IDs detectados</b></div><div id="r_ids">—</div>
+        <div><b>Ángulo (°)</b></div><div id="r_angle">—</div>
+        <div><b>dx (mm)</b></div><div id="r_dx">—</div>
+        <div><b>dy (mm)</b></div><div id="r_dy">—</div>
+        <div><b>px/mm</b></div><div id="r_ppmm">—</div>
+      </div>
+      <div id="calImgLink" class="text-sm text-muted" style="display:none; margin-top:6px;"></div>
+    </div>
+
+    <p class="text-sm text-muted">Al aplicar o calibrar, la configuración se guarda en <code>config.json</code>.</p>
+  </div>
+
+  <script>
+    const msg = document.getElementById("msg");
+    const cmb = document.getElementById("cmbCams");
+    const cmbRes = document.getElementById("cmbRes");
+    const btnScan = document.getElementById("btnScan");
+    const btnApply = document.getElementById("btnApply");
+    const statusCam = document.getElementById("statusCam");
+    const statusRes = document.getElementById("statusRes");
+
+    const selGrid = document.getElementById("selGrid");
+    const selLib = document.getElementById("selLib");
+    const txtSize = document.getElementById("txtSize");
+    const txtId = document.getElementById("txtId");
+    const btnCal = document.getElementById("btnCalibrate");
+    const statusCal = document.getElementById("statusCal");
+    const msgCal = document.getElementById("msgCal");
+
+    const resBox = document.getElementById("calResults");
+    const r_found = document.getElementById("r_found");
+    const r_ids = document.getElementById("r_ids");
+    const r_angle = document.getElementById("r_angle");
+    const r_dx = document.getElementById("r_dx");
+    const r_dy = document.getElementById("r_dy");
+    const r_ppmm = document.getElementById("r_ppmm");
+    const calImgLink = document.getElementById("calImgLink");
+
+    function setCamScanning(on){ 
+      Common.setStatusIndicator("statusCam", on); 
+      btnScan.disabled=on; cmb.disabled=on; btnApply.disabled=on; 
+    }
+    function setResScanning(on){ 
+      Common.setStatusIndicator("statusRes", on); 
+      cmb.disabled=on; cmbRes.disabled=on; btnApply.disabled=on; 
+    }
+    function setCalScanning(on){ 
+      Common.setStatusIndicator("statusCal", on); 
+      btnCal.disabled=on; selGrid.disabled=on; selLib.disabled=on; txtSize.disabled=on; txtId.disabled=on; 
+    }
+    function setMsg(t,c){ Common.setMessage("msg", t, c); }
+    function setMsgCal(t,c){ Common.setMessage("msgCal", t, c); }
+
+    // ---- estado guardado en config.json ----
+    let saved = { uid:null, name:null, width:null, height:null, cal:null };
+
+    async function loadSavedConfig(){
+      try{
+        const r = await Common.fetchWithTimeout("/api/config");
+        const cfg = await r.json();
+        const cam = cfg.camera || {};
+        saved.uid = cam.uid || null;
+        saved.name = cam.name || null;
+        saved.width = cam.preferred_resolution?.width || null;
+        saved.height = cam.preferred_resolution?.height || null;
+        saved.cal = cfg.calibration || null;
+      }catch(e){}
+    }
+
+    async function scan(){
+      setMsg(""); setCamScanning(true);
+      cmb.innerHTML = `<option value="">— Seleccioná una cámara —</option>`;
+      cmbRes.innerHTML = `<option value="">— Resolución —</option>`; cmbRes.disabled = true;
+      try{
+        const r = await Common.fetchWithTimeout("/api/scan_cams");
+        const j = await r.json();
+        const devices = j.devices || [];
+        for(const d of devices){
+          const opt = document.createElement("option");
+          opt.value = d.uid;
+          opt.textContent = `${d.name}  [${d.uid}]`;
+          opt.dataset.id = d.id;
+          opt.dataset.name = d.name;
+          cmb.appendChild(opt);
+        }
+        if (saved.uid && !devices.some(d => d.uid === saved.uid)) {
+          const opt = document.createElement("option");
+          const label = saved.name ? `${saved.name}  [${saved.uid}]` : saved.uid;
+          opt.value = saved.uid;
+          opt.textContent = `${label}  (guardada — no detectada)`;
+          cmb.appendChild(opt);
+        }
+        setMsg(`${devices.length} cámara(s) detectada(s).`, devices.length? "text-success":"text-error");
+      }catch(e){
+        setMsg("Error al escanear cámaras.","text-error");
+      }finally{
+        setCamScanning(false);
+      }
+    }
+
+    async function loadResolutions(uid){
+      setMsg(""); setResScanning(true);
+      cmbRes.innerHTML = `<option value="">— Resolución —</option>`;
+      try{
+        const r = await Common.fetchWithTimeout(`/api/cam_resolutions?uid=${encodeURIComponent(uid)}`, {}, 10000);
+        const j = await r.json();
+        const res = j.resolutions || [];
+        for(const [w,h] of res){
+          const opt = document.createElement("option");
+          opt.value = `${w}x${h}`;
+          opt.textContent = `${w}×${h}`;
+          cmbRes.appendChild(opt);
+        }
+        if (saved.width && saved.height) {
+          const val = `${saved.width}x${saved.height}`;
+          if (![...cmbRes.options].some(o => o.value === val)) {
+            const opt = document.createElement("option");
+            opt.value = val;
+            opt.textContent = `${saved.width}×${saved.height} (guardada)`;
+            cmbRes.appendChild(opt);
+          }
+          cmbRes.value = val;
+        }
+        cmbRes.disabled = res.length === 0 && !(saved.width && saved.height);
+        if(res.length === 0) setMsg("No se detectaron resoluciones válidas, se usará la guardada o la por defecto.","text-error");
+      }catch(e){
+        setMsg("Error al obtener resoluciones (timeout o driver ocupado).","text-error");
+      }finally{
+        setResScanning(false);
+      }
+    }
+
+    cmb.addEventListener("change", ()=>{
+      const uid = cmb.value;
+      if(uid) loadResolutions(uid);
+      else { cmbRes.innerHTML = `<option value="">— Resolución —</option>`; cmbRes.disabled = true; }
+    });
+
+    async function applyCam(){
+      setMsg("");
+      const uid = cmb.value;
+      if(!uid) return setMsg("Elegí una cámara primero.","text-error");
+      let w=null, h=null;
+      if(cmbRes.value){
+        const [W,H] = cmbRes.value.split("x"); w = Number(W); h = Number(H);
+      }
+      const name = cmb.options[cmb.selectedIndex]?.textContent?.split("  [")[0] || "";
+      try{
+        const r = await Common.fetchWithTimeout("/api/connect_cam", {
+          method:"POST",
+          headers:{ "Content-Type":"application/json" },
+          body: JSON.stringify({ uid, name, width:w, height:h })
+        }, 15000);
+        const j = await r.json();
+        if(j.ok){
+          setMsg("Cámara conectada y guardada. Mirá el Dashboard →","text-success");
+          if (window.top) {
+            const frames = window.top.document.querySelectorAll('iframe');
+            if (frames[1]) {
+              const img = frames[1].contentWindow.document.getElementById("camStream");
+              const stat = frames[1].contentWindow.document.getElementById("camStatus");
+              if (img){ img.src = "/video_feed?t="+Date.now(); }
+              if (stat){ stat.textContent = ""; stat.style.display="none"; }
+            }
+          }
+        }else{
+          setMsg(j.error || "No se pudo conectar.","text-error");
+        }
+      }catch(e){
+        setMsg("Error al conectar (timeout o driver ocupado).","text-error");
+      }
+    }
+
+    async function calibrate(){
+      setMsgCal(""); setCalScanning(true);
+      resBox.style.display = "none";
+      calImgLink.style.display = "none";
+      try{
+        const payload = {
+          grid: selGrid.value,
+          lib_size: Number(selLib.value),
+          marker_size_mm: Number(txtSize.value),
+          target_id: Number(txtId.value)
+        };
+        const r = await Common.fetchWithTimeout("/api/aruco_calibrate", {
+          method:"POST",
+          headers:{ "Content-Type":"application/json" },
+          body: JSON.stringify(payload)
+        }, 30000);
+        const j = await r.json();
+        if(!j.ok){
+          setMsgCal(j.message || "Fallo de calibración.","text-error");
+          return;
+        }
+        r_found.textContent = j.found ? "Sí" : "No";
+        r_ids.textContent = (j.found_ids && j.found_ids.length) ? j.found_ids.join(", ") : "—";
+        r_angle.textContent = (j.angle_deg !== undefined) ? j.angle_deg : "—";
+        r_dx.textContent = (j.dx_mm !== undefined) ? j.dx_mm : "—";
+        r_dy.textContent = (j.dy_mm !== undefined) ? j.dy_mm : "—";
+        r_ppmm.textContent = (j.px_per_mm !== undefined) ? j.px_per_mm : "—";
+        resBox.style.display = "grid";
+        setMsgCal(j.message || "Listo.","text-success");
+
+        const url = j.image_url || "/CalibracionEscala.png";
+        calImgLink.innerHTML = `Imagen: <a href="${url}" target="_blank" rel="noopener">CalibracionEscala.png</a>`;
+        calImgLink.style.display = "block";
+      }catch(e){
+        setMsgCal("Error al calibrar (timeout o driver ocupado).","text-error");
+      }finally{
+        setCalScanning(false);
+      }
+    }
+
+    document.getElementById("btnScan").addEventListener("click", scan);
+    document.getElementById("btnApply").addEventListener("click", applyCam);
+    document.getElementById("btnCalibrate").addEventListener("click", calibrate);
+
+    (async function init(){
+      await loadSavedConfig();
+      // precargar Escala
+      if (saved.cal){
+        if (saved.cal.grid) selGrid.value = saved.cal.grid;
+        if (saved.cal.lib_size) selLib.value = String(saved.cal.lib_size);
+        if (saved.cal.marker_size_mm) txtSize.value = String(saved.cal.marker_size_mm);
+        if (saved.cal.target_id !== undefined) txtId.value = String(saved.cal.target_id);
+
+        if (saved.cal.px_per_mm){
+          r_found.textContent = "Sí";
+          r_ids.textContent = "—";
+          r_angle.textContent = saved.cal.angle_deg ?? "—";
+          r_dx.textContent = saved.cal.origin_offset_mm?.dx ?? "—";
+          r_dy.textContent = saved.cal.origin_offset_mm?.dy ?? "—";
+          r_ppmm.textContent = saved.cal.px_per_mm ?? "—";
+          resBox.style.display = "grid";
+          try{
+            const head = await Common.fetchWithTimeout("/CalibracionEscala.png", { method:"HEAD" }, 3000);
+            if (head.ok){
+              calImgLink.innerHTML = `Imagen: <a href="/CalibracionEscala.png" target="_blank" rel="noopener">CalibracionEscala.png</a>`;
+              calImgLink.style.display = "block";
+            }
+          }catch(_){}
+        }
+      }
+
+      await scan();
+      if (saved.uid){
+        cmb.value = saved.uid;
+        if (cmb.value === saved.uid){
+          await loadResolutions(saved.uid);
+        }
+      }
+    })();
+  </script>
+</body>
+</html>

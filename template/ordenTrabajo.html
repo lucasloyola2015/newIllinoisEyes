@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>Orden de Trabajo</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <script src="/static/common.js"></script>
+
+  <style>
+    .input-large {
+      /* Letra mucho más grande */
+      font-size: 3rem; /* Aproximadamente 48px */
+      font-weight: 700;
+      height: auto;
+      /* Padding aumentado para mayor espacio interno */
+      padding: var(--space-lg);
+      text-align: center;
+      width: 100%;
+    }
+  </style>
+</head>
+<body class="overflow-hidden">
+  <div class="wrap-full" style="grid-template-rows: auto auto 1fr;">
+    <h1 class="page-header">
+      <span>Orden de Trabajo</span>
+      <div class="flex gap-2">
+        <button class="btn btn-danger" onclick="goSeleccionar()" title="Buscar una Junta">
+          <svg class="ico" fill="currentColor" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+            <path d="M11.742 10.344a6.5 6.5 S0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+          </svg>
+          <span>Buscar</span>
+        </button>
+      </div>
+    </h1>
+    
+    <div class="card">
+      <div class="page-title" id="titleModelo">—</div>
+      <div class="img-wrap img-wrap-contain">
+        <img alt="imagen del modelo" id="preview" onerror="Common.setPlaceholder(this)" src=""/>
+        <canvas id="overlay"></canvas>
+      </div>
+      <div class="text-sm text-muted" style="margin-top:8px;">El texto rojo indica posiciones relativas al centro de cilindros.</div>
+    </div>
+
+    <div class="card">
+      <strong>Configurar orden de trabajo</strong>
+      <div class="grid grid-2 gap-4" style="margin-top: var(--space-md);">
+        <div>
+          <label>
+            LOTE
+            <input type="text" id="inputLote" class="input-large" placeholder="Lote...">
+          </label>
+        </div>
+        <div>
+          <label>
+            CODIGO
+            <input type="text" id="inputCodigo" class="input-large" placeholder="Código...">
+          </label>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function goSeleccionar(){ 
+      location.href = "/template/database.html"; 
+    }
+
+    // Setup resize handler for overlay redraw
+    Common.setupOverlayResize("titleModelo", "preview", "overlay");
+
+    // Load modelo on page load
+    Common.loadModelo();
+  </script>
+</body>
+</html>

@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Configurar Dispositivos</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <script src="/static/common.js"></script>
+</head>
+<body>
+  <div class="wrap">
+    <h1 class="page-header">Configurar Dispositivos</h1>
+
+    <!-- Red Local -->
+    <div class="card">
+      <h2 class="text-lg font-semibold">Red Local</h2>
+      <div class="cfg-row" style="margin-top:8px;">
+        <label for="cmbInterfaces">Interfaz de Red Preferida:</label>
+        <select id="cmbInterfaces" style="min-width:320px;">
+          <option value="">— Buscando interfaces... —</option>
+        </select>
+        <div class="flex items-center gap-2">
+            <strong>IP Actual:</strong>
+            <span id="lblCurrentIP" class="font-mono text-brand">...</span>
+        </div>
+      </div>
+      <p class="text-sm text-muted" style="margin-top:8px;">Los cambios se guardarán cuando presiones "Guardar Configuración".</p>
+    </div>
+
+    <!-- Dispositivos - Versión estática para garantizar que aparezcan -->
+    <div id="device-container">
+      <!-- PLC LOGO -->
+      <div class="card">
+        <h2 class="text-lg font-semibold">Alimentador (PLC LOGO!)</h2>
+        <div class="cfg-row" style="margin-top:8px;">
+          <label>Dirección IP:</label>
+          <input type="text" class="font-mono" id="plc-ip" value="192.168.29.3">
+          <button class="btn" id="plc-ping">Ping</button>
+          <button class="btn btn-warning" id="plc-test">Test</button>
+          <span class="led led-gris led-md" id="plc-led"></span>
+        </div>
+      </div>
+
+      <!-- WinC5G -->
+      <div class="card">
+        <h2 class="text-lg font-semibold">WinC5G (VirtualBox)</h2>
+        <div class="cfg-row" style="margin-top:8px;">
+          <label>Dirección IP:</label>
+          <input type="text" class="font-mono" id="winc5g-ip" value="192.168.29.101">
+          <button class="btn" id="winc5g-ping">Ping</button>
+          <span class="led led-gris led-md" id="winc5g-led"></span>
+        </div>
+      </div>
+
+      <!-- Robot -->
+      <div class="card">
+        <h2 class="text-lg font-semibold">Robot (COMAU)</h2>
+        <div class="cfg-row" style="margin-top:8px;">
+          <label>Dirección IP:</label>
+          <input type="text" class="font-mono" id="robot-ip" value="192.168.29.2">
+          <button class="btn" id="robot-ping">Ping</button>
+          <span class="led led-gris led-md" id="robot-led"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Guardar Configuración -->
+    <div class="card" style="margin-top: 20px;">
+      <div class="flex justify-between items-center">
+        <div>
+          <h2 class="text-lg font-semibold">Guardar Configuración</h2>
+          <p class="text-sm text-muted">Presiona el botón para guardar todos los cambios en el archivo de configuración.</p>
+        </div>
+        <button id="btnSaveConfig" class="btn btn-primary" style="min-width: 150px;">
+          Guardar Configuración
+        </button>
+      </div>
+      <div id="saveStatus" class="mt-3" style="display: none;">
+        <span id="saveMessage" class="text-sm"></span>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('[configDevices] Página cargada');
+      
+      // Elementos del DOM
+      const cmbInterfaces = document.getElementById('cmbInterfaces');
+      const lblCurrentIP = document.getElementById('lblCurrentIP');
+      const btnSaveConfig = document.getElementById('btnSaveConfig');
+      const saveStatus = document.getElementById('saveStatus');
+      const saveMessage = document.getElementById('saveMessage');
+
+      // Variables para almacenar cambios pendientes
+      let pendingChanges = {
+        interface: null,
+        devices: {}
+      };
+
+      // --- Funciones de UI ---
+      function updateLedStatus(ledId, status, ip = '') {
+        const led = document.getElementById(ledId);
+        if (!led) return;
+        
+        // Reset classes
+        led.className = 'led led-md'; // Base classes
+        if (status === true) {
+          led.classList.add('led-verde');
+          led.title = `Conexión exitosa con ${ip}`;
+        } else if (status === false) {
+          led.classList.add('led-rojo');
+          led.title = `Fallo de conexión con ${ip}`;
+        } else { // status es null o undefined
+          led.classList.add('led-gris');
+          led.title = 'Estado desconocido';
+        }
+      }
+
+      function showSaveStatus(message, isSuccess = true) {
+        saveMessage.textContent = message;
+        saveMessage.className = `text-sm ${isSuccess ? 'text-green-600' : 'text-red-600'}`;
+        saveStatus.style.display = 'block';
+        
+        // Ocultar después de 3 segundos
+        setTimeout(() => {
+          saveStatus.style.display = 'none';
+        }, 3000);
+      }
+
+      // --- Configurar eventos de dispositivos ---
+      function setupDeviceEvents() {
+        console.log('[configDevices] Configurando eventos de dispositivos');
+        
+        // PLC
+        const plcIp = document.getElementById('plc-ip');
+        const plcPing = document.getElementById('plc-ping');
+        const plcTest = document.getElementById('plc-test');
+        
+        plcPing.addEventListener('click', async () => {
+          updateLedStatus('plc-led', null); // Amarillo (pending)
+          try {
+            const response = await Common.fetchWithTimeout('/api/devices/ping', {
+              method: 'POST',
+              headers: {'Content-Type': 'application/json'},
+              body: JSON.stringify({ device: 'plc' })
+            });
+            const data = await response.json();
+            updateLedStatus('plc-led', data.devices.plc.status, plcIp.value);
+          } catch (error) {
+            updateLedStatus('plc-led', false, plcIp.value);
+          }
+        });
+        
+        plcTest.addEventListener('click', () => {
+          if (window.parent && window.parent.setLeftPane) {
+            window.parent.setLeftPane('plc_logo');
+          } else {
+            window.location.hash = '#plc_logo';
+          }
+        });
+        
+        plcIp.addEventListener('change', () => {
+          const newIp = plcIp.value.trim();
+          if (newIp) {
+            pendingChanges.devices['plc'] = newIp;
+            console.log(`IP pendiente para PLC: ${newIp}`);
+          }
+        });
+
+        // WinC5G
+        const winc5gIp = document.getElementById('winc5g-ip');
+        const winc5gPing = document.getElementById('winc5g-ping');
+        
+        winc5gPing.addEventListener('click', async () => {
+          updateLedStatus('winc5g-led', null); // Amarillo (pending)
+          try {
+            const response = await Common.fetchWithTimeout('/api/devices/ping', {
+              method: 'POST',
+              headers: {'Content-Type': 'application/json'},
+              body: JSON.stringify({ device: 'winc5g' })
+            });
+            const data = await response.json();
+            updateLedStatus('winc5g-led', data.devices.winc5g.status, winc5gIp.value);
+          } catch (error) {
+            updateLedStatus('winc5g-led', false, winc5gIp.value);
+          }
+        });
+        
+        winc5gIp.addEventListener('change', () => {
+          const newIp = winc5gIp.value.trim();
+          if (newIp) {
+            pendingChanges.devices['winc5g'] = newIp;
+            console.log(`IP pendiente para WinC5G: ${newIp}`);
+          }
+        });
+
+        // Robot
+        const robotIp = document.getElementById('robot-ip');
+        const robotPing = document.getElementById('robot-ping');
+        
+        robotPing.addEventListener('click', async () => {
+          updateLedStatus('robot-led', null); // Amarillo (pending)
+          try {
+            const response = await Common.fetchWithTimeout('/api/devices/ping', {
+              method: 'POST',
+              headers: {'Content-Type': 'application/json'},
+              body: JSON.stringify({ device: 'robot' })
+            });
+            const data = await response.json();
+            updateLedStatus('robot-led', data.devices.robot.status, robotIp.value);
+          } catch (error) {
+            updateLedStatus('robot-led', false, robotIp.value);
+          }
+        });
+        
+        robotIp.addEventListener('change', () => {
+          const newIp = robotIp.value.trim();
+          if (newIp) {
+            pendingChanges.devices['robot'] = newIp;
+            console.log(`IP pendiente para Robot: ${newIp}`);
+          }
+        });
+      }
+      
+      // --- Lógica de Red Local ---
+      async function loadNetworkInterfaces(savedInterfaceName) {
+        try {
+          console.log('[configDevices] Cargando interfaces de red...');
+          const response = await Common.fetchWithTimeout('/api/system/network_interfaces');
+          const data = await response.json();
+          cmbInterfaces.innerHTML = '';
+          
+          if (data.ok && data.interfaces.length > 0) {
+            let foundSaved = false;
+            let selectedInterface = null;
+            
+            data.interfaces.forEach(iface => {
+              const opt = new Option(`${iface.name} (${iface.ip})`, iface.name);
+              cmbInterfaces.add(opt);
+              
+              // Verificar si esta es la interfaz guardada
+              if (iface.name === savedInterfaceName) {
+                foundSaved = true;
+                selectedInterface = iface;
+              }
+            });
+            
+            // Si encontramos la interfaz guardada, seleccionarla
+            if (foundSaved && selectedInterface) {
+              cmbInterfaces.value = savedInterfaceName;
+              lblCurrentIP.textContent = selectedInterface.ip;
+            } else if (data.interfaces.length > 0) {
+              // Si no encontramos la guardada, seleccionar la primera
+              const firstInterface = data.interfaces[0];
+              cmbInterfaces.value = firstInterface.name;
+              lblCurrentIP.textContent = firstInterface.ip;
+            }
+          } else {
+            cmbInterfaces.innerHTML = '<option value="">No se encontraron interfaces</option>';
+            lblCurrentIP.textContent = 'N/A';
+          }
+        } catch (error) { 
+          console.error('[configDevices] Error cargando interfaces:', error);
+          lblCurrentIP.textContent = 'Error';
+        }
+      }
+
+      cmbInterfaces.addEventListener('change', () => {
+        const selectedName = cmbInterfaces.value;
+        const selectedOptionText = cmbInterfaces.options[cmbInterfaces.selectedIndex].text;
+        const ipMatch = selectedOptionText.match(/\((.*?)\)/);
+        const selectedIP = ipMatch ? ipMatch[1] : 'N/A';
+        
+        lblCurrentIP.textContent = selectedIP;
+        pendingChanges.interface = selectedName;
+        console.log(`[configDevices] Interfaz pendiente: ${selectedName} (${selectedIP})`);
+      });
+
+      // --- Lógica de Guardado ---
+      async function saveConfiguration() {
+        btnSaveConfig.disabled = true;
+        btnSaveConfig.textContent = 'Guardando...';
+        
+        try {
+          let hasChanges = false;
+          
+          // Guardar interfaz si cambió
+          if (pendingChanges.interface) {
+            const response = await Common.fetchWithTimeout('/api/system/save_interface', {
+              method: 'POST',
+              headers: {'Content-Type': 'application/json'},
+              body: JSON.stringify({ interface_name: pendingChanges.interface })
+            });
+            const data = await response.json();
+            if (data.ok) {
+              console.log(`[configDevices] Interfaz guardada: ${pendingChanges.interface}`);
+              hasChanges = true;
+            } else {
+              throw new Error(`Error guardando interfaz: ${data.error}`);
+            }
+          }
+          
+          // Guardar IPs de dispositivos si cambiaron
+          for (const [device, ip] of Object.entries(pendingChanges.devices)) {
+            const response = await Common.fetchWithTimeout('/api/devices/save_ip', {
+              method: 'POST',
+              headers: {'Content-Type': 'application/json'},
+              body: JSON.stringify({ device: device, ip: ip })
+            });
+            const data = await response.json();
+            if (data.ok) {
+              console.log(`[configDevices] IP guardada para ${device}: ${ip}`);
+              hasChanges = true;
+            } else {
+              throw new Error(`Error guardando IP para ${device}: ${data.error}`);
+            }
+          }
+          
+          if (hasChanges) {
+            // Recargar configuración en el servidor
+            console.log('[configDevices] Recargando configuración en el servidor...');
+            const reloadResponse = await Common.fetchWithTimeout('/api/system/reload_config', {
+              method: 'POST',
+              headers: {'Content-Type': 'application/json'},
+              body: JSON.stringify({})
+            });
+            const reloadData = await reloadResponse.json();
+            
+            if (reloadData.ok) {
+              showSaveStatus('Configuración guardada y recargada exitosamente', true);
+            } else {
+              showSaveStatus('Configuración guardada pero error al recargar', false);
+            }
+            
+            // Limpiar cambios pendientes
+            pendingChanges = {
+              interface: null,
+              devices: {}
+            };
+          } else {
+            showSaveStatus('No hay cambios para guardar', false);
+          }
+          
+        } catch (error) {
+          console.error('[configDevices] Error guardando configuración:', error);
+          showSaveStatus(`Error: ${error.message}`, false);
+        } finally {
+          btnSaveConfig.disabled = false;
+          btnSaveConfig.textContent = 'Guardar Configuración';
+        }
+      }
+
+      btnSaveConfig.addEventListener('click', saveConfiguration);
+
+      // --- Carga Inicial ---
+      async function initialize() {
+        try {
+          console.log('[configDevices] Iniciando carga de página...');
+          
+          // Configurar eventos de dispositivos inmediatamente
+          setupDeviceEvents();
+          
+          // Cargar estado del sistema
+          const statusResponse = await Common.fetchWithTimeout('/api/status');
+          const statusData = await statusResponse.json();
+          console.log('[configDevices] Estado del sistema:', statusData);
+          
+          if (statusData) {
+            // Cargar interfaces de red
+            await loadNetworkInterfaces(statusData.network?.selected_interface);
+            
+            // Actualizar IPs de dispositivos si están disponibles
+            if (statusData.devices) {
+              if (statusData.devices.plc?.ip) {
+                document.getElementById('plc-ip').value = statusData.devices.plc.ip;
+              }
+              if (statusData.devices.winc5g?.ip) {
+                document.getElementById('winc5g-ip').value = statusData.devices.winc5g.ip;
+              }
+              if (statusData.devices.robot?.ip) {
+                document.getElementById('robot-ip').value = statusData.devices.robot.ip;
+              }
+            }
+            
+            console.log('[configDevices] Página inicializada correctamente');
+          } else {
+            console.error('[configDevices] No se recibió estado del sistema');
+          }
+        } catch (error) {
+          console.error('[configDevices] Error inicializando página:', error);
+        }
+      }
+
+      initialize();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,1402 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <script src="/static/common.js"></script>
+</head>
+<body>
+  <div class="wrap">
+    <h1 class="page-header">Dashboard</h1>
+
+    <!-- Mensaje de estado del sistema -->
+    <div id="statusMessage" class="status-message" style="display: none;"></div>
+
+    <div class="grid-main">
+      <div class="card">
+        <div class="flex items-center justify-between" style="margin-bottom: 12px;">
+          <strong>Webcam en vivo</strong>
+          <div class="flex gap-2">
+            <!-- Botones de filtros -->
+            <div class="filter-tabs">
+              <button class="filter-tab active" data-filter="original">Original</button>
+              <button class="filter-tab" data-filter="detection">Detección</button>
+            </div>
+            
+            <!-- Botón de aprendizaje del fondo -->
+            <button id="btnBackgroundLearning" class="btn btn-sm btn-learning" title="Aprender fondo" onclick="toggleBackgroundLearning()">
+              <svg class="ico" fill="currentColor" viewBox="0 0 640 640" style="width: 16px; height: 16px;">
+                <path d="M80 259.8L289.2 345.9C299 349.9 309.4 352 320 352C330.6 352 341 349.9 350.8 345.9L593.2 246.1C602.2 242.4 608 233.7 608 224C608 214.3 602.2 205.6 593.2 201.9L350.8 102.1C341 98.1 330.6 96 320 96C309.4 96 299 98.1 289.2 102.1L46.8 201.9C37.8 205.6 32 214.3 32 224L32 520C32 533.3 42.7 544 56 544C69.3 544 80 533.3 80 520L80 259.8zM128 331.5L128 448C128 501 214 544 320 544C426 544 512 501 512 448L512 331.4L369.1 390.3C353.5 396.7 336.9 400 320 400C303.1 400 286.5 396.7 270.9 390.3L128 331.4z"/>
+              </svg>
+            </button>
+            
+                    
+            
+            <!-- Botón de Snapshoot -->
+            <button id="btnSnapshoot" class="btn btn-sm btn-camera" title="Tomar foto y generar máscara" onclick="takeSnapshoot()">
+              <svg class="ico" fill="currentColor" viewBox="0 -960 960 960" style="width: 16px; height: 16px;">
+                <path d="M456-600h320q-27-69-82.5-118.5T566-788L456-600Zm-92 80 160-276q-11-2-22-3t-22-1q-66 0-123 25t-101 67l108 188ZM170-400h218L228-676q-32 41-50 90.5T160-480q0 21 2.5 40.5T170-400Zm224 228 108-188H184q27 69 82.5 118.5T394-172Zm86 12q66 0 123-25t101-67L596-440 436-164q11 2 21.5 3t22.5 1Zm252-124q32-41 50-90.5T800-480q0-21-2.5-40.5T790-560H572l160 276ZM480-480Zm0 400q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-155.5t86-127Q252-817 325-848.5T480-880q83 0 155.5 31.5t127 86q54.5 54.5 86 127T880-480q0 82-31.5 155t-86 127.5q-54.5 54.5-127 86T480-80Z"/>
+              </svg>
+            </button>
+            
+            <!-- Botón de Comparar -->
+            <button id="btnCompare" class="btn btn-sm btn-warning" title="Comparar con base de datos" onclick="compareWithDatabase()">
+              <svg class="ico" fill="currentColor" viewBox="0 -960 960 960" style="width: 16px; height: 16px;">
+                <path d="M400-40v-80H200q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h200v-80h80v880h-80ZM200-240h200v-240L200-240Zm360 120v-360l200 240v-520H560v-80h200q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H560Z"/>
+              </svg>
+            </button>
+            
+            <!-- Botón de Polígono -->
+            <button id="btnPolygon" class="btn btn-sm btn-area" title="Dibujar polígono" onclick="togglePolygonDrawing()">
+              <svg class="ico" fill="currentColor" viewBox="0 -960 960 960" style="width: 16px; height: 16px;">
+                <path d="M600-80v-100L320-320H120v-240h172l108-124v-196h240v240H468L360-516v126l240 120v-50h240v240H600ZM480-720h80v-80h-80v80ZM200-400h80v-80h-80v80Zm480 240h80v-80h-80v80ZM520-760ZM240-440Zm480 240Z"/>
+              </svg>
+            </button>
+            
+            <!-- Botón de Configuración de Filtros -->
+            <button id="btnFilterConfig" class="btn btn-sm btn-secondary" title="Configurar parámetros de filtros" onclick="openFilterConfigPage()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-sliders" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M9.05 3a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0V3zM4.5 7a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M2.05 8a2.5 2.5 0 0 1 4.9 0H16v1H6.95a2.5 2.5 0 0 1-4.9 0H0V8zm9.45 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3m-2.45 1a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0v-1z"/>
+              </svg>
+            </button>
+            
+
+          </div>
+        </div>
+        
+        <div class="video-wrap" style="margin-top:8px; position: relative;">
+          <img id="camStream" alt="Stream" src="" onload="Common.hideCamError()" onerror="Common.showCamError('No se pudo cargar el stream.')" />
+          <canvas id="polygonOverlay" style="position: absolute; top: 0; left: 0; pointer-events: none; z-index: 10; border: none; outline: none;"></canvas>
+          <div id="camStatus" class="video-overlay" style="display:none;"></div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top: 24px;">
+        <div class="flex items-center justify-between" style="margin-bottom: 12px;">
+          <strong>Terminal del Sistema</strong>
+          <div class="flex gap-2">
+            <select id="logFilter" class="btn-sm" style="height: 34px;">
+              <option value="">Todos los tipos</option>
+              <option value="SYSTEM">Sistema</option>
+              <option value="WARNING">Advertencias</option>
+              <option value="ERROR">Errores</option>
+              <option value="RUTINA">Rutinas</option>
+            </select>
+            
+            <button id="btnRefresh" class="btn btn-sm" title="Actualizar logs">
+              <svg class="ico" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"/>
+                <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"/>
+              </svg>
+              <span>Actualizar</span>
+            </button>
+            
+            <button id="btnClear" class="btn btn-danger btn-sm" title="Limpiar terminal">
+              <svg class="ico" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
+              </svg>
+              <span>Limpiar</span>
+            </button>
+          </div>
+        </div>
+        
+        <div id="terminal" class="terminal-container">
+          <div id="terminalContent" class="terminal-content">
+            <div class="terminal-line text-muted">Cargando logs del sistema...</div>
+          </div>
+        </div>
+        
+        <div id="terminalStats" class="terminal-stats text-sm text-muted" style="margin-top: 8px;">
+          Total: 0 logs
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <script>
+    console.log('[dashboard] Script del dashboard cargado correctamente');
+    
+    window.addEventListener("load", Common.autoConnectCamera);
+    
+    // Listener para redimensionar el canvas cuando cambie el tamaño de la ventana
+    window.addEventListener('resize', function() {
+      if (isPolygonDrawingMode) {
+        setupPolygonCanvas();
+        drawPolygonSegments();
+      }
+    });
+    
+    // Variables del terminal
+    let terminalUpdateInterval;
+    
+    // Elementos del terminal
+    const terminal = document.getElementById('terminal');
+    const terminalContent = document.getElementById('terminalContent');
+    const terminalStats = document.getElementById('terminalStats');
+    const logFilter = document.getElementById('logFilter');
+    const btnRefresh = document.getElementById('btnRefresh');
+    const btnClear = document.getElementById('btnClear');
+
+    // Colores por tipo de log
+    const logColors = {
+      'SYSTEM': 'text-success',
+      'WARNING': 'text-warning', 
+      'ERROR': 'text-error',
+      'RUTINA': 'text-muted'
+    };
+
+    async function loadTerminalLogs() {
+      try {
+        const filter = logFilter.value;
+        const params = new URLSearchParams();
+        params.append('limit', '50');
+        if (filter) params.append('filter', filter);
+        
+        const response = await Common.fetchWithTimeout(`/api/terminal/logs?${params}`);
+        const data = await response.json();
+        
+        if (data.ok) {
+          renderLogs(data.logs);
+          updateStats();
+        } else {
+          terminalContent.innerHTML = '<div class="terminal-line text-error">Error cargando logs del terminal</div>';
+        }
+      } catch (error) {
+        terminalContent.innerHTML = '<div class="terminal-line text-error">Error de conexión con el servidor</div>';
+      }
+    }
+
+    function renderLogs(logs) {
+      if (!logs || logs.length === 0) {
+        terminalContent.innerHTML = '<div class="terminal-line text-muted">No hay logs disponibles</div>';
+        return;
+      }
+
+      const lines = logs.map(log => {
+        const colorClass = logColors[log.type] || '';
+        const timestamp = log.timestamp.split(' ')[1]; // Solo la hora
+        return `<div class="terminal-line ${colorClass}">[${timestamp}] [${log.type}] ${log.message}</div>`;
+      }).join('');
+
+      terminalContent.innerHTML = lines;
+      
+      terminal.scrollTop = 0;
+    }
+
+    async function updateStats() {
+      try {
+        const response = await Common.fetchWithTimeout('/api/terminal/stats');
+        const data = await response.json();
+        
+        if (data.ok) {
+          const stats = data.stats;
+          let statsText = `Total: ${stats.total_logs} logs`;
+          
+          if (Object.keys(stats.by_type).length > 0) {
+            const typeStats = Object.entries(stats.by_type)
+              .map(([type, count]) => `${type}: ${count}`)
+              .join(', ');
+            statsText += ` (${typeStats})`;
+          }
+          
+          terminalStats.textContent = statsText;
+        }
+      } catch (error) {
+        terminalStats.textContent = 'Error obteniendo estadísticas';
+      }
+    }
+
+    async function clearTerminal() {
+      if (!confirm('¿Estás seguro de que quieres limpiar todo el terminal?')) {
+        return;
+      }
+      
+      try {
+        const response = await Common.fetchWithTimeout('/api/terminal/clear', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        
+        const data = await response.json();
+        if (data.ok) {
+          loadTerminalLogs();
+        }
+      } catch (error) {
+        console.error('Error limpiando terminal:', error);
+      }
+    }
+
+    // Event listeners
+    logFilter.addEventListener('change', loadTerminalLogs);
+    btnRefresh.addEventListener('click', loadTerminalLogs);
+    btnClear.addEventListener('click', clearTerminal);
+
+            // Auto actualización cada 3 segundos
+        function startTerminalUpdates() {
+          loadTerminalLogs(); // Carga inicial
+          terminalUpdateInterval = setInterval(loadTerminalLogs, 3000);
+        }
+        
+        // Verificar estado del modelo de fondo al cargar
+        async function checkBackgroundModelStatus() {
+          try {
+            const response = await Common.fetchWithTimeout('/api/webcam/object_detection');
+            const data = await response.json();
+            if (data.ok) {
+              if (data.has_model) {
+                console.log('[system] ✅ Modelo de fondo disponible');
+                showStatusMessage('Modelo de fondo disponible - Detección automática activada', 'success');
+              } else {
+                console.log('[system] ⚠️ No hay modelo de fondo - Usar "Aprender fondo" primero');
+                showStatusMessage('No hay modelo de fondo - Usar "Aprender fondo" para activar detección', 'warning');
+              }
+            }
+          } catch (error) {
+            console.error('[system] Error verificando modelo de fondo:', error);
+          }
+        }
+        
+        // Mostrar mensaje de estado
+        function showStatusMessage(message, type = 'info') {
+          const statusDiv = document.getElementById('statusMessage');
+          if (statusDiv) {
+            statusDiv.textContent = message;
+            statusDiv.className = `status-message ${type}`;
+            statusDiv.style.display = 'block';
+            
+            // Ocultar después de 5 segundos
+            setTimeout(() => {
+              statusDiv.style.display = 'none';
+            }, 5000);
+          }
+        }
+
+    function stopTerminalUpdates() {
+      if (terminalUpdateInterval) {
+        clearInterval(terminalUpdateInterval);
+      }
+    }
+
+    // ============================================================
+    // Manejo de clics en la imagen para dibujo de polígono
+    // ============================================================
+    
+    let isPolygonDrawingMode = false;
+    let polygonPoints = []; // Array para almacenar los puntos del polígono
+    
+    function addImageClickListeners() {
+      const img = document.getElementById('camStream');
+      if (img) {
+        img.addEventListener('click', handleImageClick);
+        img.addEventListener('dblclick', handleImageDoubleClick);
+        img.style.cursor = 'crosshair';
+        // Configurar el canvas overlay
+        setupPolygonCanvas();
+      }
+    }
+    
+    function removeImageClickListeners() {
+      const img = document.getElementById('camStream');
+      if (img) {
+        img.removeEventListener('click', handleImageClick);
+        img.removeEventListener('dblclick', handleImageDoubleClick);
+        img.style.cursor = 'default';
+        // Limpiar el canvas
+        clearPolygonCanvas();
+      }
+    }
+    
+    async function handleImageClick(event) {
+      if (!isPolygonDrawingMode) return;
+      
+      // Prevenir que el click simple interfiera con el doble click
+      if (event.detail > 1) return;
+      
+      const img = event.target;
+      const rect = img.getBoundingClientRect();
+      
+      // Calcular coordenadas relativas al elemento HTML
+      const clickX = event.clientX - rect.left;
+      const clickY = event.clientY - rect.top;
+      
+      // Obtener dimensiones reales de la imagen y dimensiones mostradas
+      const naturalWidth = img.naturalWidth;
+      const naturalHeight = img.naturalHeight;
+      const displayWidth = rect.width;
+      const displayHeight = rect.height;
+      
+      // Calcular factor de escala
+      const scaleX = naturalWidth / displayWidth;
+      const scaleY = naturalHeight / displayHeight;
+      
+      // Convertir coordenadas del click a coordenadas de la imagen original
+      const x = Math.round(clickX * scaleX);
+      const y = Math.round(clickY * scaleY);
+      
+      console.log('[polygon] Click simple en:', {clickX, clickY, x, y, naturalWidth, naturalHeight, displayWidth, displayHeight});
+      
+      try {
+        const response = await Common.fetchWithTimeout('/api/webcam/area_detection', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'add_point',
+            x: x,
+            y: y
+          })
+        });
+        
+        const data = await response.json();
+        if (data.ok) {
+          console.log('[polygon] Punto agregado:', data.message);
+          // Agregar punto al array local y redibujar
+          polygonPoints.push({x: clickX, y: clickY});
+          drawPolygonSegments();
+        } else {
+          console.error('[polygon] Error agregando punto:', data.message);
+        }
+      } catch (error) {
+        console.error('[polygon] Error en clic:', error);
+      }
+    }
+    
+    async function handleImageDoubleClick(event) {
+      if (!isPolygonDrawingMode) return;
+      
+      console.log('[polygon] Doble click detectado, cerrando área...');
+      console.log('[polygon] Puntos actuales:', polygonPoints.length);
+      
+      // Verificar que hay suficientes puntos
+      if (polygonPoints.length < 3) {
+        alert('Se necesitan al menos 3 puntos para cerrar el área. Puntos actuales: ' + polygonPoints.length);
+        return;
+      }
+      
+      try {
+        const response = await Common.fetchWithTimeout('/api/webcam/area_detection', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'close_area'
+          })
+        });
+        
+        const data = await response.json();
+        if (data.ok) {
+          console.log('[polygon] Área cerrada exitosamente:', data.message);
+          // Limpiar canvas y puntos
+          clearPolygonCanvas();
+          // Mostrar modal para guardar
+          showPolygonModal();
+          // Desactivar modo dibujo
+          isPolygonDrawingMode = false;
+          removeImageClickListeners();
+        } else {
+          console.error('[polygon] Error cerrando área:', data.message);
+          alert('Error cerrando área: ' + data.message);
+        }
+      } catch (error) {
+        console.error('[polygon] Error en doble clic:', error);
+        alert('Error en doble clic: ' + error.message);
+      }
+    }
+
+    // Inicializar cuando se carga la página
+    document.addEventListener('DOMContentLoaded', function() {
+      startTerminalUpdates();
+      initFilterSystem();
+      checkBackgroundModelStatus();
+      
+      // Listener para detectar cuando se cierra la página de configuración
+      window.addEventListener('message', function(event) {
+        if (event.data && event.data.type === 'filter_config_closed') {
+          console.log('[dashboard] Página de configuración cerrada');
+        } else if (event.data && event.data.type === 'update_preview') {
+          console.log('[dashboard] Actualizando preview con filtro:', event.data.filterId);
+          // Recargar el stream para mostrar el nuevo preview
+          const img = document.getElementById('camStream');
+          if (img) {
+            img.src = "/video_feed?t=" + Date.now();
+          }
+        }
+      });
+    });
+
+    // ============================================================
+    // Sistema de Filtros
+    // ============================================================
+    let currentFilter = 'original';
+    let filterParams = {};
+
+    async function initFilterSystem() {
+      try {
+        console.log('[filters] Inicializando sistema de filtros...');
+        
+        // Cargar filtro actual
+        await loadCurrentFilter();
+        
+        // Cargar estado del aprendizaje del fondo
+        await loadBackgroundLearningStatus();
+        
+        // Cargar estado del área de detección
+        await loadAreaStatus();
+        
+        // Event listeners para pestañas
+        const filterTabs = document.querySelectorAll('.filter-tab');
+        console.log('[filters] Encontradas pestañas:', filterTabs.length);
+        
+        filterTabs.forEach(tab => {
+          console.log('[filters] Agregando listener a pestaña:', tab.dataset.filter);
+          tab.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const filterName = this.dataset.filter;
+            console.log('[filters] Pestaña clickeada:', filterName);
+            changeFilter(filterName);
+          });
+        });
+        
+        // Event listener para botón de configuración
+        const btnFilterConfig = document.getElementById('btnFilterConfig');
+        if (btnFilterConfig) {
+          btnFilterConfig.addEventListener('click', function() {
+            console.log('[filters] Botón de configuración clickeado');
+            openFilterConfigPage();
+          });
+        }
+        
+        // Event listener para selector de filtro en modal
+        const filterSelect = document.getElementById('filterSelect');
+        if (filterSelect) {
+          filterSelect.addEventListener('change', function() {
+            console.log('[filters] Selector de filtro cambiado:', this.value);
+            loadFilterParams();
+          });
+        }
+        
+        console.log('[filters] Sistema de filtros inicializado correctamente');
+        console.log('[filters] Estado del aprendizaje del fondo:', isBackgroundLearning);
+      } catch (error) {
+        console.error('[filters] Error inicializando sistema de filtros:', error);
+      }
+    }
+
+    async function loadCurrentFilter() {
+      try {
+        console.log('[filters] Cargando filtro actual...');
+        const response = await Common.fetchWithTimeout('/api/webcam/filter');
+        const data = await response.json();
+        
+        if (data.ok) {
+          currentFilter = data.current_filter.name;
+          filterParams = data.current_filter.params;
+          console.log('[filters] Filtro actual cargado:', currentFilter, filterParams);
+          updateFilterTabs();
+        } else {
+          console.error('[filters] Error del servidor al cargar filtro:', data.error);
+        }
+      } catch (error) {
+        console.error('[filters] Error cargando filtro actual:', error);
+        // Usar valores por defecto si hay error
+        currentFilter = 'original';
+        filterParams = {};
+        updateFilterTabs();
+      }
+    }
+
+
+    
+    // Función para cambiar filtro (unificada)
+    async function changeFilter(filterName) {
+      try {
+        console.log('[filters] Cambiando filtro:', filterName);
+        
+        const requestBody = {
+          filter_name: filterName,
+          params: filterParams[filterName] || {}
+        };
+        
+        const response = await Common.fetchWithTimeout('/api/webcam/filter', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(requestBody)
+        });
+        
+        const data = await response.json();
+        
+        if (data.ok) {
+          currentFilter = filterName;
+          updateFilterTabs();
+          console.log('[filters] Filtro cambiado exitosamente a:', filterName);
+          
+          // Si se cambió al filtro de detección, verificar si hay modelo de fondo
+          if (filterName === 'detection') {
+            try {
+              const bgResponse = await Common.fetchWithTimeout('/api/webcam/object_detection');
+              const bgData = await bgResponse.json();
+              if (bgData.ok && bgData.has_model) {
+                console.log('[filters] Modelo de fondo disponible, detección automática activada');
+              } else {
+                console.log('[filters] No hay modelo de fondo, usar "Aprender fondo" primero');
+              }
+            } catch (error) {
+              console.error('[filters] Error verificando modelo de fondo:', error);
+            }
+          }
+          
+          // Recargar el stream para aplicar el nuevo filtro
+          const img = document.getElementById('camStream');
+          if (img) {
+            console.log('[filters] Recargando stream de video...');
+            img.src = "/video_feed?t=" + Date.now();
+          }
+        } else {
+          console.error('[filters] Error del servidor:', data.error);
+        }
+      } catch (error) {
+        console.error('[filters] Error cambiando filtro:', error);
+      }
+    }
+            
+
+
+    function updateFilterTabs() {
+      const tabs = document.querySelectorAll('.filter-tab');
+      console.log('[filters] Actualizando pestañas, filtro actual:', currentFilter);
+      
+      tabs.forEach(tab => {
+        tab.classList.remove('active');
+        if (tab.dataset.filter === currentFilter) {
+          tab.classList.add('active');
+          console.log('[filters] Pestaña activada:', tab.dataset.filter);
+        }
+        
+        // Títulos normales
+        if (tab.dataset.filter === 'original') {
+          tab.title = 'Vista original de la cámara';
+        } else if (tab.dataset.filter === 'detection') {
+          tab.title = 'Vista con detección de objetos y filtros aplicados';
+        }
+      });
+    }
+
+
+
+    // ============================================================
+    // Sistema de Detección de Objetos
+    // ============================================================
+    let isBackgroundLearning = false;
+
+    async function toggleBackgroundLearning() {
+      try {
+        if (isBackgroundLearning) {
+          // Si ya está aprendiendo, detener
+          await stopBackgroundLearning();
+        } else {
+          // Iniciar aprendizaje automático
+          await startBackgroundLearning();
+        }
+      } catch (error) {
+        console.error('[object_detection] Error en aprendizaje del fondo:', error);
+      }
+    }
+
+    async function startBackgroundLearning() {
+      try {
+        console.log('[object_detection] Iniciando aprendizaje automático del fondo...');
+        
+        // Obtener configuración de entrenamiento
+        const trainingConfig = await getTrainingConfig();
+        const trainingTime = trainingConfig.training_time || 5000; // ms por defecto
+        const showProgress = trainingConfig.show_progress !== false; // true por defecto
+        
+        // Iniciar aprendizaje en el backend
+        const response = await Common.fetchWithTimeout('/api/webcam/object_detection', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'start_learning',
+            training_time: trainingTime
+          })
+        });
+        
+        const data = await response.json();
+        if (data.ok) {
+          isBackgroundLearning = true;
+          updateBackgroundLearningButton();
+          
+          // Mostrar overlay de progreso si está habilitado
+          if (showProgress) {
+            showTrainingOverlay(trainingTime);
+          }
+          
+          // Cambiar automáticamente al filtro de detección
+          if (currentFilter !== 'detection') {
+            await changeFilter('detection');
+          }
+          
+          console.log('[object_detection] Aprendizaje automático iniciado por', trainingTime, 'ms');
+        } else {
+          console.error('[object_detection] Error del servidor:', data.error);
+        }
+      } catch (error) {
+        console.error('[object_detection] Error iniciando aprendizaje:', error);
+      }
+    }
+
+    async function stopBackgroundLearning() {
+      try {
+        console.log('[object_detection] Deteniendo aprendizaje del fondo...');
+        
+        const response = await Common.fetchWithTimeout('/api/webcam/object_detection', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'stop_learning'
+          })
+        });
+        
+        const data = await response.json();
+        if (data.ok) {
+          isBackgroundLearning = false;
+          updateBackgroundLearningButton();
+          hideTrainingOverlay();
+          console.log('[object_detection] Aprendizaje detenido');
+        } else {
+          console.error('[object_detection] Error del servidor:', data.error);
+        }
+      } catch (error) {
+        console.error('[object_detection] Error deteniendo aprendizaje:', error);
+      }
+    }
+
+    async function getTrainingConfig() {
+      try {
+        const response = await Common.fetchWithTimeout('/api/cascade_filters/config');
+        const data = await response.json();
+        
+        if (data.ok && data.config && data.config.detection) {
+          return {
+            training_time: data.config.detection.training_time || 5000,
+            show_progress: data.config.detection.show_progress !== false
+          };
+        }
+      } catch (error) {
+        console.error('[object_detection] Error obteniendo configuración de entrenamiento:', error);
+      }
+      
+      // Valores por defecto
+      return {
+        training_time: 5000,
+        show_progress: true
+      };
+    }
+
+    function showTrainingOverlay(trainingTime) {
+      const overlay = document.getElementById('trainingOverlay');
+      const progressFill = document.getElementById('trainingProgressFill');
+      const progressText = document.getElementById('trainingProgressText');
+      const timeText = document.getElementById('trainingTimeText');
+      
+      if (overlay) {
+        overlay.style.display = 'flex';
+        
+        const startTime = Date.now();
+        const endTime = startTime + trainingTime;
+        
+        // Actualizar progreso cada 100ms
+        const progressInterval = setInterval(() => {
+          const currentTime = Date.now();
+          const elapsed = currentTime - startTime;
+          const progress = Math.min((elapsed / trainingTime) * 100, 100);
+          
+          if (progressFill) progressFill.style.width = progress + '%';
+          if (progressText) progressText.textContent = Math.round(progress) + '%';
+          if (timeText) timeText.textContent = `${elapsed}ms / ${trainingTime}ms`;
+          
+          // Si terminó el tiempo, ocultar overlay
+          if (currentTime >= endTime) {
+            clearInterval(progressInterval);
+            hideTrainingOverlay();
+            
+            // Detener aprendizaje automáticamente
+            setTimeout(() => {
+              stopBackgroundLearning();
+            }, 500);
+          }
+        }, 100);
+        
+        // Guardar el intervalo para poder limpiarlo si es necesario
+        overlay.dataset.progressInterval = progressInterval;
+      }
+    }
+
+    function hideTrainingOverlay() {
+      const overlay = document.getElementById('trainingOverlay');
+      if (overlay) {
+        // Limpiar intervalo si existe
+        if (overlay.dataset.progressInterval) {
+          clearInterval(parseInt(overlay.dataset.progressInterval));
+          delete overlay.dataset.progressInterval;
+        }
+        
+        overlay.style.display = 'none';
+        
+        // Resetear progreso
+        const progressFill = document.getElementById('trainingProgressFill');
+        const progressText = document.getElementById('trainingProgressText');
+        const timeText = document.getElementById('trainingTimeText');
+        
+        if (progressFill) progressFill.style.width = '0%';
+        if (progressText) progressText.textContent = '0%';
+        if (timeText) timeText.textContent = '0ms / 5000ms';
+      }
+    }
+
+    function updateBackgroundLearningButton() {
+      const btn = document.getElementById('btnBackgroundLearning');
+      if (btn) {
+        if (isBackgroundLearning) {
+          btn.classList.add('active');
+          btn.title = 'Detener aprendizaje del fondo';
+        } else {
+          btn.classList.remove('active');
+          btn.title = 'Aprender fondo';
+        }
+      }
+    }
+
+    async function loadBackgroundLearningStatus() {
+      try {
+        const response = await Common.fetchWithTimeout('/api/webcam/object_detection');
+        const data = await response.json();
+        
+        if (data.ok) {
+          isBackgroundLearning = data.is_learning;
+          updateBackgroundLearningButton();
+        }
+      } catch (error) {
+        console.error('[object_detection] Error cargando estado:', error);
+      }
+    }
+
+    async function loadAreaStatus() {
+      try {
+        console.log('[area_detection] Cargando estado del área...');
+        const response = await Common.fetchWithTimeout('/api/webcam/area_detection');
+        const data = await response.json();
+        
+        if (data.ok) {
+          const areaStatus = data.area_status;
+          console.log('[area_detection] Estado del área cargado:', areaStatus);
+          
+          // Si hay un polígono guardado, cargarlo automáticamente
+          if (areaStatus.points && areaStatus.points.length >= 3) {
+            console.log('[area_detection] Polígono encontrado, cargando...');
+            await loadPolygonFromConfig();
+          }
+        }
+      } catch (error) {
+        console.error('[area_detection] Error cargando estado del área:', error);
+      }
+    }
+
+    async function loadPolygonFromConfig() {
+      try {
+        console.log('[area_detection] Cargando polígono desde configuración...');
+        const response = await Common.fetchWithTimeout('/api/webcam/area_detection', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'load_polygon'
+          })
+        });
+        
+        const data = await response.json();
+        if (data.ok) {
+          console.log('[area_detection] Polígono cargado exitosamente');
+        } else {
+          console.error('[area_detection] Error cargando polígono:', data.message);
+        }
+      } catch (error) {
+        console.error('[area_detection] Error cargando polígono:', error);
+      }
+    }
+
+    // ============================================================
+
+
+
+
+    // ============================================================
+    // Funciones del Modal de Polígono
+    // ============================================================
+    
+    function showPolygonModal() {
+      document.getElementById('polygonModal').style.display = 'block';
+    }
+    
+    function closePolygonModal() {
+      document.getElementById('polygonModal').style.display = 'none';
+    }
+    
+    async function savePolygon() {
+      try {
+        console.log('[area_detection] Guardando polígono...');
+        
+        const response = await Common.fetchWithTimeout('/api/webcam/area_detection', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'save_polygon'
+          })
+        });
+        
+        const data = await response.json();
+        if (data.ok) {
+          console.log('[area_detection] Polígono guardado exitosamente');
+          alert('Polígono guardado en configuración');
+        } else {
+          console.error('[area_detection] Error guardando polígono:', data.message);
+          alert(`Error: ${data.message}`);
+        }
+      } catch (error) {
+        console.error('[area_detection] Error guardando polígono:', error);
+        alert('Error guardando polígono');
+      } finally {
+        closePolygonModal();
+      }
+    }
+
+    // ============================================================
+    // Carga inicial del polígono
+    // ============================================================
+    
+    async function loadPolygonOnStart() {
+      try {
+        console.log('[area_detection] Cargando polígono al iniciar...');
+        
+        const response = await Common.fetchWithTimeout('/api/webcam/area_detection', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'load_polygon'
+          })
+        });
+        
+        const data = await response.json();
+        if (data.ok) {
+          console.log('[area_detection] Polígono cargado exitosamente');
+          // Cambiar automáticamente al filtro de detección si hay polígono
+          if (currentFilter !== 'detection') {
+            await changeFilter('detection');
+          }
+        }
+      } catch (error) {
+        console.error('[area_detection] Error cargando polígono:', error);
+      }
+    }
+
+    // ============================================================
+    // Nuevas funciones para los botones
+    // ============================================================
+    
+    async function takeSnapshoot() {
+      try {
+        console.log('[snapshoot] Tomando foto y generando máscara...');
+        
+        const response = await Common.fetchWithTimeout('/api/webcam/snapshoot', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        
+        const data = await response.json();
+        if (data.ok) {
+          console.log('[snapshoot] Foto tomada y máscara generada exitosamente');
+          // Recargar la imagen para mostrar la máscara
+          const img = document.getElementById('camStream');
+          if (img) {
+            img.src = "/video_feed?t=" + Date.now();
+          }
+        } else {
+          console.error('[snapshoot] Error:', data.message);
+          alert(`Error: ${data.message}`);
+        }
+      } catch (error) {
+        console.error('[snapshoot] Error:', error);
+        alert('Error tomando foto');
+      }
+    }
+    
+    async function compareWithDatabase() {
+      try {
+        console.log('[compare] Comparando con base de datos...');
+        
+        const response = await Common.fetchWithTimeout('/api/webcam/compare', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        
+        const data = await response.json();
+        if (data.ok) {
+          console.log('[compare] Comparación exitosa:', data.message);
+          alert(`Comparación: ${data.message}`);
+        } else {
+          console.error('[compare] Error:', data.message);
+          alert(`Error: ${data.message}`);
+        }
+      } catch (error) {
+        console.error('[compare] Error:', error);
+        alert('Error en comparación');
+      }
+    }
+    
+
+
+    async function togglePolygonDrawing() {
+      try {
+        console.log('[polygon] Alternando modo de dibujo de polígono...');
+        
+        const response = await Common.fetchWithTimeout('/api/webcam/area_detection', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'toggle_drawing'
+          })
+        });
+        
+        const data = await response.json();
+        if (data.ok) {
+          console.log('[polygon] Modo de dibujo:', data.is_drawing ? 'activado' : 'desactivado');
+          
+          if (data.is_drawing) {
+            // Activar modo dibujo
+            isPolygonDrawingMode = true;
+            addImageClickListeners();
+            // Cambiar automáticamente al filtro de detección si no está activo
+            if (currentFilter !== 'detection') {
+              await changeFilter('detection');
+            }
+          } else {
+            // Desactivar modo dibujo
+            isPolygonDrawingMode = false;
+            removeImageClickListeners();
+          }
+        } else {
+          console.error('[polygon] Error:', data.message);
+          alert(`Error: ${data.message}`);
+        }
+      } catch (error) {
+        console.error('[polygon] Error:', error);
+        alert('Error alternando modo de dibujo');
+      }
+    }
+
+
+
+    // ============================================================
+    // Funciones para manejo del canvas del polígono
+    // ============================================================
+    
+    function setupPolygonCanvas() {
+      const img = document.getElementById('camStream');
+      const canvas = document.getElementById('polygonOverlay');
+      if (!img || !canvas) {
+        console.log('[polygon] No se encontró imagen o canvas');
+        return;
+      }
+      
+      // Configurar canvas para que coincida con el tamaño de la imagen
+      const rect = img.getBoundingClientRect();
+      canvas.width = rect.width;
+      canvas.height = rect.height;
+      canvas.style.width = rect.width + 'px';
+      canvas.style.height = rect.height + 'px';
+      
+      console.log('[polygon] Canvas configurado:', {width: rect.width, height: rect.height});
+      
+      // Limpiar canvas
+      clearPolygonCanvas();
+    }
+    
+    function clearPolygonCanvas() {
+      const canvas = document.getElementById('polygonOverlay');
+      if (!canvas) return;
+      
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      polygonPoints = [];
+    }
+    
+    function drawPolygonSegments() {
+      const canvas = document.getElementById('polygonOverlay');
+      if (!canvas) {
+        console.log('[polygon] No se encontró canvas para dibujar');
+        return;
+      }
+      
+      if (polygonPoints.length < 2) {
+        console.log('[polygon] No hay suficientes puntos para dibujar:', polygonPoints.length);
+        return;
+      }
+      
+      const ctx = canvas.getContext('2d');
+      
+      // Limpiar canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Configurar estilo para líneas verdes
+      ctx.strokeStyle = '#00ff00'; // Verde
+      ctx.lineWidth = 3;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      
+      console.log('[polygon] Dibujando segmentos:', polygonPoints.length, 'puntos');
+      
+      // Dibujar segmentos entre puntos
+      ctx.beginPath();
+      ctx.moveTo(polygonPoints[0].x, polygonPoints[0].y);
+      
+      for (let i = 1; i < polygonPoints.length; i++) {
+        ctx.lineTo(polygonPoints[i].x, polygonPoints[i].y);
+      }
+      
+      ctx.stroke();
+      
+      // Dibujar puntos
+      ctx.fillStyle = '#00ff00';
+      for (let point of polygonPoints) {
+        ctx.beginPath();
+        ctx.arc(point.x, point.y, 5, 0, 2 * Math.PI);
+        ctx.fill();
+      }
+      
+      console.log('[polygon] Segmentos dibujados correctamente');
+    }
+
+    // ============================================================
+    // Funciones para configuración de filtros
+    // ============================================================
+    
+    async function openFilterConfigModal() {
+      try {
+        console.log('[filter_config] Abriendo modal de configuración...');
+        
+        // Cargar información del filtro actual
+        await loadCurrentFilterInfo();
+        
+        // Cargar opciones de filtros de suavizado
+        await loadSmoothingFilterOptions();
+        
+        // Mostrar el modal
+        document.getElementById('filterConfigModal').style.display = 'block';
+        
+        // Configurar event listeners para los sliders
+        setupSliderListeners();
+        
+      } catch (error) {
+        console.error('[filter_config] Error abriendo modal:', error);
+        alert('Error abriendo configuración de filtros');
+      }
+    }
+    
+    function closeFilterConfigModal() {
+      document.getElementById('filterConfigModal').style.display = 'none';
+    }
+    
+    async function loadCurrentFilterInfo() {
+      try {
+        const response = await Common.fetchWithTimeout('/api/webcam/filter', {
+          method: 'GET'
+        });
+        
+        const data = await response.json();
+        if (data.ok) {
+          const filter = data.current_filter;
+          document.getElementById('currentFilterName').textContent = filter.name;
+          
+          const params = filter.params;
+          if (Object.keys(params).length > 0) {
+            document.getElementById('currentFilterParams').textContent = JSON.stringify(params, null, 2);
+          } else {
+            document.getElementById('currentFilterParams').textContent = 'Sin parámetros';
+          }
+        }
+      } catch (error) {
+        console.error('[filter_config] Error cargando información del filtro:', error);
+      }
+    }
+    
+    async function loadSmoothingFilterOptions() {
+      try {
+        const response = await Common.fetchWithTimeout('/api/filters/smoothing_options', {
+          method: 'GET'
+        });
+        
+        const data = await response.json();
+        if (data.ok) {
+          const select = document.getElementById('smoothingFilter');
+          select.innerHTML = '';
+          
+          data.options.forEach(option => {
+            const opt = document.createElement('option');
+            opt.value = option.value;
+            opt.textContent = option.display_name;
+            select.appendChild(opt);
+          });
+        }
+      } catch (error) {
+        console.error('[filter_config] Error cargando opciones de suavizado:', error);
+      }
+    }
+    
+    function setupSliderListeners() {
+      // Configurar listeners para los sliders
+      const sliders = [
+        { id: 'varThreshold', valueId: 'varThresholdValue' },
+        { id: 'minArea', valueId: 'minAreaValue' },
+        { id: 'solidityThreshold', valueId: 'solidityThresholdValue' },
+        { id: 'learningRate', valueId: 'learningRateValue' }
+      ];
+      
+      sliders.forEach(slider => {
+        const sliderElement = document.getElementById(slider.id);
+        const valueElement = document.getElementById(slider.valueId);
+        
+        if (sliderElement && valueElement) {
+          sliderElement.addEventListener('input', function() {
+            valueElement.textContent = this.value;
+          });
+        }
+      });
+    }
+    
+    async function applyFilterConfig() {
+      try {
+        console.log('[filter_config] Aplicando configuración...');
+        
+        const config = {
+          smoothing_filter: document.getElementById('smoothingFilter').value,
+          var_threshold: parseInt(document.getElementById('varThreshold').value),
+          min_area: parseInt(document.getElementById('minArea').value),
+          solidity_threshold: parseFloat(document.getElementById('solidityThreshold').value),
+          learning_rate: parseFloat(document.getElementById('learningRate').value)
+        };
+        
+        // Aplicar configuración al filtro actual
+        const response = await Common.fetchWithTimeout('/api/webcam/filter', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            filter_name: 'detection',
+            params: config
+          })
+        });
+        
+        const data = await response.json();
+        if (data.ok) {
+          console.log('[filter_config] Configuración aplicada exitosamente');
+          alert('Configuración aplicada correctamente');
+          
+          // Actualizar información del filtro
+          await loadCurrentFilterInfo();
+        } else {
+          console.error('[filter_config] Error aplicando configuración:', data.message);
+          alert(`Error: ${data.message}`);
+        }
+      } catch (error) {
+        console.error('[filter_config] Error aplicando configuración:', error);
+        alert('Error aplicando configuración');
+      }
+    }
+    
+    async function saveFilterConfig() {
+      try {
+        console.log('[filter_config] Guardando configuración...');
+        
+        // Primero aplicar la configuración
+        await applyFilterConfig();
+        
+        // Luego guardar en configuración persistente
+        const config = {
+          smoothing_filter: document.getElementById('smoothingFilter').value,
+          var_threshold: parseInt(document.getElementById('varThreshold').value),
+          min_area: parseInt(document.getElementById('minArea').value),
+          solidity_threshold: parseFloat(document.getElementById('solidityThreshold').value),
+          learning_rate: parseFloat(document.getElementById('learningRate').value)
+        };
+        
+        const response = await Common.fetchWithTimeout('/api/config', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            filter_config: config
+          })
+        });
+        
+        const data = await response.json();
+        if (data.ok) {
+          console.log('[filter_config] Configuración guardada exitosamente');
+          alert('Configuración guardada y aplicada correctamente');
+          closeFilterConfigModal();
+        } else {
+          console.error('[filter_config] Error guardando configuración:', data.message);
+          alert(`Error: ${data.message}`);
+        }
+      } catch (error) {
+        console.error('[filter_config] Error guardando configuración:', error);
+        alert('Error guardando configuración');
+      }
+    }
+
+    // Función para abrir la página de configuración de filtros
+    function openFilterConfigPage() {
+      console.log('[dashboard] Abriendo página de configuración de filtros...');
+      
+      // Comunicarse con el padre para cambiar la página
+      if (window.parent && window.parent.setLeftPane) {
+        window.parent.setLeftPane('filter_config');
+      } else {
+        // Fallback: redirigir directamente
+        window.location.href = '/template/filter_config.html';
+      }
+    }
+
+
+
+
+
+
+
+
+    // Inicializar el estado del sistema al cargar
+    document.addEventListener('DOMContentLoaded', function() {
+      startTerminalUpdates();
+      initFilterSystem();
+      checkBackgroundModelStatus();
+    });
+
+  </script>
+
+  <!-- Modal de confirmación para guardar polígono -->
+  <div id="polygonModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Guardar Polígono</h3>
+      </div>
+      <div class="modal-body">
+        <p>¿Deseas guardar el polígono actual en la configuración?</p>
+        <p><small>El polígono se cargará automáticamente al iniciar el sistema.</small></p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closePolygonModal()">Cancelar</button>
+        <button class="btn btn-primary" onclick="savePolygon()">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Overlay de entrenamiento -->
+  <div id="trainingOverlay" class="training-overlay" style="display: none;">
+    <div class="training-content">
+      <div class="training-header">
+        <h3>Entrenando Modelo de Fondo</h3>
+        <div class="training-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+            <path d="M8 4a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-.5.5H5a.5.5 0 0 1 0-1h2.5V4.5A.5.5 0 0 1 8 4z"/>
+          </svg>
+        </div>
+      </div>
+      
+      <div class="training-progress">
+        <div class="progress-bar">
+          <div class="progress-fill" id="trainingProgressFill"></div>
+        </div>
+        <div class="progress-text">
+          <span id="trainingProgressText">0%</span>
+          <span id="trainingTimeText">0ms / 5000ms</span>
+        </div>
+      </div>
+      
+      <div class="training-message">
+        <p>Analizando el entorno para crear un modelo de fondo robusto...</p>
+        <p><small>Por favor, mantén la cámara estable durante el entrenamiento.</small></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de configuración de filtros -->
+  <div id="filterConfigModal" class="modal" style="display: none;">
+    <div class="modal-content" style="max-width: 800px; max-height: 90vh; overflow-y: auto;">
+      <div class="modal-header">
+        <h3>Configuración de Filtros</h3>
+        <button class="modal-close" onclick="closeFilterConfigModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="filter-config-section">
+          <h4>Filtro de Suavizado</h4>
+          <div class="form-group">
+            <label for="smoothingFilter">Tipo de filtro:</label>
+            <select id="smoothingFilter" class="form-control">
+              <option value="default">Por defecto (Bilateral + Gaussiano + Morfológico)</option>
+              <option value="bilateral">Bilateral</option>
+              <option value="gaussian">Gaussiano</option>
+              <option value="median">Mediana</option>
+              <option value="morphological">Morfológico</option>
+              <option value="aggressive">Agresivo</option>
+              <option value="contour_clean">Limpieza de Contorno</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="filter-config-section">
+          <h4>Parámetros de Sustracción de Fondo</h4>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="varThreshold">Umbral de varianza:</label>
+              <input type="range" id="varThreshold" min="5" max="50" value="25" class="form-control">
+              <span id="varThresholdValue">25</span>
+            </div>
+            <div class="form-group">
+              <label for="minArea">Área mínima:</label>
+              <input type="range" id="minArea" min="100" max="2000" value="500" class="form-control">
+              <span id="minAreaValue">500</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="solidityThreshold">Umbral de solidez:</label>
+            <input type="range" id="solidityThreshold" min="0.1" max="1.0" step="0.1" value="0.7" class="form-control">
+            <span id="solidityThresholdValue">0.7</span>
+          </div>
+        </div>
+
+        <div class="filter-config-section">
+          <h4>Parámetros de Aprendizaje</h4>
+          <div class="form-group">
+            <label for="learningRate">Tasa de aprendizaje:</label>
+            <input type="range" id="learningRate" min="0.001" max="0.1" step="0.001" value="0.01" class="form-control">
+            <span id="learningRateValue">0.01</span>
+          </div>
+        </div>
+
+        <div class="filter-config-section">
+          <h4>Información del Filtro Actual</h4>
+          <div id="currentFilterInfo" class="info-box">
+            <p><strong>Filtro activo:</strong> <span id="currentFilterName">Original</span></p>
+            <p><strong>Parámetros:</strong> <span id="currentFilterParams">Sin parámetros</span></p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeFilterConfigModal()">Cancelar</button>
+        <button class="btn btn-primary" onclick="applyFilterConfig()">Aplicar Configuración</button>
+        <button class="btn btn-primary" onclick="saveFilterConfig()">Guardar y Aplicar</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

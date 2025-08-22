@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Base de Juntas</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <script src="/static/common.js"></script>
+</head>
+<body class="overflow-hidden">
+  <div class="wrap-grid">
+    <h1 class="page-header">
+      <span>Base de datos</span>
+      <div class="flex gap-2 items-center">
+        <a id="btnAdd" class="btn" href="/template/editJunta.html" title="Nueva Junta">
+          <svg class="ico" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M8 2a.75.75 0 0 1 .75.75V7.25H13.25a.75.75 0 0 1 0 1.5H8.75V13.25a.75.75 0 0 1-1.5 0V8.75H2.75a.75.75 0 0 1 0-1.5H7.25V2.75A.75.75 0 0 1 8 2z"/>
+          </svg>
+          <span>Nueva</span>
+        </a>
+        <a class="btn btn-danger" href="/template/ordenTrabajo.html" title="Orden de trabajo">
+          <svg class="ico" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M9.972 2.508a.5.5 0 0 0-.16-.556l-.178-.129a5 5 0 0 0-2.076-.783C6.215.862 4.504 1.229 2.84 3.133H1.786a.5.5 0 0 0-.354.147L.146 4.567a.5.5 0 0 0 0 .706l2.571 2.579a.5.5 0 0 0 .708 0l1.286-1.29a.5.5 0 0 0 .146-.353V5.57l8.387 8.873A.5.5 0 0 0 14 14.5l1.5-1.5a.5.5 0 0 0 .017-.689l-9.129-8.63c.747-.456 1.772-.839 3.112-.839a.5.5 0 0 0 .472-.334"/>
+          </svg>
+          <span>Orden de trabajo</span>
+        </a>
+      </div>
+    </h1>
+
+    <div class="grid-main">
+      <div class="card">
+        <div class="page-title" id="selTitle">—</div>
+        <div class="img-wrap img-wrap-contain">
+          <img id="selImg" alt="modelo" src="" onerror="Common.setPlaceholder(this)">
+          <canvas id="selOverlay"></canvas>
+        </div>
+      </div>
+
+      <div class="card table-card">
+        <div class="table-header">
+          <div class="table-filter">
+            <label for="filterInput">Filtrar Modelo</label>
+            <input id="filterInput" type="text" placeholder="Escribí para filtrar…" autocomplete="off" />
+          </div>
+          <div id="msg" class=""></div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Modelo</th><th style="width:160px;">Acciones</th></tr>
+            </thead>
+            <tbody id="rows"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const rows = document.getElementById("rows");
+    const msg = document.getElementById("msg");
+    const selTitle = document.getElementById("selTitle");
+    const selImg = document.getElementById("selImg");
+    const selOverlay = document.getElementById("selOverlay");
+    const filterInput = document.getElementById("filterInput");
+
+    let itemsList = [];
+    let selected = null;
+    let highlightedRow = null;
+
+    // --- LÓGICA DE SELECCIÓN Y RESALTADO ---
+    async function selectJunta(j, trElement) {
+      renderSelected(j);
+
+      // Resaltado visual de la fila
+      if (highlightedRow) {
+        highlightedRow.classList.remove("hl");
+      }
+      if (trElement) {
+        trElement.classList.add("hl");
+        highlightedRow = trElement;
+      }
+      
+      try {
+        const r = await fetch("/api/config/save", {
+          method:"POST",
+          headers:{ "Content-Type":"application/json" },
+          body: JSON.stringify({ junta_actual: { modelo: j.modelo } })
+        });
+        const jj = await r.json();
+        
+      } catch(e) { 
+        Common.setMessage("msg", "Error guardando la selección en config.json.", "text-error"); 
+      }
+    }
+
+    function renderSelected(j) {
+      selected = j;
+      selTitle.textContent = j ? (j.modelo || "—") : "—";
+      selImg.onload = async ()=>{
+        if(!j) return;
+        try {
+          const r = await Common.fetchWithTimeout(`/api/db/get?modelo=${encodeURIComponent(j.modelo)}`);
+          const jj = await r.json();
+          if(jj.ok) Common.drawOverlay(selImg, selOverlay, jj.item);
+        } catch(e) {}
+      };
+      selImg.src = j ? `/imgDatabase/${encodeURIComponent(j.modelo||"")}.png?ts=${Date.now()}` : "";
+    }
+
+    // --- FUNCIÓN QUE CREA CADA FILA (MODIFICADA) ---
+    function trRow(j) {
+      const tr = document.createElement("tr");
+      tr.style.cursor = "pointer"; // Indicar que la fila es clickeable
+      
+      const td1 = document.createElement("td"); 
+      td1.textContent = j.modelo || "";
+      
+      const td2 = document.createElement("td"); 
+      td2.className = "table-actions";
+      const wrap = document.createElement("div"); 
+      wrap.className = "btns";
+
+      // Botón de Editar con el nuevo icono
+      const bView = document.createElement("button");
+      bView.className = "btn-transparent"; 
+      bView.title = "Ver / editar";
+      bView.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#e7e7e7" class="bi bi-pencil-square" viewBox="0 0 16 16"><path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/><path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/></svg>`;
+      
+      // Detener la propagación para que el click en el botón no seleccione la fila
+      bView.onclick = (event) => {
+        event.stopPropagation();
+        location.href = `/template/editJunta.html?modelo=${encodeURIComponent(j.modelo)}`;
+      };
+      
+      // Evento de click en la fila para seleccionar
+      tr.addEventListener('click', () => {
+        selectJunta(j, tr);
+      });
+
+      wrap.appendChild(bView);
+      td2.appendChild(wrap);
+      tr.appendChild(td1); 
+      tr.appendChild(td2);
+      return tr;
+    }
+
+    function renderRows(list) {
+      rows.innerHTML = "";
+      list.forEach(x => rows.appendChild(trRow(x)));
+    }
+
+    function applyFilter() {
+      const q = (filterInput.value || "").toLowerCase().trim();
+      const base = q ? itemsList.filter(x => (x.modelo||"").toLowerCase().includes(q)) : itemsList;
+      renderRows(base);
+      Common.setMessage("msg", `${base.length} registro(s).`, "text-success");
+    }
+
+    async function loadList() {
+      try {
+        const r = await Common.fetchWithTimeout("/api/db/list");
+        const j = await r.json();
+        itemsList = j.items || [];
+        applyFilter();
+        await preselectFromConfig();
+      } catch(e) {
+        Common.setMessage("msg", "Error cargando la base de datos.", "text-error");
+      }
+    }
+
+    async function preselectFromConfig() {
+      try {
+        const r = await Common.fetchWithTimeout("/api/config");
+        const cfg = await r.json();
+        const modelo = cfg?.junta_actual?.modelo;
+        const found = modelo ? itemsList.find(x => (x.modelo||"").toLowerCase() === String(modelo).toLowerCase()) : itemsList[0];
+        
+        if (found) {
+          // Encontrar el elemento TR correspondiente para resaltarlo
+          const trElement = Array.from(rows.children).find(row => row.cells[0].textContent === found.modelo);
+          selectJunta(found, trElement);
+        } else if (modelo) {
+          Common.setMessage("msg", `La junta guardada "${modelo}" no está en la base actual.`, "text-error");
+        } else {
+          renderSelected(null);
+        }
+      } catch(e) {}
+    }
+
+    document.getElementById("btnAdd").addEventListener("click", () => {
+      location.href = "/template/editJunta.html";
+    });
+    filterInput.addEventListener("input", applyFilter);
+
+    loadList();
+  </script>
+</body>
+</html>

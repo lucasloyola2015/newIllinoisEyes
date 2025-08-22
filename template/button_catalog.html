@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de Botones - Illinois Eyes</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <style>
+        .catalog-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .catalog-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: var(--card);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+        }
+        
+        .catalog-header h1 {
+            color: var(--text-primary);
+            margin: 0 0 10px 0;
+        }
+        
+        .catalog-header p {
+            color: var(--text-muted);
+            margin: 0;
+        }
+        
+        .button-category {
+            margin-bottom: 40px;
+            background: var(--card);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+        
+        .category-header {
+            background: var(--surface);
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .category-header h2 {
+            margin: 0;
+            color: var(--text-primary);
+            font-size: 1.3rem;
+        }
+        
+        .category-description {
+            color: var(--text-muted);
+            margin: 10px 0 0 0;
+            font-size: 0.9rem;
+        }
+        
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+        
+        .button-item {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            transition: all 0.2s ease;
+        }
+        
+        .button-item:hover {
+            border-color: var(--brand-red);
+            box-shadow: 0 2px 8px rgba(212, 20, 20, 0.1);
+        }
+        
+        .button-preview {
+            margin-bottom: 15px;
+            padding: 15px;
+            background: var(--bg);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+        
+        .button-info {
+            margin-bottom: 15px;
+        }
+        
+        .button-info h4 {
+            margin: 0 0 8px 0;
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+        
+        .button-details {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+        
+        .button-path {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 8px 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            color: var(--text-primary);
+            word-break: break-all;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .stat-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--brand-red);
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="catalog-container">
+        <div class="catalog-header">
+            <h1>📋 Catálogo de Botones - Illinois Eyes</h1>
+            <p>Inventario completo de todos los botones del sitio con sus estilos y características</p>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number">15</div>
+                <div class="stat-label">Páginas Analizadas</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">45+</div>
+                <div class="stat-label">Botones Identificados</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">12</div>
+                <div class="stat-label">Estilos Diferentes</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">8</div>
+                <div class="stat-label">Categorías</div>
+            </div>
+        </div>
+
+        <!-- Botones Principales -->
+        <div class="button-category">
+            <div class="category-header">
+                <h2>🎯 Botones Principales</h2>
+                <p class="category-description">Botones de acción principal con estilos base (.btn)</p>
+            </div>
+            <div class="button-grid">
+                <div class="button-item">
+                    <div class="button-preview">
+                        <button class="btn">Botón Base</button>
+                    </div>
+                    <div class="button-info">
+                        <h4>Botón Base (.btn)</h4>
+                        <div class="button-details">
+                            <strong>Clases:</strong> .btn<br>
+                            <strong>Uso:</strong> Botón estándar sin variante específica<br>
+                            <strong>Características:</strong> Estilo base para todos los botones
+                        </div>
+                    </div>
+                    <div class="button-path">Clase CSS: .btn</div>
+                </div>
+
+                <div class="button-item">
+                    <div class="button-preview">
+                        <button class="btn btn-primary">Botón Primario</button>
+                    </div>
+                    <div class="button-info">
+                        <h4>Botón Primario (.btn-primary)</h4>
+                        <div class="button-details">
+                            <strong>Clases:</strong> .btn .btn-primary<br>
+                            <strong>Color:</strong> Rojo (#d41414)<br>
+                            <strong>Uso:</strong> Acciones principales, guardar, aceptar
+                        </div>
+                    </div>
+                    <div class="button-path">Clase CSS: .btn-primary</div>
+                </div>
+
+                <div class="button-item">
+                    <div class="button-preview">
+                        <button class="btn btn-secondary">Botón Secundario</button>
+                    </div>
+                    <div class="button-info">
+                        <h4>Botón Secundario (.btn-secondary)</h4>
+                        <div class="button-details">
+                            <strong>Clases:</strong> .btn .btn-secondary<br>
+                            <strong>Color:</strong> Gris (#2a2a2f)<br>
+                            <strong>Uso:</strong> Acciones secundarias, cancelar, volver
+                        </div>
+                    </div>
+                    <div class="button-path">Clase CSS: .btn-secondary</div>
+                </div>
+
+                <div class="button-item">
+                    <div class="button-preview">
+                        <button class="btn btn-success">Botón Éxito</button>
+                    </div>
+                    <div class="button-info">
+                        <h4>Botón Éxito (.btn-success)</h4>
+                        <div class="button-details">
+                            <strong>Clases:</strong> .btn .btn-success<br>
+                            <strong>Color:</strong> Verde (#28a745)<br>
+                            <strong>Uso:</strong> Confirmaciones, acciones exitosas
+                        </div>
+                    </div>
+                    <div class="button-path">Clase CSS: .btn-success</div>
+                </div>
+
+                <div class="button-item">
+                    <div class="button-preview">
+                        <button class="btn btn-warning">Botón Advertencia</button>
+                    </div>
+                    <div class="button-info">
+                        <h4>Botón Advertencia (.btn-warning)</h4>
+                        <div class="button-details">
+                            <strong>Clases:</strong> .btn .btn-warning<br>
+                            <strong>Color:</strong> Naranja (#ffc107)<br>
+                            <strong>Uso:</strong> Advertencias, acciones de precaución
+                        </div>
+                    </div>
+                    <div class="button-path">Clase CSS: .btn-warning</div>
+                </div>
+
+                <div class="button-item">
+                    <div class="button-preview">
+                        <button class="btn btn-red">Botón Rojo</button>
+                    </div>
+                    <div class="button-info">
+                        <h4>Botón Rojo (.btn-red)</h4>
+                        <div class="button-details">
+                            <strong>Clases:</strong> .btn .btn-red<br>
+                            <strong>Color:</strong> Rojo oscuro (#170d0e)<br>
+                            <strong>Uso:</strong> Eliminar, detener, acciones destructivas
+                        </div>
+                    </div>
+                    <div class="button-path">Clase CSS: .btn-red</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botones Especializados -->
+        <div class="button-category">
+            <div class="category-header">
+                <h2>🔧 Botones Especializados</h2>
+                <p class="category-description">Botones con funcionalidades específicas del sistema</p>
+            </div>
+            <div class="button-grid">
+                <div class="button-item">
+                    <div class="button-preview">
+                        <button class="btn btn-sm btn-learning">Aprender Fondo</button>
+                    </div>
+                    <div class="button-info">
+                        <h4>Botón Aprendizaje (.btn-learning)</h4>
+                        <div class="button-details">
+                            <strong>Clases:</strong> .btn .btn-sm .btn-learning<br>
+                            <strong>Color:</strong> Rojo (#dc3545)<br>
+                            <strong>Uso:</strong> Entrenamiento de fondo para detección
+                        </div>
+                    </div>
+                    <div class="button-path">Página: /template/dashboard.html</div>
+                </div>
+
+                <div class="button-item">
+                    <div class="button-preview">
+                        <button class="btn btn-sm btn-camera">Tomar Foto</button>
+                    </div>
+                    <div class="button-info">
+                        <h4>Botón Cámara (.btn-camera)</h4>
+                        <div class="button-details">
+                            <strong>Clases:</strong> .btn .btn-sm .btn-camera<br>
+                            <strong>Color:</strong> Gris (#2a2a2f)<br>
+                            <strong>Uso:</strong> Captura de imágenes
+                        </div>
+                    </div>
+                    <div class="button-path">Página: /template/dashboard.html</div>
+                </div>
+
+                <div class="button-item">
+                    <div class="button-preview">
+                        <button class="btn btn-sm btn-area">Dibujar Polígono</button>
+                    </div>
+                    <div class="button-info">
+                        <h4>Botón Área (.btn-area)</h4>
+                        <div class="button-details">
+                            <strong>Clases:</strong> .btn .btn-sm .btn-area<br>
+                            <strong>Color:</strong> Rojo (#dc3545) / Verde activo (#28a745)<br>
+                            <strong>Uso:</strong> Definición de áreas de detección
+                        </div>
+                    </div>
+                    <div class="button-path">Página: /template/dashboard.html</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botones de Navegación -->
+        <div class="button-category">
+            <div class="category-header">
+                <h2>🧭 Botones de Navegación</h2>
+                <p class="category-description">Botones para navegación entre páginas y secciones</p>
+            </div>
+            <div class="button-grid">
+                <div class="button-item">
+                    <div class="button-preview">
+                        <button class="navbtn">Navegación</button>
+                    </div>
+                    <div class="button-info">
+                        <h4>Botón Navegación (.navbtn)</h4>
+                        <div class="button-details">
+                            <strong>Clases:</strong> .navbtn<br>
+                            <strong>Color:</strong> Gris (#111113) / Rojo activo (#d41414)<br>
+                            <strong>Uso:</strong> Navegación principal
+                        </div>
+                    </div>
+                    <div class="button-path">Página: /template/main.html</div>
+                </div>
+
+                <div class="button-item">
+                    <div class="button-preview">
+                        <a class="cfg-btn" href="#">
+                            <svg width="56" height="56" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                            </svg>
+                            Configuración
+                        </a>
+                    </div>
+                    <div class="button-info">
+                        <h4>Botón Configuración (.cfg-btn)</h4>
+                        <div class="button-details">
+                            <strong>Clases:</strong> .cfg-btn<br>
+                            <strong>Color:</strong> Tarjeta con hover rojo<br>
+                            <strong>Uso:</strong> Acceso a páginas de configuración
+                        </div>
+                    </div>
+                    <div class="button-path">Páginas: /template/control.html, /template/configuracion.html</div>
+                </div>
+
+                <div class="button-item">
+                    <div class="button-preview">
+                        <button class="btn btn-transparent">Transparente</button>
+                    </div>
+                    <div class="button-info">
+                        <h4>Botón Transparente (.btn-transparent)</h4>
+                        <div class="button-details">
+                            <strong>Clases:</strong> .btn .btn-transparent<br>
+                            <strong>Color:</strong> Transparente con hover<br>
+                            <strong>Uso:</strong> Botones de interfaz minimalista
+                        </div>
+                    </div>
+                    <div class="button-path">Página: /template/main.html</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botones de Pestañas -->
+        <div class="button-category">
+            <div class="category-header">
+                <h2>📑 Botones de Pestañas</h2>
+                <p class="category-description">Botones para cambiar entre pestañas y vistas</p>
+            </div>
+            <div class="button-grid">
+                <div class="button-item">
+                    <div class="button-preview">
+                        <button class="tab-button active">Pestaña Activa</button>
+                    </div>
+                    <div class="button-info">
+                        <h4>Pestaña (.tab-button)</h4>
+                        <div class="button-details">
+                            <strong>Clases:</strong> .tab-button<br>
+                            <strong>Color:</strong> Gris / Rojo activo (#d41414)<br>
+                            <strong>Uso:</strong> Navegación entre pestañas
+                        </div>
+                    </div>
+                    <div class="button-path">Página: /template/filter_config.html</div>
+                </div>
+
+                <div class="button-item">
+                    <div class="button-preview">
+                        <button class="filter-tab active">Filtro Activo</button>
+                    </div>
+                    <div class="button-info">
+                        <h4>Pestaña Filtro (.filter-tab)</h4>
+                        <div class="button-details">
+                            <strong>Clases:</strong> .filter-tab<br>
+                            <strong>Color:</strong> Gris / Azul activo (#007bff)<br>
+                            <strong>Uso:</strong> Cambio entre filtros de imagen
+                        </div>
+                    </div>
+                    <div class="button-path">Páginas: /template/dashboard.html, /test_filters.html</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botones Pequeños -->
+        <div class="button-category">
+            <div class="category-header">
+                <h2>🔍 Botones Pequeños</h2>
+                <p class="category-description">Botones con tamaño reducido para acciones secundarias</p>
+            </div>
+            <div class="button-grid">
+                <div class="button-item">
+                    <div class="button-preview">
+                        <button class="btn btn-sm">Pequeño</button>
+                    </div>
+                    <div class="button-info">
+                        <h4>Botón Pequeño (.btn-sm)</h4>
+                        <div class="button-details">
+                            <strong>Clases:</strong> .btn .btn-sm<br>
+                            <strong>Tamaño:</strong> Padding reducido<br>
+                            <strong>Uso:</strong> Acciones secundarias, controles compactos
+                        </div>
+                    </div>
+                    <div class="button-path">Clase CSS: .btn-sm</div>
+                </div>
+
+                <div class="button-item">
+                    <div class="button-preview">
+                        <button class="btn btn-sm btn-secondary">Configurar</button>
+                    </div>
+                    <div class="button-info">
+                        <h4>Configurar Filtro</h4>
+                        <div class="button-details">
+                            <strong>Clases:</strong> .btn .btn-sm .btn-secondary<br>
+                            <strong>Uso:</strong> Configuración de filtros específicos<br>
+                            <strong>Estado:</strong> Habilitado/Deshabilitado
+                        </div>
+                    </div>
+                    <div class="button-path">Página: /template/filter_config.html</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botones de Control -->
+        <div class="button-category">
+            <div class="category-header">
+                <h2>🎮 Botones de Control</h2>
+                <p class="category-description">Botones para control de procesos y dispositivos</p>
+            </div>
+            <div class="button-grid">
+                <div class="button-item">
+                    <div class="button-preview">
+                        <button class="btn btn-success">Iniciar/Pausar</button>
+                    </div>
+                    <div class="button-info">
+                        <h4>Control de Proceso</h4>
+                        <div class="button-details">
+                            <strong>Clases:</strong> .btn .btn-success / .btn-warning<br>
+                            <strong>Uso:</strong> Control de procesos automáticos<br>
+                            <strong>Estados:</strong> Iniciar (verde) / Pausar (amarillo)
+                        </div>
+                    </div>
+                    <div class="button-path">Página: /template/control.html</div>
+                </div>
+
+                <div class="button-item">
+                    <div class="button-preview">
+                        <button class="btn btn-red">Detener</button>
+                    </div>
+                    <div class="button-info">
+                        <h4>Detener Proceso</h4>
+                        <div class="button-details">
+                            <strong>Clases:</strong> .btn .btn-red<br>
+                            <strong>Uso:</strong> Detener procesos en ejecución<br>
+                            <strong>Color:</strong> Rojo para indicar acción destructiva
+                        </div>
+                    </div>
+                    <div class="button-path">Página: /template/control.html</div>
+                </div>
+
+                <div class="button-item">
+                    <div class="button-preview">
+                        <button class="btn">Ping</button>
+                    </div>
+                    <div class="button-info">
+                        <h4>Test de Conexión</h4>
+                        <div class="button-details">
+                            <strong>Clases:</strong> .btn<br>
+                            <strong>Uso:</strong> Verificar conectividad de dispositivos<br>
+                            <strong>Dispositivos:</strong> PLC, Robot, Winc5G
+                        </div>
+                    </div>
+                    <div class="button-path">Página: /template/configDevices.html</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botones de Modal -->
+        <div class="button-category">
+            <div class="category-header">
+                <h2>🪟 Botones de Modal</h2>
+                <p class="category-description">Botones para acciones en ventanas modales</p>
+            </div>
+            <div class="button-grid">
+                <div class="button-item">
+                    <div class="button-preview">
+                        <button class="btn btn-secondary">Cancelar</button>
+                        <button class="btn btn-primary">Guardar</button>
+                    </div>
+                    <div class="button-info">
+                        <h4>Acciones de Modal</h4>
+                        <div class="button-details">
+                            <strong>Clases:</strong> .btn .btn-secondary / .btn-primary<br>
+                            <strong>Uso:</strong> Confirmar o cancelar acciones<br>
+                            <strong>Patrón:</strong> Cancelar (gris) + Acción (rojo)
+                        </div>
+                    </div>
+                    <div class="button-path">Páginas: Múltiples modales</div>
+                </div>
+
+                <div class="button-item">
+                    <div class="button-preview">
+                        <button class="modal-close">&times;</button>
+                    </div>
+                    <div class="button-info">
+                        <h4>Cerrar Modal (.modal-close)</h4>
+                        <div class="button-details">
+                            <strong>Clases:</strong> .modal-close<br>
+                            <strong>Símbolo:</strong> &times; (X)<br>
+                            <strong>Uso:</strong> Cerrar ventanas modales
+                        </div>
+                    </div>
+                    <div class="button-path">Páginas: Múltiples modales</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resumen de Inconsistencias -->
+        <div class="button-category">
+            <div class="category-header">
+                <h2>⚠️ Inconsistencias Identificadas</h2>
+                <p class="category-description">Problemas de consistencia en el diseño de botones</p>
+            </div>
+            <div class="button-grid">
+                <div class="button-item">
+                    <div class="button-info">
+                        <h4>1. Múltiples Estilos para la Misma Función</h4>
+                        <div class="button-details">
+                            <strong>Problema:</strong> Botones "Guardar" usan diferentes clases<br>
+                            <strong>Ejemplos:</strong> .btn-primary vs .btn-success<br>
+                            <strong>Solución:</strong> Estandarizar en .btn-primary
+                        </div>
+                    </div>
+                </div>
+
+                <div class="button-item">
+                    <div class="button-info">
+                        <h4>2. Colores Inconsistentes</h4>
+                        <div class="button-details">
+                            <strong>Problema:</strong> Rojo usado en múltiples variantes<br>
+                            <strong>Ejemplos:</strong> .btn-primary, .btn-red, .btn-learning, .btn-area<br>
+                            <strong>Solución:</strong> Definir paleta de colores clara
+                        </div>
+                    </div>
+                </div>
+
+                <div class="button-item">
+                    <div class="button-info">
+                        <h4>3. Tamaños Inconsistentes</h4>
+                        <div class="button-details">
+                            <strong>Problema:</strong> Botones similares con diferentes tamaños<br>
+                            <strong>Ejemplos:</strong> .btn vs .btn-sm vs .cfg-btn<br>
+                            <strong>Solución:</strong> Establecer jerarquía de tamaños clara
+                        </div>
+                    </div>
+                </div>
+
+                <div class="button-item">
+                    <div class="button-info">
+                        <h4>4. Nomenclatura Confusa</h4>
+                        <div class="button-details">
+                            <strong>Problema:</strong> Nombres de clases poco descriptivos<br>
+                            <strong>Ejemplos:</strong> .btn-red vs .btn-primary (ambos rojos)<br>
+                            <strong>Solución:</strong> Renombrar basado en función, no color
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recomendaciones -->
+        <div class="button-category">
+            <div class="category-header">
+                <h2>💡 Recomendaciones de Mejora</h2>
+                <p class="category-description">Sugerencias para estandarizar el sistema de botones</p>
+            </div>
+            <div class="button-grid">
+                <div class="button-item">
+                    <div class="button-info">
+                        <h4>1. Estandarizar Colores</h4>
+                        <div class="button-details">
+                            <strong>Primario:</strong> .btn-primary (rojo) - Acciones principales<br>
+                            <strong>Secundario:</strong> .btn-secondary (gris) - Acciones secundarias<br>
+                            <strong>Éxito:</strong> .btn-success (verde) - Confirmaciones<br>
+                            <strong>Peligro:</strong> .btn-danger (rojo oscuro) - Eliminar/detener
+                        </div>
+                    </div>
+                </div>
+
+                <div class="button-item">
+                    <div class="button-info">
+                        <h4>2. Simplificar Nomenclatura</h4>
+                        <div class="button-details">
+                            <strong>Eliminar:</strong> .btn-red, .btn-learning, .btn-camera, .btn-area<br>
+                            <strong>Mantener:</strong> .btn-primary, .btn-secondary, .btn-success, .btn-warning<br>
+                            <strong>Agregar:</strong> .btn-danger para acciones destructivas
+                        </div>
+                    </div>
+                </div>
+
+                <div class="button-item">
+                    <div class="button-info">
+                        <h4>3. Estandarizar Tamaños</h4>
+                        <div class="button-details">
+                            <strong>Grande:</strong> .btn-lg - Para configuraciones principales<br>
+                            <strong>Normal:</strong> .btn - Para acciones estándar<br>
+                            <strong>Pequeño:</strong> .btn-sm - Para controles compactos
+                        </div>
+                    </div>
+                </div>
+
+                <div class="button-item">
+                    <div class="button-info">
+                        <h4>4. Documentar Sistema</h4>
+                        <div class="button-details">
+                            <strong>Crear:</strong> Guía de estilo para botones<br>
+                            <strong>Incluir:</strong> Cuándo usar cada variante<br>
+                            <strong>Mantener:</strong> Consistencia en futuras implementaciones
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
